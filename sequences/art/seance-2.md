@@ -6,8 +6,4 @@
 }
 </script>
 
-Introduction du cours...
-
-[[corpus:hume-passions]]
-
-Commentaire du texte...
+En maintenance...

@@ -6,8 +6,4 @@
 }
 </script>
 
-Introduction du cours...
-
-[[corpus:platon-republique-476a-476d]]
-
-Commentaire du texte...
+En maintenance...
