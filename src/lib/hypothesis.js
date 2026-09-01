@@ -16,9 +16,21 @@
  * la balise <link rel="canonical">, que le client Hypothesis lit
  * explicitement pour déterminer l'URI d'une page. `setHypothesisUri` la
  * met à jour à chaque changement de séance (voir SeancePage.jsx).
+ *
+ * Groupe privé : pour éviter que n'importe qui annote publiquement la page
+ * (bruit, texte random visible par tous), le client est épinglé sur le
+ * groupe privé "Cours de philosophie" via l'option `group`. Seuls les
+ * membres du groupe (invités via le lien de partage hypothes.is) peuvent
+ * voir et créer des annotations — il n'y a plus de calque "Public" affiché.
+ * Un élève doit avoir un compte Hypothesis et avoir rejoint le groupe pour
+ * voir quoi que ce soit ici.
  */
 
 let injected = false;
+
+// ID du groupe privé "Cours de philosophie" (visible dans l'URL de gestion
+// du groupe sur hypothes.is : https://hypothes.is/groups/<GROUP_ID>/edit).
+const HYPOTHESIS_GROUP_ID = "mDDE48NQ";
 
 export function loadHypothesisClient() {
   if (injected) return;
@@ -29,11 +41,17 @@ export function loadHypothesisClient() {
   }
 
   // Config officielle du client (doit être définie avant le chargement du
-  // script). On ne restreint rien : annotation possible sur toute la page.
+  // script). `groups` (au pluriel, pas `group`) restreint la LISTE des
+  // groupes proposés par le client à ce seul groupe privé : le calque
+  // "Public" n'apparaît alors même plus dans le sélecteur, il n'y a donc
+  // plus moyen d'y écrire ou d'y lire quoi que ce soit depuis cette page.
+  // (`group` seul ne fait que présélectionner le groupe actif par défaut,
+  // mais laisse "Public" accessible en changeant de groupe dans le client.)
   window.hypothesisConfig = function () {
     return {
       showHighlights: true,
       openSidebar: false,
+      groups: [HYPOTHESIS_GROUP_ID],
     };
   };
 

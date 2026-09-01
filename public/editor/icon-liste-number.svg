@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <text x="25" y="30" font-family="Times New Roman, serif" font-weight="bold" font-size="20" text-anchor="middle" fill="black">1.</text>
+  <line x1="40" y1="25" x2="85" y2="25" stroke="black" stroke-width="5" stroke-linecap="round" />
+
+  <text x="25" y="55" font-family="Times New Roman, serif" font-weight="bold" font-size="20" text-anchor="middle" fill="black">2.</text>
+  <line x1="40" y1="50" x2="85" y2="50" stroke="black" stroke-width="5" stroke-linecap="round" />
+
+  <text x="25" y="80" font-family="Times New Roman, serif" font-weight="bold" font-size="20" text-anchor="middle" fill="black">3.</text>
+  <line x1="40" y1="75" x2="85" y2="75" stroke="black" stroke-width="5" stroke-linecap="round" />
+</svg>

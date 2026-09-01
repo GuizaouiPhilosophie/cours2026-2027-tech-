@@ -283,6 +283,93 @@ main.container {
 
 .corpus-toggle:hover { color: var(--accent-dark); text-decoration: underline; }
 
+/* ---------- Image de corpus ---------- */
+
+.corpus-image {
+  margin: 2.5rem 0;
+  text-align: center;
+}
+
+.corpus-image img {
+  width: var(--corpus-image-width, 100%);
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+}
+
+/* left/right : l'image flotte, le texte qui suit vient s'écrire à côté
+   (utile pour une image verticale). Largeur par défaut plus modeste que
+   le "center" pleine largeur, ajustable via width:. */
+.corpus-image--left,
+.corpus-image--right {
+  max-width: 45%;
+  margin-top: 0.3rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.corpus-image--left img,
+.corpus-image--right img {
+  width: var(--corpus-image-width, 100%);
+}
+
+.corpus-image--left {
+  float: left;
+  margin-right: 2rem;
+}
+
+.corpus-image--right {
+  float: right;
+  margin-left: 2rem;
+}
+
+/* Les blocs structurants qui suivent une image flottante repartent sur
+   toute la largeur, plutôt que de se retrouver coincés à côté du flottant
+   (une grille comme .corpus-text n'"enroule" pas autour d'un float, elle
+   se contenterait de rétrécir bizarrement sans ce clear). */
+.corpus-text,
+.bibliographie,
+.markdown-block h2,
+.markdown-block h3 {
+  clear: both;
+}
+
+.corpus-image figcaption {
+  margin-top: 0.6rem;
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.corpus-image-source {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.corpus-image-source:hover { text-decoration: underline; }
+
+/* Petit écran : plus de flottement, l'image reprend toute sa largeur et
+   repasse au-dessus du texte, comme en "center" (voir aussi .corpus-text
+   qui empile déjà sa marge de métadonnées à cette largeur). */
+@media (max-width: 640px) {
+  .corpus-image--left,
+  .corpus-image--right {
+    float: none;
+    max-width: 100%;
+    margin: 0 auto 2.5rem;
+  }
+
+  .corpus-image--left img,
+  .corpus-image--right img {
+    width: var(--corpus-image-width, 100%);
+  }
+}
+
 /* Petit écran : la marge de métadonnées passe au-dessus du texte */
 @media (max-width: 640px) {
   .corpus-text {
@@ -304,4 +391,35 @@ main.container {
   .corpus-main {
     grid-column: 1;
   }
+
+  .bibliographie {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-family: var(--sans);
+  }
+  
+  .bibliographie h2 {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    margin: 0 0 1rem;
+  }
+  
+  .bibliographie ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  
+  .bibliographie li {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    padding-left: 1rem;
+    border-left: 2px solid var(--border);
+  }
+
 }
