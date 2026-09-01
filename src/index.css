@@ -1,0 +1,307 @@
+:root {
+  --bg: #f7ede3;
+  --bg-card: #fffaf5;
+  --accent: #c1694c;
+  --accent-dark: #a3543a;
+  --text: #2b211c;
+  --text-muted: #8a7a6c;
+  --border: #e6d5c6;
+  --serif: "Georgia", "Iowan Old Style", "Palatino Linotype", serif;
+  --sans: "Helvetica Neue", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  line-height: 1.5;
+}
+
+/* ---------- Accueil ---------- */
+
+header.site-header {
+  padding: 3rem 2rem 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  color: var(--accent-dark);
+  font-weight: 600;
+}
+
+h1.site-title {
+  font-family: var(--serif);
+  font-size: 2.6rem;
+  margin: 0.4rem 0 0.6rem;
+}
+
+.tagline {
+  font-style: italic;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+main.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem;
+}
+
+.sequence {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.sequence-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.2rem 1.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.sequence-header:hover { background: rgba(193, 105, 76, 0.06); }
+
+.sequence-title-group h2 {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  margin: 0 0 0.3rem;
+}
+
+.sequence-notions { font-size: 0.8rem; color: var(--text-muted); }
+
+.sequence-notions span {
+  display: inline-block;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.15rem 0.65rem;
+  margin-right: 0.35rem;
+}
+
+.chevron {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  border-right: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+}
+
+.sequence.open .chevron { transform: rotate(-135deg); }
+
+.seance-list { display: none; border-top: 1px solid var(--border); }
+
+.sequence.open .seance-list { display: block; }
+
+.seance-list a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.9rem 1.5rem;
+  color: var(--text);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border);
+}
+
+.seance-list a:last-child { border-bottom: none; }
+.seance-list a:hover { background: rgba(193, 105, 76, 0.06); }
+
+.seance-number { font-family: var(--serif); color: var(--accent); font-weight: 600; flex-shrink: 0; }
+
+.empty-state, .error-state { color: var(--text-muted); font-style: italic; padding: 2rem 0; }
+.error-state { color: var(--accent-dark); }
+
+/* ---------- Page de séance ---------- */
+
+.seance-topbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
+}
+
+.seance-topbar a.back-link { color: var(--accent-dark); text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+.seance-topbar .seance-crumb { color: var(--text-muted); font-size: 0.85rem; }
+
+.seance-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 2rem 5rem;
+}
+
+.placeholder {
+  margin-top: 2rem;
+  padding: 2rem;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+  background: var(--bg-card);
+}
+
+/* ---------- Cours (contenu normal, plus de canvas) ---------- */
+
+.cours {
+  font-family: var(--serif);
+  color: var(--text);
+  line-height: 1.75;
+}
+
+.cours-title {
+  font-size: 2rem;
+  margin: 0 0 2rem;
+}
+
+.cours-body p {
+  margin: 0 0 1.2rem;
+}
+
+/* ---------- Extrait de corpus, avec marge de métadonnées ---------- */
+
+.corpus-text {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  column-gap: 2rem;
+  align-items: start;
+  margin: 2.5rem 0;
+  padding: 0;
+}
+
+/* Marge à gauche : métadonnées du texte (auteur, œuvre, date, source...) */
+.corpus-meta {
+  grid-column: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  padding-top: 0.15rem;
+  border-left: 2px solid var(--border);
+  padding-left: 0.9rem;
+}
+
+.corpus-meta-auteur {
+  font-weight: 700;
+  color: var(--accent-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-size: 0.72rem;
+}
+
+.corpus-meta-oeuvre {
+  font-style: italic;
+}
+
+.corpus-meta-date,
+.corpus-meta-extra {
+  color: var(--text-muted);
+}
+
+.corpus-meta-source {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.corpus-meta-source:hover { text-decoration: underline; }
+
+.corpus-main {
+  grid-column: 2;
+}
+
+.corpus-body-wrap {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+}
+
+.corpus-body {
+  font-family: var(--serif);
+  line-height: 1.75;
+}
+
+.corpus-body p { margin: 0 0 1rem; }
+.corpus-body p:last-child { margin-bottom: 0; }
+
+/* Replié : ~2 lignes visibles, la 3e est coupée par le dégradé de flou ci-dessous */
+.corpus-body.is-closed {
+  max-height: 3.7em;
+  overflow: hidden;
+}
+
+.corpus-body.is-open {
+  max-height: none;
+}
+
+/* Dégradé de flou : superpose la fin du texte replié d'un flou progressif
+   (pas un simple fondu d'opacité) grâce à backdrop-filter + un masque en
+   dégradé qui fait apparaître le flou de plus en plus fort vers le bas. */
+.corpus-fade {
+  position: absolute;
+  left: 1px;
+  right: 1px;
+  bottom: 1px;
+  height: 1.9em;
+  border-radius: 0 0 10px 10px;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 75%);
+  mask-image: linear-gradient(to bottom, transparent, black 75%);
+  pointer-events: none;
+}
+
+.corpus-toggle {
+  margin-top: 0.6rem;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.corpus-toggle:hover { color: var(--accent-dark); text-decoration: underline; }
+
+/* Petit écran : la marge de métadonnées passe au-dessus du texte */
+@media (max-width: 640px) {
+  .corpus-text {
+    grid-template-columns: 1fr;
+  }
+
+  .corpus-meta {
+    grid-column: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.9rem;
+    border-left: none;
+    border-bottom: 2px solid var(--border);
+    padding-left: 0;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .corpus-main {
+    grid-column: 1;
+  }
+}
