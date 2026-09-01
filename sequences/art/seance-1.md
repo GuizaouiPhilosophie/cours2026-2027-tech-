@@ -31,8 +31,6 @@ C'est déjà beaucoup mieux, et ça me parle. Le *beau* suscite « l'admiration 
 
 [[corpus:platon-republique-476a-476d]]
 
-Réponse : 
-
 Chez Platon on distingue le *monde intelligible* et le *monde sensible*. Le premier est peuplé de choses éternelles et parfaites comme les *idées* et les dieux. Le second, c'est notre monde ; on y trouve des *copies* appauvries de ce qui habite le monde des idées. Le *monde intelligible* est invisible, mais en observant avec attention les copies terrestres on peut remonter à certaines *idées*. L'*idée du beau* en fait partie. Dans le texte précédent, Platon explique qu'en observant de belles choses on peut apprendre à reconnaître l'existence de la *beauté*, non pas une *beauté* particulière mais l'*idée du beau*.
 
 [[image:platon-mondes|Le monde intelligible et le monde sensible chez Platon|width:70%|source:https://www.scienceshumaines.com/platon-le-philosophe-qui-voulait-etre-roi_fr_32161.html]]
