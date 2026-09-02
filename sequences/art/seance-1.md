@@ -32,7 +32,7 @@ Définir la *beauté* par le *beau* ne m'aide pas, je dois donc chercher la déf
 - Qui cause une vive impression capable de susciter l'admiration en raison de ses *qualités supérieures* dépassant la *norme* ou la moyenne. [Qualités de *forme* : l'impression s'exerce sur les sens de la vue ou de l'ouïe ; l'appréciation est à dominance *esthétique*]
 :::
 
-C'est déjà beaucoup mieux, et ça me parle. Le *beau* suscite « l'admiration en raison de ses *qualités supérieures* ». Je peux donc facilement apprendre à reconnaître la *beauté*, il me suffit simplement d'apprendre quelles sont ces *qualités supérieures*, n'est-ce pas ?
+C'est déjà beaucoup mieux. Le *beau* suscite « l'admiration en raison de ses *qualités supérieures* ». Je peux donc facilement apprendre à reconnaître la *beauté*, il me suffit simplement d'apprendre quelles sont ces *qualités supérieures*, n'est-ce pas ?
 
 [[divider:fantasy-1|width:30%]]
 
@@ -69,7 +69,7 @@ Traduction : C'est beau quand on ressent un plaisir immédiat et indispensable, 
 
 Avec cette définition de la beauté, on a une synthèse d'un *jugement de goût subjectif* comme on a pu le voir avec Hume, et en même temps cette beauté relève de quelque chose de plus grand que nous dans la mesure où son expérience est *universelle*.
 
-Cette synthèse est rendue possible grâce à l'imagination. C'est elle qui fait le pont entre les particularités de l'expérience sensible propre à chacun et l'expérience intellectuelle du concept. L'imagination prolonge l'intuition pour former un/des concept(s).
+Cette synthèse est rendue possible grâce à l'imagination. C'est elle qui fait le pont entre les particularités de l'expérience sensible propre à chacun et une reconnaissance universelle de la beauté. Dans le sens où nous faisons comme si nous étions tous d'accord. Mais cet accord universel est une fiction (on fait *comme-si*).
 
 [[divider:fantasy-1|width:30%]]
 
