@@ -5,8 +5,9 @@
   "titre": "Le sentiment du beau"
 }
 </script>
-
-« des goûts et des couleurs, on ne discute pas »
+:::epigraphe
+« *des goûts et des couleurs, on ne discute pas* »
+:::
 
 Je me trouve face à un tableau. Je le scrute de tous les côtés, et autour de moi, j'entends des "C'est *beau* !" et des "Ouah !". Perplexe, je le parcours de long en large, je m'éloigne, je me rapproche... mais non, rien n'y fait, je n'y vois qu'une vieille croûte.
 
@@ -20,12 +21,16 @@ Je commence mes recherches par le plus simple : la définition de la *beauté*.
 
 Dans mon dictionnaire (CNRTL) je trouve deux sens qui me parlent particulièrement.
 
+::: citation
 - [La *beauté* comme valeur *universelle*] Caractère de ce qui est *beau*, de ce qui plaît *universellement*.
 - [La *beauté* comme valeur *esthétique*] Caractère de ce qui est physiquement *beau*, manifestation typique du *beau*.
+:::
 
 Définir la *beauté* par le *beau* ne m'aide pas, je dois donc chercher la définition du *beau*.
 
+::: citation
 - Qui cause une vive impression capable de susciter l'admiration en raison de ses *qualités supérieures* dépassant la *norme* ou la moyenne. [Qualités de *forme* : l'impression s'exerce sur les sens de la vue ou de l'ouïe ; l'appréciation est à dominance *esthétique*]
+:::
 
 C'est déjà beaucoup mieux, et ça me parle. Le *beau* suscite « l'admiration en raison de ses *qualités supérieures* ». Je peux donc facilement apprendre à reconnaître la *beauté*, il me suffit simplement d'apprendre quelles sont ces *qualités supérieures*, n'est-ce pas ?
 
@@ -70,6 +75,20 @@ Cette synthèse est rendue possible grâce à l'imagination. C'est elle qui fait
 
 [[corpus:tanizaki-ombre]]
 
-**Petit exercice.**
-
+::: exercice Exercice d’analyse
 Décrivez la vision de la beauté défendu dans ce texte.
+:::
+
+[[divider:fantasy-1|width:30%]]
+
+::: definition
+**Objectif** : du latin *Objectum*, ce qui est placé/jeté devant. Il se rapporte à la réalité de l’objet en lui-même.
+
+**Subjectif** : du latin *Subjectivus*, ce qui appartient au sujet, se rapporte au sujet.
+
+**Intersubjectif** : Qualifie ce qui se rapporte à la relation entre des sujets.
+
+**Nécessaire** : Ce qui ne peut pas ne pas être.
+
+**Universel** : du latin *Universalis*, ce qui est tourné vers l’un. Ce qui est valable pour tous le monde.
+:::

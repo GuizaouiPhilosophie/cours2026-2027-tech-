@@ -306,6 +306,70 @@ main.container {
 
 .corpus-toggle:hover { text-decoration: underline; }
 
+/* ---------- Blocs génériques ::: type (exercice, definition...) ---------- */
+
+.bloc {
+  margin: 2.5rem 0;
+  padding: 1.5rem 1.75rem;
+  border-radius: 12px;
+  font-family: var(--serif);
+}
+
+.bloc-titre {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 0.75rem;
+}
+
+.bloc-content p:last-child {
+  margin-bottom: 0;
+}
+
+.bloc-exercice {
+  background: var(--bg-card);
+  border: 1px solid var(--accent);
+  border-left: 4px solid red;
+}
+
+.bloc-exercice .bloc-titre {
+  color: var(--accent-dark);
+}
+
+.bloc-definition {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-left: 4px solid rgba(218, 39, 218, 0.699);
+}
+
+.bloc-definition .bloc-titre {
+  color: var(--text-muted);
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* ---------- Épigraphe : citation en tête de séance, alignée à droite ---------- */
+
+.bloc-epigraphe {
+  background: transparent;
+  border: none;
+  padding: 0 1.5rem;
+  text-align: right;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+/* ---------- Citation : extrait cité dans le corps du texte ---------- */
+
+.bloc-citation {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
 /* ---------- Séparateur (divider) ---------- */
 
 .corpus-divider {
