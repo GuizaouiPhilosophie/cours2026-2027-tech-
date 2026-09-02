@@ -1,6 +1,7 @@
 import Cours from "./Cours";
 import CorpusRef from "./CorpusRef";
 import CorpusImage from "./CorpusImage";
+import CorpusDivider from "./CorpusDivider";
 import { renderMarkdown } from "../../lib/markdown";
 import { getCorpusText, getBibEntry } from "../../lib/loadCorpusTexts";
 import { formatCitation } from "../../lib/bib";
@@ -29,7 +30,7 @@ import { formatCitation } from "../../lib/bib";
  * Les [[corpus:id]] sont en plus ajoutés à la bibliographie en bas de la
  * séance ; les [[image:id]] n'y apparaissent pas.
  */
-const TOKEN_RE = /\[\[(corpus|image):([a-z0-9_-]+)((?:\|[^\]|]+)*)\]\]/gi;
+const TOKEN_RE = /\[\[(corpus|image|divider):([a-z0-9_-]+)((?:\|[^\]|]+)*)\]\]/gi;
 
 /**
  * "|Une légende|width:50%" -> { caption: "Une légende", params: { width: "50%" } }
@@ -111,6 +112,15 @@ export default function SeanceMarkdown({ title, markdown }) {
               width={part.params.width}
               source={part.params.source}
               align={part.params.align}
+            />
+          );
+        }
+        if (part.type === "divider") {
+          return (
+            <CorpusDivider
+              key={`divider-${part.id}-${i}`}
+              id={part.id}
+              width={part.params.width}
             />
           );
         }

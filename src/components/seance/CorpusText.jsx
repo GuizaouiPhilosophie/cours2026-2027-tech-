@@ -59,7 +59,7 @@ export default function CorpusText({ meta = {}, children, defaultOpen = false })
       </figcaption>
 
       <div className="corpus-main">
-        <div className="corpus-body-wrap">
+        <div className={`corpus-body-wrap ${open ? "is-open" : "is-closed"}`}>
           <div id={bodyId} className={`corpus-body ${open ? "is-open" : "is-closed"}`}>
             {children}
           </div>
@@ -73,7 +73,7 @@ export default function CorpusText({ meta = {}, children, defaultOpen = false })
           aria-controls={bodyId}
           onClick={() => setOpen((o) => !o)}
         >
-          {open ? "Réduire ↑" : "Déplier le texte ↓"}
+          {open ? "↑" : "↓"}
         </button>
       </div>
     </figure>

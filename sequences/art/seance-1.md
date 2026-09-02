@@ -29,6 +29,8 @@ Définir la *beauté* par le *beau* ne m'aide pas, je dois donc chercher la déf
 
 C'est déjà beaucoup mieux, et ça me parle. Le *beau* suscite « l'admiration en raison de ses *qualités supérieures* ». Je peux donc facilement apprendre à reconnaître la *beauté*, il me suffit simplement d'apprendre quelles sont ces *qualités supérieures*, n'est-ce pas ?
 
+[[divider:fantasy-1|width:30%]]
+
 [[corpus:platon-republique-476a-476d]]
 
 Chez Platon on distingue le *monde intelligible* et le *monde sensible*. Le premier est peuplé de choses éternelles et parfaites comme les *idées* et les dieux. Le second, c'est notre monde ; on y trouve des *copies* appauvries de ce qui habite le monde des idées. Le *monde intelligible* est invisible, mais en observant avec attention les copies terrestres on peut remonter à certaines *idées*. L'*idée du beau* en fait partie. Dans le texte précédent, Platon explique qu'en observant de belles choses on peut apprendre à reconnaître l'existence de la *beauté*, non pas une *beauté* particulière mais l'*idée du beau*.
@@ -37,9 +39,13 @@ Chez Platon on distingue le *monde intelligible* et le *monde sensible*. Le prem
 
 Le *beau* chez Platon se reconnaît par l'exercice et est *universel*.
 
+[[divider:fantasy-1|width:30%]]
+
 [[corpus:hume-gout]]
 
 Avec Hume, la beauté est multiple, elle n'est plus objective. Avec ce texte seul, on pourrait penser que sa philosophie s'apparente à du relativisme, c'est-à-dire que seule compte la *subjectivité* des goûts de chacun. Pourtant, cela n'est pas tout à fait vrai. Vous pouvez remarquer que le livre s'appelle *Essai sur la **règle** du goût*. Pour Hume, il existe des régularités dans les jugements de goût. Nous partageons des cultures, des sens en commun, et il est donc probable qu'un certain nombre d'individus trouvent belles les mêmes choses. Plutôt que de *subjectivité*, on parlera d'*intersubjectivité*.
+
+[[divider:fantasy-1|width:30%]]
 
 [[corpus:kant-beau]]
 
@@ -60,8 +66,10 @@ Avec cette définition de la beauté, on a une synthèse d'un *jugement de goût
 
 Cette synthèse est rendue possible grâce à l'imagination. C'est elle qui fait le pont entre les particularités de l'expérience sensible propre à chacun et l'expérience intellectuelle du concept. L'imagination prolonge l'intuition pour former un/des concept(s).
 
+[[divider:fantasy-1|width:30%]]
+
 [[corpus:tanizaki-ombre]]
 
-Petit exercice.
+**Petit exercice.**
 
 Décrivez la vision de la beauté défendu dans ce texte.

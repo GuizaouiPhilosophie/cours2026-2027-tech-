@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <>
       <header className="site-header">
-        <p className="eyebrow">Learning Portal</p>
+        <p className="eyebrow">Ensemble Montplaisir 2026-2027</p>
         <h1 className="site-title">Philosophie</h1>
         <p className="tagline">Programme des séquences et séances du cours</p>
       </header>

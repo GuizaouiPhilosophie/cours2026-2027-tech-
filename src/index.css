@@ -1,11 +1,12 @@
 :root {
-  --bg: #f7ede3;
-  --bg-card: #fffaf5;
-  --accent: #c1694c;
-  --accent-dark: #a3543a;
-  --text: #2b211c;
-  --text-muted: #8a7a6c;
-  --border: #e6d5c6;
+  --bg: #f7f1ea;
+  --bg-card: #fffdfb;
+  --accent: #997E67;
+  --accent-dark: #664930;
+  --accent-dark-hover: #66493087;
+  --text: #3a2a1d;
+  --text-muted: #8a7566;
+  --border: #e3d7ca;
   --serif: "Georgia", "Iowan Old Style", "Palatino Linotype", serif;
   --sans: "Helvetica Neue", Arial, sans-serif;
 }
@@ -164,6 +165,8 @@ main.container {
 }
 
 .cours-title {
+  display: flex;
+  justify-content: center;
   font-size: 2rem;
   margin: 0 0 2rem;
 }
@@ -223,15 +226,23 @@ main.container {
 .corpus-meta-source:hover { text-decoration: underline; }
 
 .corpus-main {
+  display: flex;
+  flex-direction: column;
   grid-column: 2;
+  align-items: center;
+
 }
 
 .corpus-body-wrap {
   position: relative;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 15px 15px 0 0;
   padding: 1.25rem 1.5rem;
+}
+
+.corpus-body-wrap.is-open {
+  border-radius: 15px;
 }
 
 .corpus-body {
@@ -244,7 +255,7 @@ main.container {
 
 /* Replié : ~2 lignes visibles, la 3e est coupée par le dégradé de flou ci-dessous */
 .corpus-body.is-closed {
-  max-height: 3.7em;
+  max-height: 5em;
   overflow: hidden;
 }
 
@@ -257,31 +268,56 @@ main.container {
    dégradé qui fait apparaître le flou de plus en plus fort vers le bas. */
 .corpus-fade {
   position: absolute;
-  left: 1px;
-  right: 1px;
-  bottom: 1px;
-  height: 1.9em;
-  border-radius: 0 0 10px 10px;
-  backdrop-filter: blur(3px);
+  left: 1.5rem;
+  right: 1.5rem;
+  bottom: 0rem;
+  height: 3.5em;
+  background: linear-gradient(to bottom, transparent, var(--bg-card) 60%);
+  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(3px);
-  -webkit-mask-image: linear-gradient(to bottom, transparent, black 75%);
-  mask-image: linear-gradient(to bottom, transparent, black 75%);
-  pointer-events: none;
+  mask-image: linear-gradient(to bottom, transparent, rgb(68, 66, 66) 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 60%);  pointer-events: none;
 }
 
 .corpus-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-top: 0.6rem;
   background: none;
+  border-radius: 50%;
   border: none;
+  width: 2.5rem;
+  height: 2.5rem;
   padding: 0;
   color: var(--accent);
   font-family: var(--sans);
-  font-size: 0.85rem;
+  font-size: 1.5rem;
   font-weight: 600;
   cursor: pointer;
+  box-shadow: 8px 8px 16px #c9c5be, -8px -8px 16px #ffffff;
+  transition: box-shadow 0.4s ease, background 0.4s ease;
 }
 
-.corpus-toggle:hover { color: var(--accent-dark); text-decoration: underline; }
+.corpus-toggle[aria-expanded="true"] {
+  background: linear-gradient(145deg, #ded9d3, #fffffa);
+  box-shadow: inset 6px 6px 12px #c9c5be, inset -6px -6px 12px #ffffff;
+}
+
+.corpus-toggle:hover { text-decoration: underline; }
+
+/* ---------- Séparateur (divider) ---------- */
+
+.corpus-divider {
+  display: flex;
+  justify-content: center;
+  margin: 3rem 0;
+}
+
+.corpus-divider img {
+  width: var(--divider-width, 180px);
+  height: auto;
+}
 
 /* ---------- Image de corpus ---------- */
 
@@ -294,7 +330,7 @@ main.container {
   width: var(--corpus-image-width, 100%);
   max-width: 100%;
   height: auto;
-  border-radius: 10px;
+  border-radius: 0px;
   border: 1px solid var(--border);
   background: var(--bg-card);
 }
@@ -330,6 +366,7 @@ main.container {
    (une grille comme .corpus-text n'"enroule" pas autour d'un float, elle
    se contenterait de rétrécir bizarrement sans ce clear). */
 .corpus-text,
+.corpus-divider,
 .bibliographie,
 .markdown-block h2,
 .markdown-block h3 {
