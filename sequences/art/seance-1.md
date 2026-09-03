@@ -90,5 +90,5 @@ Décrivez la vision de la beauté défendue dans ce texte.
 
 **Nécessaire** : Ce qui ne peut pas ne pas être.
 
-**Universel** : du latin *Universalis*, ce qui est tourné vers l’un. Ce qui est valable pour tous le monde.
+**Universel** : du latin *Universalis*, ce qui est tourné vers l’un. Ce qui est valable pour tout le monde.
 :::
