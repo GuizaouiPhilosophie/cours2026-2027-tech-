@@ -76,7 +76,7 @@ Cette synthèse est rendue possible grâce à l'imagination. C'est elle qui fait
 [[corpus:tanizaki-ombre]]
 
 ::: exercice Exercice d’analyse
-Décrivez la vision de la beauté défendu dans ce texte.
+Décrivez la vision de la beauté défendue dans ce texte.
 :::
 
 [[divider:fantasy-1|width:30%]]
