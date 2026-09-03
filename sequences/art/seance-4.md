@@ -2,7 +2,7 @@
 {
   "id": "seance-4",
   "numero": 4,
-  "titre": "La technique influence t’elle l’art"
+  "titre": "La technique influence t-elle l’art"
 }
 </script>
 
