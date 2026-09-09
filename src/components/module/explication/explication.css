@@ -186,6 +186,8 @@
 
 .explication-canvas p {
   margin: 0 0 1.2rem;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .explication-canvas p:last-child {

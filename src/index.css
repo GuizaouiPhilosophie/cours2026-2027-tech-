@@ -276,6 +276,8 @@ main.container {
   border: 1px solid var(--border);
   border-radius: 15px 15px 0 0;
   padding: 1.25rem 1.5rem;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .corpus-body-wrap.is-open {
