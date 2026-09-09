@@ -18,7 +18,7 @@ import { Link } from "react-router-dom";
  * `id` (nouveau) : identifiant du texte dans corpus/textes/<id>.html.
  * Sert à afficher un bouton "Éditer" juste au-dessus du texte, qui ouvre
  * le texte dans l'éditeur d'annotation du module d'explication
- * (/#/explication/<id>), dans un nouvel onglet. Si `id` n'est pas fourni,
+ * (/#/explication/<id>), dans le même onglet. Si `id` n'est pas fourni,
  * le bouton n'est simplement pas affiché.
  */
 export default function CorpusText({ id, meta = {}, children, defaultOpen = false }) {
@@ -87,8 +87,6 @@ export default function CorpusText({ id, meta = {}, children, defaultOpen = fals
           <Link
             className="corpus-edit-btn"
             to={`/explication/${id}`}
-            target="_blank"
-            rel="noreferrer"
             title="Éditer ce texte (annotations)"
           >
             ✎
