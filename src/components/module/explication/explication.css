@@ -1,0 +1,445 @@
+/* ---------- Éditeur du module d'explication (page à part) ---------- */
+
+.explication-editor {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg, #f7f1ea);
+  font-family: var(--sans, "Helvetica Neue", Arial, sans-serif);
+}
+
+.explication-editor--error {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* Barre d'outils verticale */
+
+.explication-toolbar {
+  flex-shrink: 0;
+  width: 92px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem 0.5rem;
+  background: var(--bg-card, #fffdfb);
+  border-right: 1px solid var(--border, #e3d7ca);
+  overflow-y: auto;
+}
+
+.explication-toolbar-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.explication-toolbar-empty {
+  font-size: 0.7rem;
+  color: var(--text-muted, #8a7566);
+  text-align: center;
+  font-style: italic;
+  margin: 0.5rem 0.25rem;
+}
+
+.explication-tool-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.6rem 0.25rem;
+  border: 1px solid var(--border, #e3d7ca);
+  border-radius: 10px;
+  background: var(--bg, #f7f1ea);
+  cursor: pointer;
+  color: var(--text, #3a2a1d);
+}
+
+.explication-tool-btn:hover {
+  background: rgba(153, 126, 103, 0.12);
+}
+
+.explication-tool-btn.is-active {
+  background: var(--accent-dark, #664930);
+  border-color: var(--accent-dark, #664930);
+  color: #fff;
+}
+
+.explication-tool-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.explication-tool-label {
+  font-size: 0.65rem;
+  text-align: center;
+  line-height: 1.15;
+}
+
+/* Corbeille, sous la barre d'outils */
+
+.explication-trash {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+  height: 56px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.3rem;
+  color: var(--text-muted, #8a7566);
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+/* Survol pendant un grab (voir startGrab dans lib/grab.js) : l'objet
+   transporté est au-dessus de la poubelle, le lâcher le supprimera. */
+.explication-trash.is-drag-over {
+  border: none;
+  background: none;
+  color: #c1694c;
+}
+
+/* Colonne de droite : canvas + menu du bas empilés, tous deux dans le
+   flux normal. C'est elle qui prend toute la largeur restante à côté
+   de la toolbar (le rôle que jouait .explication-canvas-wrap seul
+   avant l'ajout du menu du bas). */
+.explication-content-col {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Zone de texte */
+
+.explication-canvas-wrap {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  /* --mouvement-gutter est posé dynamiquement par mouvement.jsx (via
+     OverlayLayer) sur CET élément : il vaut la largeur nécessaire pour
+     accueillir le trait le plus excentré (lane la plus éloignée), 0px
+     s'il n'y a aucun mouvement affiché. Sans cette réserve, les traits
+     (positionnés en `left` négatif par rapport au canvas) débordaient
+     dans la marge de centrage du canvas — un espace non garanti, qui
+     disparaissait dès que l'écran devenait trop étroit ou qu'il y avait
+     plusieurs mouvements imbriqués (plusieurs lanes). */
+  padding: 2.5rem 3rem 5rem calc(3rem + var(--mouvement-gutter, 0px));
+  overflow-y: auto;
+  /* auto plutôt que hidden : si le gutter ci-dessus n'a pas encore été
+     posé (tout premier rendu) ou s'avère insuffisant, le texte reste
+     scrollable horizontalement au lieu que les traits soient purement
+     invisibles, rognés sans recours par un overflow caché. */
+  overflow-x: auto;
+}
+
+.explication-canvas-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 720px;
+  margin: 0 auto 2rem;
+}
+
+.explication-canvas-header h1 {
+  font-family: var(--serif, Georgia, serif);
+  font-size: 1.3rem;
+  margin: 0;
+  color: var(--text, #3a2a1d);
+}
+
+.explication-export-btn {
+  flex-shrink: 0;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--accent-dark, #664930);
+  border-radius: 999px;
+  background: var(--accent-dark, #664930);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.explication-export-btn:hover {
+  background: var(--accent, #997e67);
+  border-color: var(--accent, #997e67);
+}
+
+.explication-canvas {
+  position: relative;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 2.5rem;
+  background: var(--bg-card, #fffdfb);
+  border: 1px solid var(--border, #e3d7ca);
+  border-radius: 12px;
+  font-family: var(--serif, Georgia, serif);
+  line-height: 1.85;
+  color: var(--text, #3a2a1d);
+}
+
+.explication-canvas p {
+  margin: 0 0 1.2rem;
+}
+
+.explication-canvas p:last-child {
+  margin-bottom: 0;
+}
+
+/* Modal d'export */
+
+.explication-export-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(58, 42, 29, 0.45);
+  z-index: 50;
+}
+
+.explication-export-modal-body {
+  width: min(720px, 90vw);
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card, #fffdfb);
+  border-radius: 12px;
+  padding: 1.5rem;
+  gap: 1rem;
+}
+
+.explication-export-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.explication-export-modal-header h2 {
+  margin: 0;
+  font-family: var(--serif, Georgia, serif);
+  font-size: 1.1rem;
+}
+
+.explication-export-modal-header button {
+  border: 1px solid var(--border, #e3d7ca);
+  background: none;
+  border-radius: 8px;
+  padding: 0.35rem 0.8rem;
+  cursor: pointer;
+}
+
+.explication-export-modal-body textarea {
+  flex: 1;
+  min-height: 320px;
+  font-family: monospace;
+  font-size: 0.8rem;
+  padding: 0.75rem;
+  border: 1px solid var(--border, #e3d7ca);
+  border-radius: 8px;
+  resize: vertical;
+}
+
+.explication-canvas-stage {
+  position: relative;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.explication-drop-preview {
+  position: absolute;
+  width: 2px;
+  background: #c1694c;
+  pointer-events: none;
+  animation: explication-caret-blink 0.8s ease-in-out infinite;
+}
+
+/* Variante pour les outils dont le point de dépôt est un mot entier
+   (stratégie snapOnWord dans lib/grab.js, ex. futur outil Concept) :
+   un surlignage plutôt qu'un trait clignotant. */
+.explication-drop-preview--word {
+  width: auto;
+  background: rgba(193, 105, 76, 0.22);
+  border-radius: 4px;
+  animation: none;
+  opacity: 1;
+}
+
+@keyframes explication-caret-blink {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* ---------- Menu du bas (info par outil, ex. Mouvement) ---------- */
+
+/* Le menu du bas est un enfant normal de .explication-content-col
+   (colonne flex avec .explication-canvas-wrap juste au-dessus) : sa
+   hauteur réelle (déterminée par son contenu, plafonnée à 45vh) pousse
+   donc naturellement le canvas au lieu de réserver un espace deviné
+   par-dessus lequel il flotterait en position fixe. */
+.explication-panel-bar {
+  flex-shrink: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  max-height: 45vh;
+  background: var(--bg, #f7f1ea);
+}
+
+.explication-panel-tags {
+  display: flex;
+  align-items: center;
+  margin: 0 10px 0 10px;
+  gap: 0.5rem;
+  padding: 0rem;
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+
+.explication-panel-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--border, #e3d7ca);
+  border-radius: 10px 10px 0 0;
+  background: var(--bg, #f7f1ea00);
+  color: var(--text, #3a2a1d);
+  font-size: 0.8rem;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.explication-panel-tag:hover {
+  background: var(--accent-dark, #664930);
+  color: #fff;
+}
+
+.explication-panel-tag.is-active {
+  background: var(--accent-dark, #664930);
+  border-color: var(--accent-dark, #664930);
+  color: #fff;
+}
+
+.explication-panel-tag-count {
+  font-size: 0.7rem;
+  opacity: 0.75;
+}
+
+.explication-panel-close {
+  margin-left: auto;
+  flex-shrink: 0;
+  border: none;
+  background: rgb(221, 204, 204);
+  border-radius: 50px 50px 0 0;
+  padding: 0.35rem 0.7rem;
+  cursor: pointer;
+  color: red;
+}
+
+.explication-panel-body {
+  border-top: none;
+  background: var(--bg-card, #fffdfb);
+  padding: 0.75rem 1rem 1.25rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.explication-panel-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.explication-panel-empty {
+  font-size: 0.85rem;
+  color: var(--text-muted, #8a7566);
+  font-style: italic;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+@media (max-width: 700px) {
+  .explication-panel-bar {
+    max-height: 55vh;
+  }
+}
+
+/* ---------- Mobile : toolbar horizontale en haut, figée ---------- */
+
+@media (max-width: 700px) {
+  .explication-editor {
+    flex-direction: column;
+  }
+
+  .explication-toolbar {
+    width: 100%;
+    height: auto;
+    max-height: 30vh;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-right: none;
+    border-bottom: 1px solid var(--border, #e3d7ca);
+  }
+
+  .explication-toolbar-tools {
+    flex-direction: row;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .explication-trash {
+    margin-top: 0;
+    flex-shrink: 0;
+    width: fit-content;
+    background: none;
+    /* Elle reste après les outils dans le DOM (même structure qu'en
+       desktop, où `justify-content: space-between` la pousse "en bas"
+       de la colonne) ; sur cette toolbar devenue une ligne, `order: -1`
+       la fait juste apparaître visuellement en premier (tout à gauche),
+       sans rien changer à l'ordre réel des éléments. */
+    order: -1;
+    font-size: xx-large;
+  }
+
+  .explication-canvas-wrap {
+    width: 100%;
+    height: auto;
+    flex: 1;
+    min-height: 0;
+    padding: 1.5rem 1rem 3rem calc(1rem + var(--mouvement-gutter, 0px));
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .explication-canvas-header {
+    margin-bottom: 1.25rem;
+  }
+
+  .explication-canvas-header h1 {
+    font-size: 1.05rem;
+  }
+
+  .explication-export-btn {
+    padding: 0.45rem 0.85rem;
+    font-size: 0.78rem;
+  }
+
+  .explication-canvas {
+    padding: 1rem 1rem;
+    font-size: var(--mobile-text-size, 0.92rem);
+    line-height: var(--mobile-text-line-height, 1.65);
+  }
+}

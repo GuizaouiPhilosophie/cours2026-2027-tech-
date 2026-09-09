@@ -17,7 +17,7 @@ export default function CorpusRef({ id, defaultOpen }) {
   }
 
   return (
-    <CorpusText meta={text.meta} defaultOpen={defaultOpen}>
+    <CorpusText id={id} meta={text.meta} defaultOpen={defaultOpen}>
       <div dangerouslySetInnerHTML={{ __html: text.html }} />
     </CorpusText>
   );

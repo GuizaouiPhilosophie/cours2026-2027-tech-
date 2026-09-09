@@ -9,6 +9,12 @@
   --border: #e3d7ca;
   --serif: "Georgia", "Iowan Old Style", "Palatino Linotype", serif;
   --sans: "Helvetica Neue", Arial, sans-serif;
+
+  /* Taille/interligne du texte long (cours, corpus, canvas d'annotation)
+     sur petit écran — variables partagées pour éviter de répéter les
+     mêmes valeurs dans index.css et explication.css. */
+  --mobile-text-size: 0.92rem;
+  --mobile-text-line-height: 1.65;
 }
 
 * { box-sizing: border-box; }
@@ -178,12 +184,18 @@ main.container {
 /* ---------- Extrait de corpus, avec marge de métadonnées ---------- */
 
 .corpus-text {
-  display: grid;
-  grid-template-columns: 160px 1fr;
+  display: flex;
+  flex-direction: row;
   column-gap: 2rem;
   align-items: start;
   margin: 2.5rem 0;
   padding: 0;
+}
+
+@media (max-width: 640px) {
+  .corpus-text{
+    flex-direction: column;
+  }
 }
 
 /* Marge à gauche : métadonnées du texte (auteur, œuvre, date, source...) */
@@ -192,6 +204,7 @@ main.container {
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
+  min-width: 6rem;
   font-family: var(--sans);
   font-size: 0.78rem;
   color: var(--text-muted);
@@ -230,7 +243,31 @@ main.container {
   flex-direction: column;
   grid-column: 2;
   align-items: center;
+}
 
+.corpus-main-edit {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Bouton d'édition (module d'explication), presque collé au texte */
+.corpus-edit-btn {
+  align-self: flex-start;
+  margin-bottom: 0.35rem;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent-dark);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  background: var(--bg-card);
+}
+
+.corpus-edit-btn:hover {
+  background: var(--bg);
+  text-decoration: underline;
 }
 
 .corpus-body-wrap {
@@ -523,4 +560,37 @@ main.container {
     border-left: 2px solid var(--border);
   }
 
+}
+
+/* Petit écran : texte du cours et des extraits de corpus plus compact,
+   même logique que le canvas de l'éditeur d'explication. */
+@media (max-width: 640px) {
+  .seance-content {
+    padding: 2rem 1.25rem 3.5rem;
+  }
+
+  .cours-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .cours-body,
+  .markdown-block {
+    font-size: var(--mobile-text-size);
+    line-height: var(--mobile-text-line-height);
+  }
+
+  .corpus-body {
+    font-size: var(--mobile-text-size);
+    line-height: var(--mobile-text-line-height);
+  }
+
+  .corpus-body-wrap {
+    padding: 1rem 1.1rem;
+  }
+
+  .bloc {
+    padding: 1.15rem 1.25rem;
+    font-size: var(--mobile-text-size);
+  }
 }

@@ -1,0 +1,122 @@
+/* ---------- CSS propre à l'outil Exemple ---------- */
+
+.explication-exemple {
+  padding: 0 2px;
+  background: rgba(58, 125, 104, 0.06);
+  cursor: pointer;
+}
+
+/* Le contour (pointillé) n'est plus une bordure par-segment : voir
+   .explication-exemple-outline plus bas — un seul tracé en escalier par
+   groupe, qui court sur tous les segments d'un exemple multi-lignes. */
+.explication-exemple-ghost {
+  display: inline-block;
+  font-size: 1.1rem;
+  color: #3a7d68;
+}
+
+/* aperçu (pointillé vert translucide) : premier dépôt depuis la barre
+   (PreviewMarker) — un seul mot, donc un seul rect, pas besoin d'un
+   tracé en escalier ici (voir .explication-exemple-outline pour ça). */
+.explication-exemple-preview {
+  position: absolute;
+  top: var(--top);
+  left: var(--left);
+  width: var(--width);
+  height: var(--height);
+  border: 2px dashed rgba(58, 125, 104, 0.55);
+  border-radius: 4px;
+  background: rgba(58, 125, 104, 0.12);
+  pointer-events: none;
+}
+
+/* contour unifié d'un groupe Exemple : un seul <path> en escalier,
+   calculé en JS à partir des rects de tous les segments du groupe (voir
+   renderGroupOutline dans exemple.jsx). Remplace l'ancienne bordure CSS
+   par-segment, qui ne pouvait pas dessiner une forme continue à cheval
+   sur plusieurs lignes/paragraphes. */
+.explication-exemple-outline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 40;
+}
+
+.explication-exemple-outline path {
+  fill: none;
+  stroke: #3a7d68;
+  stroke-width: 2px;
+  stroke-dasharray: 5 4;
+}
+
+/* aperçu du même contour pendant le redimensionnement (poignées) :
+   même tracé, teinte translucide — cohérent avec .explication-exemple-preview
+   ci-dessus, qui joue le même rôle pour le tout premier dépôt. */
+.explication-exemple-outline--preview path {
+  stroke: rgba(58, 125, 104, 0.55);
+}
+
+/* poignées de redimensionnement aux bords gauche/droit, positionnées en
+   absolu dans .explication-canvas-stage (comme les boutons +/- de
+   Concept, voir concept.css) — mais ici saisissables, pas cliquables :
+   on les glisse pour étendre/rétrécir la sélection. */
+.explication-exemple-handle {
+  position: absolute;
+  top: var(--handle-top);
+  left: var(--handle-left);
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 22px;
+  border-radius: 5px;
+  background: #3a7d68;
+  box-shadow: 0 0 0 2px var(--bg-card, #fffdfb);
+  cursor: ew-resize;
+  touch-action: none;
+  z-index: 45;
+}
+
+.explication-exemple-handle:hover {
+  background: #2c6152;
+}
+
+/* ---------- widget de la barre d'outils ---------- */
+
+.explication-exemple-widget {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.explication-exemple-widget-label {
+  font-size: 10.5px;
+  color: #8a7566;
+  text-align: center;
+}
+
+.explication-exemple-chip {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e3d7ca;
+  border-radius: 8px;
+  background: #f7f1ea;
+  font-size: 16px;
+  color: #3a7d68;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+/* ---------- petite variation de la card du panneau du bas ---------- */
+/* Le titre (numéro(s) de ligne, non éditable) est centré, comme pour
+   Concept — voir ../ExplicationCard.css pour le format générique. */
+.explication-card--exemple .explication-card-title {
+  text-align: center;
+}

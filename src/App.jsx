@@ -1,6 +1,7 @@
 import { HashRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import SeancePage from "./pages/SeancePage";
+import ExplicationPage from "./pages/ExplicationPage";
 
 /**
  * HashRouter (plutôt que BrowserRouter) : les URLs prennent la forme
@@ -14,6 +15,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/sequence/:sequenceId/seance/:seanceId" element={<SeancePage />} />
+        <Route path="/explication/:textId" element={<ExplicationPage />} />
       </Routes>
     </HashRouter>
   );

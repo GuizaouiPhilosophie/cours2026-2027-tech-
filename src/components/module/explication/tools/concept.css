@@ -1,0 +1,135 @@
+/* ---------- CSS propre à l'outil Concept ---------- */
+
+.explication-concept {
+  border: 2px solid #c1694c;
+  border-radius: 4px;
+  padding: 0 2px;
+  background: rgba(193, 105, 76, 0.08);
+  cursor: grab;
+  /* Pas de user-select:none ici : ça empêcherait le navigateur d'inclure
+     ce mot dans une sélection normale (copier/coller) qui passerait
+     par-dessus. Le e.preventDefault() au pointerdown (tools/concept.jsx)
+     suffit à empêcher la sélection parasite pendant le grab. */
+  /* Sans ça, sur tactile, le premier mouvement du doigt est intercepté par
+     le geste de défilement du navigateur au lieu de démarrer le grab (voir
+     .explication-concept-chip / .explication-mouvement-marker) — le
+     pointerdown se déclenche mais le pointermove qui suit est ignoré,
+     donc ni le tap ni le drag ne fonctionnent correctement. */
+  touch-action: none;
+  /* Filet de sécurité iOS : empêche le menu contextuel de sélection
+     (copier/définir...) de s'afficher malgré le preventDefault au
+     touchstart, sur certaines versions de Safari. */
+  -webkit-touch-callout: none;
+}
+
+/* pendant la reprise en main d'un concept déjà posé : le mot redevient
+   visuellement du texte normal (contour/fond retirés), la balise <concept>
+   n'est enlevée pour de vrai qu'au moment du dépôt (ou jamais, si annulé) */
+.explication-concept--dragging {
+  border-color: transparent;
+  background: transparent;
+}
+
+.explication-concept-ghost {
+  display: inline-block;
+  font-size: 1.1rem;
+  color: #c1694c;
+}
+
+/* aperçu pendant le drag : pointillé rouge translucide. Position et
+   taille sont les seules choses calculées à l'exécution (mesure du mot
+   visé) : posées en variables CSS --top/--left/--width/--height, à la
+   fois par le PreviewMarker React (survol depuis la barre d'outils) et
+   par showDragPreview en DOM pur (redéplacement d'un concept posé). */
+.explication-concept-preview {
+  position: absolute;
+  top: var(--top);
+  left: var(--left);
+  width: var(--width);
+  height: var(--height);
+  border: 2px dashed rgba(193, 105, 76, 0.55);
+  border-radius: 4px;
+  background: rgba(193, 105, 76, 0.12);
+  pointer-events: none;
+}
+
+/* boutons +/- d'extension, positionnés en absolu dans .explication-canvas-stage.
+   Le centre du bouton tombe pile sur la ligne de bordure gauche/droite du
+   contour (calculé en JS) : translate(-50%, -50%) le centre exactement
+   sur ce point pour les deux côtés, sans décalage différent par côté —
+   le rond "mord" sur le trait au lieu d'être posé à côté. */
+.explication-concept-btn {
+  position: absolute;
+  top: var(--btn-top);
+  left: var(--btn-left);
+  transform: translate(-50%, -50%);
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid #c1694c;
+  border-radius: 50%;
+  background: #fffdfb;
+  color: #c1694c;
+  font-size: 0.8rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 45;
+  /* anneau de la couleur du fond : coupe visuellement le trait du
+     contour à cet endroit, comme si le bouton était incrusté dedans
+     plutôt que simplement superposé par-dessus. */
+  box-shadow: 0 0 0 2px var(--bg-card, #fffdfb);
+}
+
+.explication-concept-btn:hover {
+  background: #c1694c;
+  color: #fff;
+}
+
+/* ---------- widget de la barre d'outils ---------- */
+
+.explication-concept-widget {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.explication-concept-widget-label {
+  font-size: 10.5px;
+  color: #8a7566;
+  text-align: center;
+}
+
+.explication-concept-chip {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e3d7ca;
+  border-radius: 8px;
+  background: #f7f1ea;
+  font-size: 16px;
+  color: #c1694c;
+  cursor: grab;
+  user-select: none;
+  /* Sans ça, sur tactile, le premier mouvement du doigt est intercepté
+     par le geste de défilement du navigateur au lieu de démarrer le grab. */
+  touch-action: none;
+}
+
+/* ---------- petite variation de la card du panneau du bas ---------- */
+/*
+ * Le format général de la card (bordure, poignée, champs...) est
+ * générique (voir ../ExplicationCard.css) ; couleur et largeur sont déjà
+ * passées en props depuis concept.jsx (accentColor, width). Seule reste
+ * ici la nuance propre à Concept : le titre (un seul mot, non éditable)
+ * est centré, alors qu'il est aligné à gauche par défaut pour les autres
+ * outils (ex. Mouvement).
+ */
+.explication-card--concept .explication-card-title {
+  text-align: center;
+}

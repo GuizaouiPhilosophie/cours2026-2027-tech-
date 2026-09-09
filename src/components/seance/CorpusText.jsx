@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 /**
  * Extrait de corpus, intégré au fil du cours (DOM normal, annotable
@@ -13,8 +14,14 @@ import { useEffect, useId, useRef, useState } from "react";
  *
  * Les métadonnées du texte (auteur, œuvre, date, source...) s'affichent
  * dans une marge à gauche, façon note marginale, alignée sur le texte.
+ *
+ * `id` (nouveau) : identifiant du texte dans corpus/textes/<id>.html.
+ * Sert à afficher un bouton "Éditer" juste au-dessus du texte, qui ouvre
+ * le texte dans l'éditeur d'annotation du module d'explication
+ * (/#/explication/<id>), dans un nouvel onglet. Si `id` n'est pas fourni,
+ * le bouton n'est simplement pas affiché.
  */
-export default function CorpusText({ meta = {}, children, defaultOpen = false }) {
+export default function CorpusText({ id, meta = {}, children, defaultOpen = false }) {
   const [open, setOpen] = useState(defaultOpen);
   const bodyId = useId();
   const rootRef = useRef(null);
@@ -57,24 +64,36 @@ export default function CorpusText({ meta = {}, children, defaultOpen = false })
           </span>
         ))}
       </figcaption>
-
-      <div className="corpus-main">
-        <div className={`corpus-body-wrap ${open ? "is-open" : "is-closed"}`}>
-          <div id={bodyId} className={`corpus-body ${open ? "is-open" : "is-closed"}`}>
-            {children}
+      <div className="corpus-main-edit">
+        <div className="corpus-main">
+          <div className={`corpus-body-wrap ${open ? "is-open" : "is-closed"}`}>
+            <div id={bodyId} className={`corpus-body ${open ? "is-open" : "is-closed"}`}>
+              {children}
+            </div>
+            {!open && <div className="corpus-fade" aria-hidden="true" />}
           </div>
-          {!open && <div className="corpus-fade" aria-hidden="true" />}
-        </div>
 
-        <button
-          type="button"
-          className="corpus-toggle"
-          aria-expanded={open}
-          aria-controls={bodyId}
-          onClick={() => setOpen((o) => !o)}
-        >
-          {open ? "↑" : "↓"}
-        </button>
+          <button
+            type="button"
+            className="corpus-toggle"
+            aria-expanded={open}
+            aria-controls={bodyId}
+            onClick={() => setOpen((o) => !o)}
+          >
+            {open ? "↑" : "↓"}
+          </button>
+        </div>
+        {id && (
+          <Link
+            className="corpus-edit-btn"
+            to={`/explication/${id}`}
+            target="_blank"
+            rel="noreferrer"
+            title="Éditer ce texte (annotations)"
+          >
+            ✎
+          </Link>
+        )}
       </div>
     </figure>
   );

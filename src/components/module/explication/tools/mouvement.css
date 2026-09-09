@@ -1,0 +1,119 @@
+/* ---------- CSS propre à l'outil Mouvement ---------- */
+
+/* ---------- widget de la barre d'outils ---------- */
+
+.explication-mouvement-widget {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.explication-mouvement-widget-label {
+  font-size: 10.5px;
+  color: #8a7566;
+  text-align: center;
+}
+
+.explication-mouvement-widget-chips {
+  display: flex;
+  gap: 6px;
+}
+
+.explication-mouvement-chip {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e3d7ca;
+  border-radius: 8px;
+  background: #f7f1ea;
+  font-family: Georgia, serif;
+  font-weight: bold;
+  font-size: 17px;
+  color: #664930;
+  cursor: grab;
+  user-select: none;
+  /* Sans ça, sur tactile, le premier mouvement du doigt est intercepté
+     par le geste de défilement du navigateur au lieu de démarrer le
+     grab — le pointerdown se déclenche bien, mais le pointermove qui
+     suit est ignoré. */
+  touch-action: none;
+}
+
+/* ---------- marqueurs [ et ] posés dans le texte ---------- */
+
+.explication-mouvement-marker {
+  display: inline-block;
+  font-family: Georgia, serif;
+  font-weight: bold;
+  /* Couleur par défaut (crochet seul, pas encore apparié) ; dès qu'une
+     paire est formée, mouvement.jsx pose --marker-color/--marker-bg sur
+     l'élément (voir applyPairColor) et ces valeurs prennent le dessus. */
+  color: var(--marker-color, #664930);
+  background: var(--marker-bg, #f2e9de);
+  border-radius: 3px;
+  padding: 0 2px;
+  margin: 0 1px;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+/* appariement ambigu : surbrillance des crochets candidats en attente d'un clic de confirmation */
+.explication-mouvement-marker--candidate {
+  outline: 2px solid #c1694c;
+  outline-offset: 1px;
+}
+
+/* fantôme qui suit la souris pendant le déplacement d'un crochet déjà posé */
+.explication-mouvement-marker--ghost {
+  box-shadow: 0 2px 8px rgba(58, 42, 29, 0.25);
+}
+
+/* ---------- calque des traits entre marqueurs appariés ---------- */
+
+.explication-mouvement-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Zone cliquable élargie autour du trait (16px), plus confortable que
+   ses 3px visuels. --top/--height/--left sont posés par mouvement.jsx
+   à chaque rendu (mesure du DOM + lane assignée) ; la largeur, elle, est
+   une constante de design et reste ici. */
+.explication-mouvement-line-hit {
+  position: absolute;
+  top: var(--top);
+  height: var(--height);
+  left: var(--left);
+  width: 16px;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* Trait visuel à l'intérieur de la zone cliquable, centré dedans :
+   (16px - 3px) / 2 = 6.5px de décalage. */
+.explication-mouvement-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 6.5px;
+  width: 3px;
+  background: var(--line-color);
+  border-radius: 3px;
+}
+
+/* petits repères ronds aux deux extrémités d'un trait */
+.explication-mouvement-dot {
+  position: absolute;
+  top: var(--top);
+  left: var(--left);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--dot-color);
+  box-shadow: 0 0 0 2px var(--bg-card, #fffdfb);
+}
