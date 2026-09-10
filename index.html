@@ -4,6 +4,33 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cours de Philosophie 2026/2027</title>
+    <script type="text/javascript">
+      // Single Page Apps for GitHub Pages
+      // https://github.com/rafgraph/spa-github-pages
+      //
+      // Contrepartie de public/404.html : décode le chemin réécrit en
+      // query string (?/sequence/...) par ce dernier, et restaure la
+      // vraie URL de chemin via l'History API AVANT que React (et donc
+      // React Router / BrowserRouter dans App.jsx) ne s'initialise.
+      // Sans ce script, l'app démarrerait toujours sur "/" après une
+      // redirection depuis le 404.
+      (function (l) {
+        if (l.search[1] === "/") {
+          var decoded = l.search
+            .slice(1)
+            .split("&")
+            .map(function (s) {
+              return s.replace(/~and~/g, "&");
+            })
+            .join("?");
+          window.history.replaceState(
+            null,
+            null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      })(window.location);
+    </script>
   </head>
   <body>
     <div id="root"></div>

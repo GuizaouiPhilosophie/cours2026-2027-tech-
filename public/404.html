@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirection…</title>
+    <script type="text/javascript">
+      // Single Page Apps for GitHub Pages
+      // https://github.com/rafgraph/spa-github-pages
+      //
+      // GitHub Pages ne sert que des fichiers statiques : une URL comme
+      // /cours2026-2027-tech-/sequence/art/seance/seance-1 n'existe pas en
+      // tant que fichier, donc GitHub Pages sert ce 404.html à la place
+      // (comportement standard des Project Pages). Ce script réécrit
+      // l'URL en query string (?/sequence/...) et redirige vers la racine
+      // du site, où index.html (voir le script correspondant) décode
+      // cette query string pour restaurer le vrai chemin AVANT que React
+      // Router ne s'initialise, de façon transparente pour l'utilisateur.
+      //
+      // pathSegmentsToKeep = nombre de segments d'URL à préserver tels
+      // quels avant de commencer la réécriture : ici 1, pour le segment
+      // "/cours2026-2027-tech-/" (base du Project Page GitHub Pages).
+      var pathSegmentsToKeep = 1;
+
+      var l = window.location;
+      l.replace(
+        l.protocol + "//" + l.hostname + (l.port ? ":" + l.port : "") +
+        l.pathname.split("/").slice(0, 1 + pathSegmentsToKeep).join("/") + "/?/" +
+        l.pathname.slice(1).split("/").slice(pathSegmentsToKeep).join("/").replace(/&/g, "~and~") +
+        (l.search ? "&" + l.search.slice(1).replace(/&/g, "~and~") : "") +
+        l.hash
+      );
+    </script>
+  </head>
+  <body></body>
+</html>
