@@ -168,6 +168,7 @@ main.container {
   font-family: var(--serif);
   color: var(--text);
   line-height: 1.75;
+  text-align: justify;
 }
 
 .cours-title {
@@ -276,7 +277,6 @@ main.container {
   border: 1px solid var(--border);
   border-radius: 15px 15px 0 0;
   padding: 1.25rem 1.5rem;
-  text-align: justify;
   text-justify: inter-word;
 }
 

@@ -10,7 +10,7 @@
 
 J'arrive un peu mieux à comprendre ce qu’est la beauté, il n'y a pas qu'une seule manière de la concevoir. 
 
-Certains pensent que la beauté est quelque chose qui existe bel et bien et qu'il s'agit d'apprendre à la connaître comme on apprend à reconnaître le triangle à partir de ses propriétés (Platon). D’autres pensent au contraire que la beauté n'a rien d'objectif et qu'elle existe dans le regard de celui ou ceux qui observent, elle serait donc subjective ou intersubjective (Hume). Enfin, il y a ceux qui pensent que le sentiment du beau n’est pas *inné* est quelque chose qui se construit, qui est façonné par notre environnement (Tanizaki).
+Certains pensent que la beauté est quelque chose qui existe bel et bien et qu'il s'agit d'apprendre à la connaître comme on apprend à reconnaître le triangle à partir de ses propriétés (Platon). D’autres pensent au contraire que la beauté n'a rien d'objectif et qu'elle existe dans le regard de celui ou ceux qui observent, elle serait donc subjective ou intersubjective (Hume). Enfin, il y a ceux qui pensent que le sentiment du beau n’est pas *inné*, qu’il s’agit d’un sentiment qui se construit, qui est façonné par notre environnement (Tanizaki).
 
 Mais voilà que ça m'apporte un nouveau problème : si je comprends comment ça marche, est-ce que je peux moi-même créer de la beauté ? 
 
