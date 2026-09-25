@@ -2,6 +2,7 @@ import Cours from "./Cours";
 import CorpusRef from "./CorpusRef";
 import CorpusImage from "./CorpusImage";
 import CorpusDivider from "./CorpusDivider";
+import CorpusPdf from "./CorpusPdf";
 import ContentBlock from "./ContentBlock";
 import { renderMarkdown } from "../../lib/markdown";
 import { getCorpusText, getBibEntry } from "../../lib/loadCorpusTexts";
@@ -17,6 +18,9 @@ import { formatCitation } from "../../lib/bib";
  *   [[image:mon-id|align:right|width:35%]]   -> idem à droite, largeur précisée
  *   [[image:mon-id|source:https://...]]      -> ajoute un lien "Source"
  *   [[image:mon-id|Une légende|align:left|width:35%|source:https://...]]  -> tout combiné
+ *   [[pdf:mon-id]]                           -> PDF (CorpusPdf), lecteur intégré
+ *   [[pdf:mon-id|Une légende]]               -> PDF avec légende
+ *   [[pdf:mon-id|height:800px]]              -> PDF avec hauteur de lecteur personnalisée
  *
  * `align` accepte "left", "right" ou "center" (défaut). En "left"/"right"
  * l'image flotte et le texte qui suit s'écrit à côté (utile pour les
@@ -31,7 +35,7 @@ import { formatCitation } from "../../lib/bib";
  * Les [[corpus:id]] sont en plus ajoutés à la bibliographie en bas de la
  * séance ; les [[image:id]] n'y apparaissent pas.
  */
-const TOKEN_RE = /\[\[(corpus|image|divider):([a-z0-9_-]+)((?:\|[^\]|]+)*)\]\]/gi;
+const TOKEN_RE = /\[\[(corpus|image|divider|pdf):([a-z0-9_-]+)((?:\|[^\]|]+)*)\]\]/gi;
 
 /**
  * Blocs génériques ::: type [titre optionnel] ... :::
@@ -170,6 +174,16 @@ function renderParts(parts, keyPrefix = "") {
     }
     if (part.type === "divider") {
       return <CorpusDivider key={key} id={part.id} width={part.params.width} />;
+    }
+    if (part.type === "pdf") {
+      return (
+        <CorpusPdf
+          key={key}
+          id={part.id}
+          caption={part.caption}
+          height={part.params.height}
+        />
+      );
     }
     if (part.type === "block") {
       return (

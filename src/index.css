@@ -596,3 +596,14 @@ main.container {
     font-size: var(--mobile-text-size);
   }
 }
+
+.corpus-pdf {
+  --corpus-pdf-height: 600px;
+  margin: 2rem 0;
+}
+.corpus-pdf-frame {
+  display: block;
+  width: 100%;
+  height: var(--corpus-pdf-height);
+  border: 1px solid #ddd;
+}

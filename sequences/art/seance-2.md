@@ -38,9 +38,9 @@ Pour être libre, il faudrait donc jouer, dans le sens où je joue par choix (si
 
 Ici, Kant définit le génie selon trois critères :
 
-- L'originalité : le génie est capable de créer quelque chose d'incomparable, ce qui implique qu'il n'a pas pu apprendre à le faire et qu'il ne suit pas de règles connues.
-- L'exemplarité : le génie est capable d'être un modèle pour d'autres créateurs et est susceptible d'être imité et de faire école.
-- L'inspiration : le génie ne sait pas lui-même d'où lui viennent les règles qu'il utilise, c'est comme si c'était la nature qui lui dictait ses actes. Ce qui caractérise l'artiste génial n'est donc pas l'apanage de l'artisan. C'est en cela que l'on parle d'inspiration pour l'artiste. On retrouve par ailleurs ici quelque chose qui se rapproche des Muses antiques.
+- **L'originalité** : le génie est capable de créer quelque chose d'incomparable, ce qui implique qu'il n'a pas pu apprendre à le faire et qu'il ne suit pas de règles connues.
+- **L'exemplarité** : le génie est capable d'être un modèle pour d'autres créateurs et est susceptible d'être imité et de faire école.
+- **L'inspiration** : le génie ne sait pas lui-même d'où lui viennent les règles qu'il utilise, c'est comme si c'était la nature qui lui dictait ses actes. Ce qui caractérise l'artiste génial n'est donc pas l'apanage de l'artisan. C'est en cela que l'on parle d'inspiration pour l'artiste. On retrouve par ailleurs ici quelque chose qui se rapproche des Muses antiques.
 
 [[divider:fantasy-1|width:30%]]
 
