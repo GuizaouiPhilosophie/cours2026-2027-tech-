@@ -2,7 +2,7 @@
 {
   "id": "seance-2",
   "numero": 2,
-  "titre": "L’art et le génie chez Kant"
+  "titre": "L’art et le génie chez Kant 2"
 }
 </script>
 
