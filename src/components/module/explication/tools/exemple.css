@@ -4,6 +4,24 @@
   padding: 0 2px;
   background: rgba(58, 125, 104, 0.06);
   cursor: pointer;
+
+  /* PAS de touch-action: none : voir le même commentaire dans
+     concept.css — la décision scroll-vs-saisie se fait en JS, à l'appui
+     tenu (wireBodyGrab dans lib/groupOverlay.js), pas en CSS. */
+
+  /* Filet contre le menu contextuel de sélection iOS (copier/définir...)
+     au cas où un appui reste immobile assez longtemps pour déclencher le
+     comportement natif avant que wireBodyGrab n'arme sa propre capture. */
+  -webkit-touch-callout: none;
+}
+
+/* pendant la re-saisie du corps entier : le passage redevient
+   visuellement du texte normal (fond retiré, contour masqué via
+   clearGroupOutline), les balises <exemple> ne sont enlevées pour de
+   vrai qu'au moment du dépôt (ou jamais, si annulé) — même logique que
+   Concept, voir concept.css. */
+.explication-exemple--dragging {
+  background: transparent;
 }
 
 /* Le contour (pointillé) n'est plus une bordure par-segment : voir

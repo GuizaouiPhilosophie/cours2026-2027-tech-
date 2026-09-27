@@ -20,7 +20,7 @@ export function makeId(prefix) {
  * à chaque outil de devoir se faire passer une référence DOM en plus du
  * `container` pour une fonctionnalité qui n'a rien de spécifique à l'outil.
  */
-const TRASH_SELECTOR = ".explication-trash";
+export const TRASH_SELECTOR = ".explication-trash";
 
 function isPointInRect(x, y, rect) {
   return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
@@ -189,27 +189,114 @@ export function snapOnWordWithPunctuation(container, clientX, clientY) {
 const TOLERANT_DX = [0, -8, 8];
 const TOLERANT_DY = [0, -14, 14];
 
+function withTolerance(strategy) {
+  return (container, clientX, clientY) => {
+    for (const dy of TOLERANT_DY) {
+      for (const dx of TOLERANT_DX) {
+        const found = strategy(container, clientX + dx, clientY + dy);
+        if (found) return found;
+      }
+    }
+    return null;
+  };
+}
+
+export const snapOnWordTolerant = withTolerance(snapOnWordWithPunctuation);
+
+// Comme snapOnWordTolerant, mais sans absorption de la ponctuation
+// finale : réservé à Concept, qui doit rester strictement un mot (voir
+// snapOnWord). Utilisé pour les poignées et la re-saisie du corps.
+export const snapOnWordTolerantStrict = withTolerance(snapOnWord);
+
 /**
- * Comme snapOnWordWithPunctuation, mais tolérant à l'imprécision du
- * geste de dépôt : si le point exact ne tombe sur aucun mot (espace
- * entre deux mots, interligne entre deux lignes...), retente à
- * quelques pixels autour avant d'abandonner. Le mot renvoyé est
- * toujours entier (voir snapOnWord) : peu importe où dans le mot tombe
- * le point de dépôt, il est intégralement inclus, jamais coupé.
- *
- * Réservé aux poignées de redimensionnement d'Exemple (voir
- * tools/exemple.jsx) : le tout premier dépôt depuis la barre d'outils,
- * lui, reste strict (snapOnWord/snapOnWordWithPunctuation), pour ne
- * pas surprendre avec un mot différent de celui visuellement visé.
+ * Comme snapBetweenWords, mais tolérant à l'imprécision du tap tactile :
+ * retente à quelques pixels autour avant d'abandonner (même grille que
+ * snapOnWordTolerant). Réservé au placement "tap-à-tap" (un tap arme un
+ * objet, un second tap dans le texte le dépose) — le drag classique
+ * (souris) reste sur snapBetweenWords, plus strict, puisqu'on y voit
+ * l'aperçu bouger en direct avant de lâcher.
  */
-export function snapOnWordTolerant(container, clientX, clientY) {
+export function snapBetweenWordsTolerant(container, clientX, clientY) {
   for (const dy of TOLERANT_DY) {
     for (const dx of TOLERANT_DX) {
-      const found = snapOnWordWithPunctuation(container, clientX + dx, clientY + dy);
+      const found = snapBetweenWords(container, clientX + dx, clientY + dy);
       if (found) return found;
     }
   }
   return null;
+}
+
+/**
+ * Construit un Range qui part de (node, offset) et avance d'exactement
+ * `wordCount` mots dans le texte de `container`, quelles que soient les
+ * balises traversées (peut donc franchir des <p> entiers) — sert à
+ * redéposer un groupe déjà posé (Concept, Exemple) ailleurs dans le
+ * texte en conservant sa longueur d'origine (nombre de mots), plutôt
+ * que de le réduire à un seul mot au dépôt. Retourne null si le texte
+ * restant après (node, offset) ne contient pas assez de mots entiers.
+ */
+export function wordSpanRange(container, node, offset, wordCount) {
+  if (wordCount <= 0) return null;
+  const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+  walker.currentNode = node;
+  let cur = node;
+  let pos = offset;
+  let remaining = wordCount;
+  let inWord = false;
+
+  const finish = () => {
+    const range = document.createRange();
+    range.setStart(node, offset);
+    range.setEnd(cur, pos);
+    return range;
+  };
+
+  while (cur) {
+    const text = cur.nodeValue || "";
+    while (pos < text.length) {
+      const wasWord = inWord;
+      inWord = isWordChar(text[pos]);
+      if (wasWord && !inWord) {
+        remaining -= 1;
+        if (remaining === 0) return finish();
+      }
+      pos += 1;
+    }
+    const next = walker.nextNode();
+    if (!next) {
+      if (inWord) {
+        remaining -= 1;
+        if (remaining === 0) return finish();
+      }
+      return null;
+    }
+    cur = next;
+    pos = 0;
+  }
+  return null;
+}
+
+/**
+ * Vrai si `range` touche un élément <tagName> (data-id différent de
+ * `id`) — soit qu'une de ses bornes tombe à l'intérieur d'un tel
+ * élément, soit qu'un tel élément est entièrement contenu dans le
+ * Range. Garde-fou avant de reposer un groupe ailleurs : on ne veut
+ * jamais s'imbriquer dans un autre groupe du même outil (ni Concept
+ * dans Concept, ni Exemple dans Exemple).
+ */
+export function rangeOverlapsOtherGroup(range, tagName, id) {
+  const tag = tagName.toUpperCase();
+  const touchesForeign = (n) => {
+    let node = n;
+    while (node) {
+      if (node.nodeType === 1 && node.tagName === tag && node.dataset.id !== id) return true;
+      node = node.parentNode;
+    }
+    return false;
+  };
+  if (touchesForeign(range.startContainer) || touchesForeign(range.endContainer)) return true;
+  const frag = range.cloneContents();
+  return !!frag.querySelector(`${tagName.toLowerCase()}:not([data-id="${id}"])`);
 }
 
 /* ---------- fantôme qui suit la souris pendant le grab ---------- */
@@ -303,7 +390,7 @@ export function startFreeDrag({ ghostContent, sourceEl, event, onMove, onEnd }) 
  * @param {string|Node} [ghostContent]        objet affiché sous le curseur pendant le drag — en général un clone de `sourceEl`, pour que ce soit visuellement le même objet qui se déplace
  * @param {HTMLElement} [sourceEl]           élément d'origine (chip dans la barre, marqueur déjà posé...) : caché (visibility) tant que le transport dure, et qui réapparaît au lâcher
  * @param {PointerEvent} [event]             événement pointerdown d'origine (souris, tactile ou stylet) — sert à calculer où, sur `sourceEl`, le doigt/curseur a "attrapé" l'objet, pour que le fantôme garde ce même point sous lui au lieu d'être toujours ancré par un coin
- * @param {Function} [onPreview]             appelé à chaque mousemove avec le résultat de `resolve` (ou null) pour dessiner l'aperçu de dépôt
+ * @param {Function} [onPreview]             appelé à chaque mousemove avec le résultat de `resolve` (ou null), et l'événement pointermove (coordonnées), pour dessiner l'aperçu de dépôt
  * @param {Function} onDrop                  appelé au lâcher avec { range, kind } si un point valide a été trouvé
  * @param {Function} [onCancel]              appelé au lâcher si aucun point valide n'a été trouvé (dépôt hors zone)
  * @param {Function} [onDelete]              appelé au lâcher si le pointeur est au-dessus de la poubelle (`.explication-trash`,
@@ -354,12 +441,12 @@ export function startGrab({ container, resolve, ghostContent, sourceEl, event, o
       // poubelle : ni le curseur "entre deux mots", ni le surlignage
       // "sur un mot" ne doivent laisser croire à un dépôt dans le texte.
       last = null;
-      onPreview && onPreview(null);
+      onPreview && onPreview(null, e);
       return;
     }
 
     last = resolve(container, e.clientX, e.clientY);
-    onPreview && onPreview(last);
+    onPreview && onPreview(last, e);
   }
 
   function cleanup() {

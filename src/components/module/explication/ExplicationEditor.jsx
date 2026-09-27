@@ -9,7 +9,34 @@ function selfClose(html) {
     .replace(/<crochetferme([^>]*)>\s*<\/crochetferme>/gi, "<crochetferme$1/>");
 }
 
+// `dvh` est censé suivre la hauteur réelle du viewport mobile (barre
+// d'adresse comprise), mais son comportement est incohérent selon les
+// navigateurs (notamment Safari iOS, encore plus en PWA plein écran) :
+// il peut se figer sur une valeur qui laisse un vide sous le contenu.
+// `visualViewport.height` donne la hauteur réellement visible à
+// l'instant T, de façon fiable partout ; on la pose en variable CSS,
+// recalculée à chaque resize/scroll du viewport visuel (rotation,
+// apparition du clavier, barre d'adresse qui se replie...).
+function useRealViewportHeight() {
+  useEffect(() => {
+    const vv = window.visualViewport;
+    const setHeight = () => {
+      const h = vv ? vv.height : window.innerHeight;
+      document.documentElement.style.setProperty("--app-height", `${h}px`);
+    };
+    setHeight();
+    const target = vv || window;
+    target.addEventListener("resize", setHeight);
+    target.addEventListener("scroll", setHeight);
+    return () => {
+      target.removeEventListener("resize", setHeight);
+      target.removeEventListener("scroll", setHeight);
+    };
+  }, []);
+}
+
 export default function ExplicationEditor({ title, html }) {
+  useRealViewportHeight();
   const containerRef = useRef(null);
   const initializedRef = useRef(false);
   const [exportOpen, setExportOpen] = useState(false);
@@ -139,7 +166,7 @@ export default function ExplicationEditor({ title, html }) {
           {tools.map((tool) => (
             <div key={tool.id} className="explication-tool-slot" title={tool.description || tool.label}>
               {tool.ToolbarWidget ? (
-                <tool.ToolbarWidget startDrag={startDrag(tool)} />
+                <tool.ToolbarWidget startDrag={startDrag(tool)} containerRef={containerRef} helpers={helpers} />
               ) : (
                 <span className="explication-tool-label">{tool.label}</span>
               )}

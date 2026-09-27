@@ -2,7 +2,9 @@
 
 .explication-editor {
   display: flex;
-  height: 100vh;
+  height: 100vh; /* fallback navigateurs anciens */
+  height: 100dvh; /* vrai viewport visible mobile (barre d'adresse incluse) */
+  height: var(--app-height, 100dvh); /* posée en JS (visualViewport), plus fiable que dvh sur iOS Safari */
   overflow: hidden;
   background: var(--bg, #f7f1ea);
   font-family: var(--sans, "Helvetica Neue", Arial, sans-serif);
@@ -372,6 +374,9 @@
 @media (max-width: 700px) {
   .explication-panel-bar {
     max-height: 55vh;
+    max-height: 55dvh;
+    max-height: calc(var(--app-height, 100dvh) * 0.55);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 }
 
@@ -386,6 +391,7 @@
     width: 100%;
     height: auto;
     max-height: 30vh;
+    max-height: 30dvh;
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;

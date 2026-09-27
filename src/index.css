@@ -397,7 +397,6 @@ main.container {
   border: none;
   padding: 0 1.5rem;
   text-align: right;
-  font-style: italic;
   color: var(--text-muted);
 }
 

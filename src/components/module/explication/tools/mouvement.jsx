@@ -2,12 +2,24 @@
  * Outil "Mouvement" — pose deux marqueurs autofermants dans le texte,
  * <crochetouvert/> et <crochetferme/>, appariés par un attribut `pair`
  * commun (ordre d'apparition dans le DOM). La mécanique générique de
- * prise en main vient de ../lib/grab.js et celle du panneau du bas de
- * ../lib/panelList.js ; ce fichier ne porte que ce qui est propre à
+ * prise en main (souris) vient de ../lib/grab.js, celle de placement
+ * tap-à-tap (tactile) de ../lib/tapPlace.js, et celle du panneau du bas
+ * de ../lib/panelList.js ; ce fichier ne porte que ce qui est propre à
  * Mouvement (forme des marqueurs, appariement, couleurs, overlay).
  */
 
-import { startGrab, snapBetweenWords, makeId } from "../lib/grab";
+import { useEffect, useRef, useState } from "react";
+import { startGrab, snapBetweenWords, snapBetweenWordsTolerant, makeId } from "../lib/grab";
+import {
+  isTouchDevice,
+  isTap,
+  trackTap,
+  markTapSource,
+  toggleArm,
+  subscribeArmed,
+  wireTapCanvas,
+  wireTapTrash,
+} from "../lib/tapPlace";
 import { usePanelList } from "../lib/panelList";
 import ExplicationCard from "../ExplicationCard";
 import "./mouvement.css";
@@ -108,7 +120,29 @@ function pairAfterInsert(marker, container, bump) {
   window.addEventListener("keydown", onKey);
 }
 
+/* ---------- placement "tap-à-tap" (mobile) ----------
+ * Glisser un crochet au doigt est peu précis (le doigt cache la cible
+ * pendant tout le transport). Sur tactile, on remplace donc le drag par
+ * deux taps : le premier ARME un crochet — neuf depuis la barre d'outils,
+ * ou déjà posé pour le redéplacer — le second, dans le texte, le dépose
+ * à l'endroit visé. Retaper sur l'objet armé (chip ou crochet) annule ;
+ * taper sur la poubelle supprime un crochet déjà posé en cours de
+ * redéplacement.
+ *
+ * La mécanique elle-même (état armé, pub-sub pour le chip React, tap
+ * ailleurs qui annule, tap sur la poubelle) est générique et vit dans
+ * ../lib/tapPlace.js — ce fichier ne fournit que ce qui est propre à
+ * Mouvement : comment poser/redéplacer un crochet (`place`), comment le
+ * supprimer (`onTrash`), et sa classe CSS "armé" (`onArmChange`).
+ */
+
 function attachHandlers(el, container, helpers) {
+  // Marque le crochet comme source d'armement : sans ça, le tap qui
+  // l'arme (ou qui annule un armement en le retapant) serait lui-même
+  // intercepté par le "tap ailleurs annule" global de tapPlace.js. Voir
+  // markTapSource pour le détail.
+  markTapSource(el);
+
   // Lâché sur la poubelle : le mouvement entier disparaît (les 2 crochets).
   function removePair() {
     partnerOf(el, container)?.remove();
@@ -117,6 +151,7 @@ function attachHandlers(el, container, helpers) {
   }
 
   el.addEventListener("pointerdown", (e) => {
+    if (isTouchDevice()) return; // le tactile arme/désarme au relâchement (pointerup, voir trackTap ci-dessous), pas de drag
     e.preventDefault();
     e.stopPropagation();
     const ghost = el.cloneNode(true);
@@ -136,19 +171,114 @@ function attachHandlers(el, container, helpers) {
       onDelete: removePair,
     });
   });
+
+  // Tap-à-tap : un premier tap sur un crochet déjà posé l'arme pour un
+  // redéplacement ; retaper dessus annule (voir toggleArm).
+  trackTap(el, (e) => {
+    if (!isTouchDevice()) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    toggleArm({
+      toolId: "mouvement",
+      key: el,
+      el,
+      container,
+      resolve: snapBetweenWordsTolerant,
+      onArmChange(isArmed) {
+        el.classList.toggle("explication-mouvement-marker--armed", isArmed);
+      },
+      place(range) {
+        el.remove();
+        range.insertNode(el);
+        helpers.bump();
+      },
+      onTrash() {
+        removePair();
+      },
+    });
+  });
 }
 
 /* ---------- barre d'outils ---------- */
 
-function ToolbarWidget({ startDrag }) {
+function ToolbarWidget({ startDrag, containerRef, helpers }) {
+  // Reflète en state React lequel des deux chips (s'il y en a un) est
+  // actuellement armé — synchronisé via subscribeArmed, d'où que
+  // l'armement change (y compris depuis le texte : réarmer un crochet
+  // déjà posé désarme le chip). null si aucun, sinon "open" ou "close".
+  const [armedKind, setArmedKind] = useState(null);
+
+  useEffect(
+    () =>
+      subscribeArmed((a) => {
+        setArmedKind(a && a.toolId === "mouvement" && a.el == null ? a.key : null);
+      }),
+    []
+  );
+
+  const tapStart = useRef(null);
+
+  // Tap-à-tap : un tap sur le chip arme un crochet neuf (posé au tap
+  // suivant dans le texte, voir wireTapCanvas dans lib/tapPlace.js) plutôt
+  // que de démarrer un drag — inutilisable au doigt, qui cache la cible.
+  // Retaper le même chip annule (toggleArm).
+  function handlePointerDown(kind) {
+    return (e) => {
+      if (isTouchDevice()) {
+        tapStart.current = { x: e.clientX, y: e.clientY };
+        return;
+      }
+      startDrag({ kind })(e);
+    };
+  }
+
+  function handlePointerUp(kind) {
+    return (e) => {
+      if (!isTouchDevice()) return;
+      const start = tapStart.current;
+      tapStart.current = null;
+      if (!isTap(start, e)) return;
+      e.preventDefault();
+      const container = containerRef?.current;
+      if (!container || !helpers) return;
+
+      toggleArm({
+        toolId: "mouvement",
+        key: kind,
+        container,
+        resolve: snapBetweenWordsTolerant,
+        place(range) {
+          const newEl = createMarker(kind);
+          range.insertNode(newEl);
+          attachHandlers(newEl, container, helpers);
+          pairAfterInsert(newEl, container, helpers.bump);
+          helpers.bump();
+        },
+      });
+    };
+  }
+
   return (
     <div className="explication-mouvement-widget">
       <span className="explication-mouvement-widget-label">Mouvement</span>
       <div className="explication-mouvement-widget-chips">
-        <div className="explication-mouvement-chip" onPointerDown={startDrag({ kind: "open" })} title="Crochet ouvrant">
+        <div
+          ref={(el) => markTapSource(el)}
+          className={`explication-mouvement-chip${armedKind === "open" ? " explication-mouvement-chip--armed" : ""}`}
+          onPointerDown={handlePointerDown("open")}
+          onPointerUp={handlePointerUp("open")}
+          title="Crochet ouvrant"
+        >
           [
         </div>
-        <div className="explication-mouvement-chip" onPointerDown={startDrag({ kind: "close" })} title="Crochet fermant">
+        <div
+          ref={(el) => markTapSource(el)}
+          className={`explication-mouvement-chip${armedKind === "close" ? " explication-mouvement-chip--armed" : ""}`}
+          onPointerDown={handlePointerDown("close")}
+          onPointerUp={handlePointerUp("close")}
+          title="Crochet fermant"
+        >
           ]
         </div>
       </div>
@@ -361,6 +491,12 @@ export default {
         applyPairColor(el, hue);
       });
     });
+
+    // Tap-à-tap (mobile) : second tap du placement + tap sur la poubelle.
+    // Mécanique générique, voir lib/tapPlace.js — idempotent, donc sans
+    // risque même si `hydrate` est rappelé.
+    wireTapCanvas(container, helpers);
+    wireTapTrash(helpers);
   },
 
   onDrop({ range, payload, container, helpers }) {

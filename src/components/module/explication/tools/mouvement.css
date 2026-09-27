@@ -67,6 +67,20 @@
   outline-offset: 1px;
 }
 
+/* tap-à-tap (mobile) : chip ou crochet en attente du tap qui confirme
+   son emplacement dans le texte. */
+.explication-mouvement-chip--armed {
+  outline: 2px solid #c1694c;
+  outline-offset: 2px;
+  background: #f2e9de;
+}
+
+.explication-mouvement-marker--armed {
+  outline: 2px dashed #c1694c;
+  outline-offset: 1px;
+  opacity: 0.6;
+}
+
 /* fantôme qui suit la souris pendant le déplacement d'un crochet déjà posé */
 .explication-mouvement-marker--ghost {
   box-shadow: 0 2px 8px rgba(58, 42, 29, 0.25);
