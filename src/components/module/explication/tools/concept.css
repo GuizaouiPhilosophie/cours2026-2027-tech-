@@ -126,6 +126,9 @@
   
   /* Fond légèrement transparent pour laisser passer le flou */
   background: rgba(244, 242, 242, 0.18); /* Couleur #3a2a1d à ~11% d'opacité */
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.395);
+
   color: #d94f0a;
   font-family: var(--serif, Georgia, serif);
   font-size: 0.85rem;

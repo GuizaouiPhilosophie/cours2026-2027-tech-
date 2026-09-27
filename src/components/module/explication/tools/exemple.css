@@ -101,6 +101,44 @@
   background: #2c6152;
 }
 
+.explication-exemple-callout {
+  position: absolute;
+  top: var(--callout-top);
+  left: var(--callout-left);
+  transform: translate(-50%, calc(-100% - 22px));
+  max-width: 60vw;
+  padding: 5px 10px;
+  border-radius: 8px;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(4px);
+  background: rgba(244, 242, 242, 0.18);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.395);
+  color: #2c6152;
+  font-family: var(--serif, Georgia, serif);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.explication-exemple-callout mark {
+  background: transparent;
+  color: #2c6152;
+  font-weight: 700;
+}
+
+.explication-exemple-callout::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #3a2a1d;
+}
+
 /* ---------- widget de la barre d'outils ---------- */
 
 .explication-exemple-widget {
