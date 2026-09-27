@@ -21,6 +21,7 @@ import {
   wireTapTrash,
 } from "../lib/tapPlace";
 import { usePanelList } from "../lib/panelList";
+import { allMarkers, getPairs, assignLanes } from "../lib/overlayGeometry";
 import ExplicationCard from "../ExplicationCard";
 import "./mouvement.css";
 
@@ -51,10 +52,6 @@ function createMarker(kind) {
   el.textContent = kind === "open" ? "[" : "]";
   el.className = "explication-mouvement-marker";
   return el;
-}
-
-function allMarkers(container) {
-  return Array.from(container.querySelectorAll("crochetouvert, crochetferme"));
 }
 
 function partnerOf(el, container) {
@@ -286,28 +283,10 @@ function ToolbarWidget({ startDrag, containerRef, helpers }) {
   );
 }
 
-/* ---------- paires complètes, triées par apparition (overlay, badge, panneau) ---------- */
-
-function getPairs(container) {
-  const markers = allMarkers(container);
-  const grouped = new Map();
-  markers.forEach((el) => {
-    const pid = el.getAttribute("pair");
-    if (!pid) return;
-    if (!grouped.has(pid)) grouped.set(pid, {});
-    grouped.get(pid)[el.tagName.toLowerCase() === "crochetouvert" ? "open" : "close"] = el;
-  });
-
-  const items = [];
-  grouped.forEach((p, pid) => {
-    if (p.open && p.close) {
-      items.push({ pid, openEl: p.open, closeEl: p.close, startIdx: markers.indexOf(p.open) });
-    }
-  });
-  return items.sort((a, b) => a.startIdx - b.startIdx);
-}
-
 /* ---------- calque des traits entre marqueurs appariés ---------- */
+// getPairs/assignLanes/allMarkers viennent maintenant de
+// ../lib/overlayGeometry.js, partagé avec le rendu du fichier standalone
+// exporté (voir lib/standalone.js) : une seule implémentation.
 
 function OverlayLayer({ containerRef, helpers }) {
   const container = containerRef.current;
@@ -316,30 +295,8 @@ function OverlayLayer({ containerRef, helpers }) {
   const stageBox = container.parentElement.getBoundingClientRect();
   const items = getPairs(container);
 
-  // Attribution des lanes ("plus petite salle libre") : deux mouvements
-  // qui se chevauchent (même partiellement) ne partagent jamais de lane,
-  // donc jamais de traits confondus, quel que soit le niveau d'imbrication.
-  function assignLanes(list) {
-    const markers = allMarkers(container);
-    const sorted = [...list].sort((a, b) => a.startIdx - b.startIdx);
-    const laneFreeFrom = [];
-    const byPid = new Map();
-    sorted.forEach((it) => {
-      const endIdx = markers.indexOf(it.closeEl);
-      let lane = laneFreeFrom.findIndex((end) => end < it.startIdx);
-      if (lane === -1) {
-        lane = laneFreeFrom.length;
-        laneFreeFrom.push(endIdx);
-      } else {
-        laneFreeFrom[lane] = endIdx;
-      }
-      byPid.set(it.pid, lane);
-    });
-    return list.map((it) => ({ ...it, lane: byPid.get(it.pid) }));
-  }
-
   const LANE_BASE = 24, LANE_GAP = 28, LINE_WIDTH = 3, HIT_WIDTH = 16, DOT_SIZE = 8;
-  const laned = assignLanes(items);
+  const laned = assignLanes(items, allMarkers(container));
 
   // Réserve, dans .explication-canvas-wrap, assez de place à gauche du
   // texte pour que les traits (et leur zone cliquable élargie, plus

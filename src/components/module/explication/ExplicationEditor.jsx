@@ -1,22 +1,55 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import tools from "./toolRegistry";
 import { startGrab, snapBetweenWords } from "./lib/grab";
+import { buildStandaloneDocument, extractRawHtml, selfCloseVoidTags } from "./lib/standalone";
 import "./explication.css";
 
-function selfClose(html) {
-  return html
-    .replace(/<crochetouvert([^>]*)>\s*<\/crochetouvert>/gi, "<crochetouvert$1/>")
-    .replace(/<crochetferme([^>]*)>\s*<\/crochetferme>/gi, "<crochetferme$1/>");
+// Nom de fichier à partir du titre : minuscules, accents retirés,
+// tout ce qui n'est pas alphanumérique -> tiret.
+function slugify(s) {
+  return (
+    (s || "explication")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "explication"
+  );
 }
 
-// `dvh` est censé suivre la hauteur réelle du viewport mobile (barre
-// d'adresse comprise), mais son comportement est incohérent selon les
-// navigateurs (notamment Safari iOS, encore plus en PWA plein écran) :
-// il peut se figer sur une valeur qui laisse un vide sous le contenu.
-// `visualViewport.height` donne la hauteur réellement visible à
-// l'instant T, de façon fiable partout ; on la pose en variable CSS,
-// recalculée à chaque resize/scroll du viewport visuel (rotation,
-// apparition du clavier, barre d'adresse qui se replie...).
+/* ---------- sauvegarde automatique dans le navigateur (localStorage) ---------- */
+
+const AUTOSAVE_PREFIX = "explication-autosave:";
+const AUTOSAVE_DEBOUNCE_MS = 400;
+
+function readAutosave(key) {
+  try {
+    const raw = window.localStorage.getItem(key);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed.rawHtml === "string" ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeAutosave(key, data) {
+  try {
+    window.localStorage.setItem(key, JSON.stringify(data));
+  } catch {
+    // quota dépassé, navigation privée... : on ignore silencieusement,
+    // l'export manuel reste le filet de sécurité en dernier recours.
+  }
+}
+
+function clearAutosave(key) {
+  try {
+    window.localStorage.removeItem(key);
+  } catch {
+    /* ignore */
+  }
+}
+
 function useRealViewportHeight() {
   useEffect(() => {
     const vv = window.visualViewport;
@@ -35,13 +68,50 @@ function useRealViewportHeight() {
   }, []);
 }
 
-export default function ExplicationEditor({ title, html }) {
+// `autosaveId`, optionnel : clé stable à préférer si l'appelant en a une
+// sous la main (id de la leçon en base, par ex.) — à défaut on retombe
+// sur le titre. Un titre qui change en cours d'édition change alors la
+// clé de sauvegarde (nouveau brouillon "vide" pour ce titre) : passer
+// `autosaveId` quand une valeur stable existe évite ce piège.
+export default function ExplicationEditor({ title, html, autosaveId }) {
   useRealViewportHeight();
   const containerRef = useRef(null);
   const initializedRef = useRef(false);
+  const fileInputRef = useRef(null);
   const [exportOpen, setExportOpen] = useState(false);
   const [version, setVersion] = useState(0);
   const [previewRect, setPreviewRect] = useState(null);
+
+  const storageKey = `${AUTOSAVE_PREFIX}${autosaveId || slugify(title)}`;
+  const storageKeyRef = useRef(storageKey);
+  storageKeyRef.current = storageKey;
+  const titleRef = useRef(title);
+  titleRef.current = title;
+
+  // `restoredDraftAt` : non-null tant que le bandeau "brouillon
+  // récupéré" doit rester visible (posé une seule fois, au chargement,
+  // s'il y avait un brouillon plus récent que `html`).
+  const [restoredDraftAt, setRestoredDraftAt] = useState(null);
+  const saveTimeoutRef = useRef(null);
+
+  const flushSave = useCallback(() => {
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+      saveTimeoutRef.current = null;
+    }
+    const container = containerRef.current;
+    if (!container) return;
+    writeAutosave(storageKeyRef.current, {
+      title: titleRef.current,
+      rawHtml: container.innerHTML,
+      savedAt: Date.now(),
+    });
+  }, []);
+
+  const scheduleSave = useCallback(() => {
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    saveTimeoutRef.current = setTimeout(flushSave, AUTOSAVE_DEBOUNCE_MS);
+  }, [flushSave]);
 
   // Menu du bas : chaque outil peut y avoir une catégorie (badge quand
   // fermé + panneau de cards quand ouvert — voir tools/mouvement.jsx).
@@ -60,7 +130,6 @@ export default function ExplicationEditor({ title, html }) {
   // useEffect([bounceTarget]) se redéclenche une première fois avec
   // cette valeur périmée — rejouant le rebond sur une card qu'on n'a
   // pourtant pas reciblée. On le vide donc nous-mêmes juste après,
-  // pour qu'un remontage plus tard ne retrouve plus rien à rejouer.
   const bounceTimeoutRef = useRef(null);
   const helpers = {
     bump,
@@ -73,15 +142,109 @@ export default function ExplicationEditor({ title, html }) {
     },
   };
 
+  // Export : un seul fichier .html téléchargé, à la fois consultable
+  // seul (contours/traits redessinés en lecture seule, voir
+  // lib/standalone.js) et rechargeable ici (le HTML brut annoté est
+  // gardé verbatim dedans, voir extractRawHtml plus bas).
+  function handleExportFile() {
+    const rawHtml = containerRef.current?.innerHTML || html;
+    const doc = buildStandaloneDocument({ title, rawHtml });
+    const blob = new Blob([doc], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${slugify(title)}.html`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  // Import : relit le fichier exporté par handleExportFile ci-dessus,
+  // remplace le contenu du canvas par le HTML brut retrouvé, et
+  // ré-hydrate chaque outil dessus — exactement comme au premier
+  // chargement (useEffect([html]) plus bas).
+  function handleImportFile(e) {
+    const file = e.target.files?.[0];
+    // Vidé tout de suite : sans ça, choisir deux fois le même fichier
+    // d'affilée ne redéclenche pas onChange (value inchangée).
+    e.target.value = "";
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const container = containerRef.current;
+      const rawHtml = extractRawHtml(String(reader.result || ""));
+      if (!rawHtml || !container) {
+        window.alert("Ce fichier ne contient pas de texte d'explication reconnu.");
+        return;
+      }
+      container.innerHTML = rawHtml;
+      tools.forEach((t) => t.hydrate?.(container, helpers));
+      setPanelOpen(false);
+      // Le fichier importé devient la nouvelle base : on l'enregistre
+      // tout de suite (pas d'attente du debounce) et on efface le
+      // bandeau de brouillon restauré, qui ne concerne plus ce contenu.
+      setRestoredDraftAt(null);
+      flushSave();
+      bump();
+    };
+    reader.readAsText(file);
+  }
+
+  // Abandonne le brouillon récupéré et repart du texte d'origine reçu
+  // en props (cas où l'élève préfère annuler ses modifications non
+  // exportées plutôt que de continuer dessus).
+  function handleDiscardDraft() {
+    clearAutosave(storageKeyRef.current);
+    const container = containerRef.current;
+    if (container) {
+      container.innerHTML = html;
+      tools.forEach((t) => t.hydrate?.(container, helpers));
+      bump();
+    }
+    setPanelOpen(false);
+    setRestoredDraftAt(null);
+  }
+
   useEffect(() => {
     if (containerRef.current && !initializedRef.current) {
-      containerRef.current.innerHTML = html;
+      const draft = readAutosave(storageKey);
+      const useDraft = !!draft && draft.rawHtml !== html;
+      containerRef.current.innerHTML = useDraft ? draft.rawHtml : html;
       initializedRef.current = true;
       tools.forEach((t) => t.hydrate?.(containerRef.current, helpers));
+      if (useDraft) setRestoredDraftAt(draft.savedAt || Date.now());
       bump();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [html]);
+
+  // Sauvegarde automatique : n'importe quelle mutation du canvas (texte
+  // tapé, objet posé/déplacé/supprimé par un outil, attribut de card
+  // modifié...) planifie une écriture dans localStorage. Attaché après
+  // l'effet d'initialisation ci-dessus, pour ne pas déclencher une
+  // sauvegarde inutile sur le tout premier remplissage du canvas.
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return undefined;
+    const observer = new MutationObserver(scheduleSave);
+    observer.observe(el, { childList: true, subtree: true, characterData: true, attributes: true });
+    return () => observer.disconnect();
+  }, [scheduleSave]);
+
+  // Filet de sécurité : si la page se ferme/actualise pendant la fenêtre
+  // du debounce (juste après une frappe), on force l'écriture immédiate
+  // plutôt que de perdre les toutes dernières modifications.
+  useEffect(() => {
+    window.addEventListener("beforeunload", flushSave);
+    window.addEventListener("pagehide", flushSave);
+    return () => {
+      window.removeEventListener("beforeunload", flushSave);
+      window.removeEventListener("pagehide", flushSave);
+      flushSave();
+    };
+  }, [flushSave]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -175,16 +338,42 @@ export default function ExplicationEditor({ title, html }) {
         </div>
 
         {/*
-          Poubelle : détectée par sélecteur (`.explication-trash`, voir
-          lib/grab.js) depuis n'importe quel startGrab, qu'il soit démarré
-          ici (drag d'un chip neuf depuis la barre) ou directement depuis
-          un fichier outil (tools/mouvement.jsx, tools/concept.jsx, pour
-          redéplacer/supprimer un objet déjà posé dans le texte). Rien
-          d'autre à câbler ici : le survol et le lâcher sont gérés de bout
-          en bout par startGrab lui-même.
+          Export / import : rangés dans la toolbar plutôt que dans l'en-tête
+          du canvas, pour rester à portée dans la même barre que les outils.
+          Poussés en bas via .explication-toolbar-actions (margin-top: auto)
+          sur ordi -> juste au-dessus de la poubelle ; sur mobile, la barre
+          devient une ligne et ce même bloc passe à l'extrémité droite (voir
+          la media query dans explication.css).
         */}
         <div className="explication-trash" title="Glisser ici pour supprimer">
           🗑
+        </div>
+        <div className="explication-toolbar-actions">
+          <button
+            type="button"
+            className="explication-tool-btn"
+            onClick={handleExportFile}
+            title="Exporter en fichier .html (consultable seul, rechargeable ici)"
+          >
+            <span className="explication-tool-icon">⇩</span>
+            <span className="explication-tool-label">Exporter</span>
+          </button>
+          <button
+            type="button"
+            className="explication-tool-btn"
+            onClick={() => fileInputRef.current?.click()}
+            title="Importer un fichier .html exporté depuis cet éditeur"
+          >
+            <span className="explication-tool-icon">⇧</span>
+            <span className="explication-tool-label">Importer</span>
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".html,text/html"
+            style={{ display: "none" }}
+            onChange={handleImportFile}
+          />
         </div>
       </aside>
 
@@ -192,10 +381,24 @@ export default function ExplicationEditor({ title, html }) {
         <main className="explication-canvas-wrap">
           <header className="explication-canvas-header">
             <h1>{title}</h1>
-            <button type="button" className="explication-export-btn" onClick={() => setExportOpen(true)}>
-              ↓
-            </button>
           </header>
+
+          {restoredDraftAt && (
+            <div className="explication-draft-banner" role="status">
+              <span>
+                Sauvegarde locale du{" "}
+                {new Date(restoredDraftAt).toLocaleString("fr-FR")}.
+              </span>
+              <div className="explication-draft-banner-actions">
+                <button type="button" onClick={() => setRestoredDraftAt(null)}>
+                  Ignorer
+                </button>
+                <button type="button" onClick={handleDiscardDraft}>
+                  Revenir à la version d'origine
+                </button>
+              </div>
+            </div>
+          )}
 
           <div className="explication-canvas-stage">
             <div className="explication-canvas" ref={containerRef} />
@@ -293,7 +496,7 @@ export default function ExplicationEditor({ title, html }) {
                 Fermer
               </button>
             </div>
-            <textarea readOnly value={selfClose(containerRef.current?.innerHTML || html)} />
+            <textarea readOnly value={selfCloseVoidTags(containerRef.current?.innerHTML || html)} />
           </div>
         </div>
       )}

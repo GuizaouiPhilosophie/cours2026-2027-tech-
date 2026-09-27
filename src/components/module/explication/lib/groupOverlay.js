@@ -20,6 +20,7 @@
  */
 
 import { makeId, startGrab, wordSpanRange, rangeOverlapsOtherGroup } from "./grab";
+import { buildStaircasePath } from "./overlayGeometry";
 
 function splitWords(text) {
   return text.trim().split(/\s+/).filter(Boolean);
@@ -101,82 +102,12 @@ function rangeFromTextOffsets(container, start, end) {
 }
 
 /* ---------- géométrie du contour en escalier ---------- */
-
-const OUTLINE_RADIUS = 4;
+// buildStaircasePath (et ses fonctions privées) vit maintenant dans
+// ./overlayGeometry.js, partagé avec le rendu du fichier standalone
+// exporté (voir lib/standalone.js) : une seule implémentation.
 
 function svgEl(tag) {
   return document.createElementNS("http://www.w3.org/2000/svg", tag);
-}
-
-function pointsToRoundedPath(points, radius) {
-  const n = points.length;
-  if (n < 3) return "";
-
-  const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
-  const lerp = (a, b, t) => ({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t });
-  const insetToward = (from, to, r) => {
-    const d = dist(from, to);
-    return d === 0 ? from : lerp(from, to, Math.min(r, d / 2) / d);
-  };
-
-  const at = (i) => points[((i % n) + n) % n];
-  const corners = [];
-  for (let i = 0; i < n; i += 1) {
-    const curr = at(i);
-    corners.push({
-      in: insetToward(curr, at(i - 1), radius),
-      corner: curr,
-      out: insetToward(curr, at(i + 1), radius),
-    });
-  }
-
-  const fmt = (p) => `${p.x.toFixed(2)} ${p.y.toFixed(2)}`;
-  const d = [`M ${fmt(corners[0].out)}`];
-  for (let i = 1; i <= n; i += 1) {
-    const c = corners[i % n];
-    d.push(`L ${fmt(c.in)}`, `Q ${fmt(c.corner)} ${fmt(c.out)}`);
-  }
-  d.push("Z");
-  return d.join(" ");
-}
-
-function rightEdgePoints(lines) {
-  const pts = [];
-  lines.forEach((ln, i) => {
-    if (i > 0) {
-      const prev = lines[i - 1];
-      if (prev.right !== ln.right) pts.push({ x: ln.right, y: prev.bottom });
-    }
-    pts.push({ x: ln.right, y: ln.top });
-    pts.push({ x: ln.right, y: ln.bottom });
-  });
-  return pts;
-}
-
-function leftEdgePoints(lines) {
-  const pts = [];
-  for (let i = lines.length - 1; i >= 0; i -= 1) {
-    const ln = lines[i];
-    if (i < lines.length - 1) {
-      const next = lines[i + 1];
-      if (next.left !== ln.left) pts.push({ x: ln.left, y: next.top });
-    }
-    pts.push({ x: ln.left, y: ln.bottom });
-    pts.push({ x: ln.left, y: ln.top });
-  }
-  return pts;
-}
-
-function buildStaircasePath(rects, stageBox, radius = OUTLINE_RADIUS) {
-  if (!rects.length) return "";
-  const lines = Array.from(rects).map((rc) => ({
-    top: rc.top - stageBox.top,
-    left: rc.left - stageBox.left,
-    right: rc.right - stageBox.left,
-    bottom: rc.bottom - stageBox.top,
-  }));
-
-  return pointsToRoundedPath([...rightEdgePoints(lines), ...leftEdgePoints(lines)], radius);
 }
 
 const GRAB_THRESHOLD = 6;
@@ -405,11 +336,48 @@ export function createGroupOverlay({ tag, snap, createElement, getPayload, ghost
     bubble.style.setProperty("--callout-top", `${clientY - stageBox.top}px`);
   }
 
+  // Redessine tous les contours dès que la mise en page du texte bouge,
+  // quelle qu'en soit la cause : reflow provoqué par un AUTRE outil
+  // (ex. Mouvement qui insère un crochet), un textarea du panneau du bas
+  // qui s'agrandit (pousse .explication-panel-bar, donc le canvas), un
+  // redimensionnement de fenêtre, un changement de police, etc. Se fier
+  // uniquement à `window.resize` (comme avant) ratait tous les cas où
+  // c'est le CONTENU qui bouge sans que la fenêtre change de taille —
+  // exactement le bug des contours désynchronisés visuellement du texte
+  // après une modification faite par un autre outil.
+  //
+  // ResizeObserver déclenche aussi sur le tout premier `observe()` (à
+  // l'ajout), donc pas besoin d'un appel initial séparé à
+  // renderAllOutlines : ce wireOutlineResize(container) posé une fois
+  // dans hydrateGroups suffit.
   function wireOutlineResize(container) {
     const key = `${tag}ResizeWired`;
     if (container.dataset[key]) return;
     container.dataset[key] = "1";
-    window.addEventListener("resize", () => renderAllOutlines(container));
+
+    let raf = null;
+    const scheduleRedraw = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = null;
+        renderAllOutlines(container);
+      });
+    };
+
+    if (typeof ResizeObserver !== "undefined") {
+      const ro = new ResizeObserver(scheduleRedraw);
+      ro.observe(container);
+      // Le panneau du bas (cards, textarea auto-agrandissant) peut aussi
+      // pousser le canvas sans que .explication-canvas elle-même change
+      // de taille (c'est .explication-canvas-wrap qui rétrécit) : on
+      // observe donc aussi le wrap, s'il existe, pour ce cas.
+      const wrap = container.closest(".explication-canvas-wrap");
+      if (wrap) ro.observe(wrap);
+    }
+
+    // Gardé en complément : redimensionnement de la fenêtre elle-même
+    // (zoom, rotation d'écran, barre d'adresse mobile qui se rétracte...).
+    window.addEventListener("resize", scheduleRedraw);
   }
 
   /* ---------- poignées gauche/droite (extension/rétraction) ---------- */
