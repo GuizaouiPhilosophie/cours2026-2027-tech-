@@ -100,23 +100,23 @@ proposer le traitement "I) La vérité, II) L'opinion, III) La vérité est-elle
 
   Le traitement dialectique s’impose souvent dans les dissertations dans lesquelles il est impossible de répondre affirmativement ou négativement (oui ou non). Le but de la troisième partie consiste alors à montrer pourquoi la réponse simple par « oui » ou « non »ne fonctionne pas, autrement dit, d’identifier quel obstacle rend non pertinente une réponse directe.
 
-**Le plan par renversement axiologique (axiome)** (Même si son nom fait peur lui aussi est accessible)
+- **Le plan par renversement axiologique (axiome)** (Même si son nom fait peur lui aussi est accessible)
 
-On a deux possibilités : soit on réhabilite l'axiome, soit on le dégrade.
+  On a deux possibilités : soit on réhabilite l'axiome, soit on le dégrade.
 
-- **Le plan par réhabilitation** : Le plan par réhabilitation a pour vocation de réhabiliter progressivement un concept connoté péjorativement. Il s’agit là de réaliser une montée en puissance. Exemple : l’égoïsme.
-  1. Le concept est nuisible (l’égoïsme est nuisible à la société).
-  2. Le concept est inévitable ou indiscernable (toute action a lieu sur fond d’égoïsme).
-  3. Le concept est parfois bénéfique ou souhaitable (l’égoïsme a des effets profitables).
+  - **Le plan par réhabilitation** : Le plan par réhabilitation a pour vocation de réhabiliter progressivement un concept connoté péjorativement. Il s’agit là de réaliser une montée en puissance. Exemple : l’égoïsme.
+    1. Le concept est nuisible (l’égoïsme est nuisible à la société).
+    2. Le concept est inévitable ou indiscernable (toute action a lieu sur fond d’égoïsme).
+    3. Le concept est parfois bénéfique ou souhaitable (l’égoïsme a des effets profitables).
 
-! Attention le plan par réhabilitation ne s’applique pas à tous les sujets (exemple :
-l’esclavage », « le racisme »…) !
+  ! Attention le plan par réhabilitation ne s’applique pas à tous les sujets (exemple :
+  l’esclavage », « le racisme »…) !
 
-- **Le plan par dégradation** : Il s’agit du symétrique au plan de réhabilitation. Il s’agit de dégrader progressivement un concept spontanément perçu comme positif. Exemples : « le désintéressement ».
+  - **Le plan par dégradation** : Il s’agit du symétrique au plan de réhabilitation. Il s’agit de dégrader progressivement un concept spontanément perçu comme positif. Exemples : « le désintéressement ».
 
-  1. Le concept est bénéfique.
-  2. Le concept est impossible ou indiscernable.
-  3. Le concept est parfois nuisible.
+    1. Le concept est bénéfique.
+    2. Le concept est impossible ou indiscernable.
+    3. Le concept est parfois nuisible.
 
 [[divider:fantasy-1|width:30%]]
 
