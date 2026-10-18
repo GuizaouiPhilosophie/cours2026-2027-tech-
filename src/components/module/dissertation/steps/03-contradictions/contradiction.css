@@ -1,0 +1,49 @@
+/* Étape « Contradictions » : nœuds reliés, bulle. Importé par ContradictionProvider.jsx.
+   Couleur --contradiction : dissertation.css ; liens et nœud d'intersection : lib/ui.css. */
+
+/* Premier nœud choisi pendant la liaison (les nœuds reliés n'ont pas de contour : seul le lien est rouge) */
+.react-flow__node.is-link-source > * { outline: 2px dashed var(--contradiction); outline-offset: 5px; }
+
+/* ---------- Bulle ---------- */
+
+.dissertation-contra-ends { display: flex; flex-direction: column; gap: 0.5rem; }
+.dissertation-contra-end {
+  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+  background: var(--bg);
+  box-shadow: var(--neo-in);
+}
+.dissertation-contra-end strong {
+  display: block;
+  font-family: var(--serif);
+  font-size: 0.9rem;
+  color: var(--contradiction);
+}
+.dissertation-contra-end p {
+  margin: 0.15rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dissertation-contra-delete {
+  align-self: flex-start;
+  padding: 0.35rem 0.9rem;
+  border: none;
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  color: var(--contradiction);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+  cursor: pointer;
+}
+.dissertation-contra-delete:active,
+.dissertation-contra-delete:focus-visible { box-shadow: var(--neo-in); outline: none; }
+@media (hover: hover) {
+  .dissertation-contra-delete:hover { box-shadow: var(--neo-in); }
+}

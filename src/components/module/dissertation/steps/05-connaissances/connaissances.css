@@ -1,0 +1,84 @@
+/* Étape « Connaissances » : bulle et nœud de départ d'une liaison. Importé par KnowledgeProvider.jsx.
+   Couleur --knowledge : dissertation.css ; nœuds et liens bleus : lib/ui.css. */
+
+/* Nœud de départ pendant la liaison */
+.react-flow__node.is-know-source > * { outline: 2px dashed var(--knowledge); outline-offset: 5px; }
+
+/* ---------- Bulle ---------- */
+
+.dissertation-know-block { display: flex; flex-direction: column; gap: 0.45rem; }
+.dissertation-know-block > span {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.dissertation-know-block .dissertation-tools-empty { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
+
+.dissertation-know-links { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.45rem; }
+.dissertation-know-link {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem 0.6rem 0.5rem 0.75rem;
+  border-radius: 12px;
+  background: var(--bg);
+  box-shadow: var(--neo-in);
+}
+.dissertation-know-link > div { flex: 1; min-width: 0; }
+.dissertation-know-link strong {
+  display: block;
+  font-family: var(--serif);
+  font-size: 0.88rem;
+  color: var(--knowledge);
+}
+.dissertation-know-link p {
+  margin: 0.15rem 0 0;
+  font-size: 0.76rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dissertation-know-unlink {
+  flex: 0 0 auto;
+  width: 1.7rem;
+  height: 1.7rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--text-muted);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+  cursor: pointer;
+}
+.dissertation-know-unlink:active,
+.dissertation-know-unlink:focus-visible { box-shadow: var(--neo-in); outline: none; }
+
+.dissertation-know-actions { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem; }
+.dissertation-know-btn {
+  padding: 0.4rem 0.95rem;
+  border: none;
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+  cursor: pointer;
+}
+.dissertation-know-btn.is-link { color: var(--knowledge); }
+.dissertation-know-btn.is-delete { color: var(--text-muted); font-weight: 400; }
+.dissertation-know-btn:disabled { opacity: 0.45; cursor: default; }
+.dissertation-know-btn:active:not(:disabled),
+.dissertation-know-btn:focus-visible { box-shadow: var(--neo-in); outline: none; }
+
+@media (hover: hover) {
+  .dissertation-know-unlink:hover,
+  .dissertation-know-btn:hover:not(:disabled) { box-shadow: var(--neo-in); }
+}

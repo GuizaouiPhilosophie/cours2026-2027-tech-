@@ -1,0 +1,646 @@
+/* Module dissertation — néomorphisme sur les variables de index.css */
+
+.dissertation-editor {
+  --neo-dark: #c9c5be;
+  --neo-light: #ffffff;
+  --neo-out: 8px 8px 16px var(--neo-dark), -8px -8px 16px var(--neo-light);
+  --neo-out-sm: 4px 4px 9px var(--neo-dark), -4px -4px 9px var(--neo-light);
+  --neo-in: inset 5px 5px 10px var(--neo-dark), inset -5px -5px 10px var(--neo-light);
+  --ok: #2e7d32;
+  --warn: #b3402e;
+  /* Couleurs partagées par les étapes et lib/ui.css */
+  --contradiction: #c0392b;
+  --knowledge: #2f6db5;
+
+  position: fixed;
+  inset: 0;
+  display: flex;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+}
+
+/* ---------- Écran d'entrée ---------- */
+
+.dissertation-intro {
+  margin: auto;
+  width: min(560px, 90vw);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1rem;
+  text-align: center;
+}
+
+.dissertation-intro h1 {
+  font-family: var(--serif);
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.dissertation-intro textarea {
+  resize: none;
+  border: none;
+  border-radius: 16px;
+  padding: 1rem 1.2rem;
+  font: inherit;
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  color: var(--text);
+  background: var(--bg);
+  box-shadow: var(--neo-in);
+  outline: none;
+}
+
+.dissertation-back {
+  color: var(--accent-dark);
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+.dissertation-back:hover { text-decoration: underline; }
+
+/* ---------- Boutons ---------- */
+
+.dissertation-validate {
+  align-self: center;
+  border: none;
+  border-radius: 999px;
+  padding: 0.65rem 1.5rem;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--accent-dark);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+  cursor: pointer;
+  transition: box-shadow 0.25s ease;
+}
+.dissertation-validate:active:not(:disabled) { box-shadow: var(--neo-in); }
+.dissertation-validate:disabled { opacity: 0.45; cursor: default; }
+
+/* Survol uniquement avec une vraie souris : au tactile, :hover resterait « collé » après le toucher. */
+@media (hover: hover) {
+  .dissertation-validate:hover:not(:disabled) { box-shadow: var(--neo-in); }
+}
+
+/* Pas de surbrillance de toucher ni d'anneau de focus après un clic/toucher (le focus clavier reste visible). */
+.dissertation-editor button {
+  -webkit-tap-highlight-color: transparent;
+}
+.dissertation-editor button:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ---------- Canevas ---------- */
+
+.dissertation-canvas {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+}
+
+.dissertation-canvas .react-flow {
+  --xy-background-color: var(--bg);
+  background: var(--bg);
+}
+
+.dissertation-canvas .react-flow__controls {
+  box-shadow: var(--neo-out-sm);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.dissertation-canvas .react-flow__controls-button {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  fill: var(--accent-dark);
+}
+
+.dissertation-subject-node {
+  max-width: min(560px, 80vw);
+  padding: 0.5rem 0.5rem;
+  border-radius: 10px;
+  text-align: center;
+  background: var(--bg);
+  box-shadow: var(--neo-out);
+  font-family: var(--serif);
+}
+.dissertation-subject-node p { margin: 0.3rem 0 0; font-size: 1.5rem; line-height: 1.45; }
+
+/* ---------- Menu du bas (hamburger + frise horizontale) ---------- */
+
+.dissertation-dock {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column; /* hamburger au-dessus, tiroir dessous ; le dock étant ancré en bas, l'ensemble monte à l'ouverture */
+  align-items: stretch;
+  pointer-events: none; /* ne bloque pas le canevas autour des éléments */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.dissertation-dock > * { pointer-events: auto; }
+
+.dissertation-burger {
+  --burger-size: 2.75rem;
+  --burger-icon: 18px;
+
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0 0 0.75rem 0.75rem;
+  box-sizing: border-box;
+  height: var(--burger-size);
+  padding: 0 1rem 0 0.9rem;
+  border: none;
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-dark);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+  cursor: pointer;
+  transition:
+    padding 0.35s ease,
+    gap 0.35s ease,
+    box-shadow 0.25s ease;
+}
+.dissertation-burger:active,
+.dissertation-burger.is-open { box-shadow: var(--neo-in); }
+@media (hover: hover) {
+  .dissertation-burger:hover { box-shadow: var(--neo-in); }
+}
+
+/* Ouvert : padding symétrique = cercle parfait (largeur = hauteur) */
+.dissertation-burger.is-open {
+  gap: 0;
+  padding: 0 calc((var(--burger-size) - var(--burger-icon)) / 2);
+}
+
+.dissertation-burger-icon {
+  flex: 0 0 var(--burger-icon);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: var(--burger-icon);
+}
+.dissertation-burger-icon span {
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform 0.35s ease, opacity 0.2s ease;
+}
+.dissertation-burger.is-open .dissertation-burger-icon span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.dissertation-burger.is-open .dissertation-burger-icon span:nth-child(2) { opacity: 0; }
+.dissertation-burger.is-open .dissertation-burger-icon span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+/* Libellé : sa largeur maximale se replie vers 0 */
+.dissertation-burger-label {
+  display: block;
+  max-width: min(14rem, 55vw);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 1;
+  transition: max-width 0.35s ease, opacity 0.2s ease;
+}
+.dissertation-burger.is-open .dissertation-burger-label {
+  max-width: 0;
+  opacity: 0;
+}
+.dissertation-burger-label-inner { display: inline; }
+
+/* Tiroir : s'ouvre du haut vers le bas (hauteur animée) */
+.dissertation-drawer {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition: grid-template-rows 0.35s ease, visibility 0s linear 0.35s;
+}
+.dissertation-drawer.is-open {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition: grid-template-rows 0.35s ease, visibility 0s;
+}
+
+.dissertation-panel {
+  min-height: 0;
+  overflow: hidden;
+  background: var(--bg);
+  box-shadow: 0 -6px 14px rgba(201, 197, 190, 0.45);
+  border-radius: 20px 20px 0 0;
+}
+.dissertation-panel-scroll {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 1.1rem 1.25rem 1.25rem;
+}
+
+.dissertation-panel-title {
+  margin: 0 0 1rem;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Frise horizontale, de gauche à droite */
+.dissertation-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem 0.4rem 0.8rem;
+  display: flex;
+  align-items: flex-start;
+  overflow-x: auto;
+}
+
+.dissertation-step {
+  position: relative;
+  flex: 1 0 140px;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: center;
+}
+
+/* Trait + flèche vers l'étape suivante */
+.dissertation-step:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: 19px;
+  left: calc(50% + 28px);
+  right: calc(-50% + 34px);
+  height: 2px;
+  background: var(--border);
+}
+.dissertation-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 13px;
+  right: calc(-50% + 28px);
+  border: 6px solid transparent;
+  border-left: 8px solid var(--border);
+  border-right: 0;
+}
+
+.dissertation-step-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.dissertation-step-btn:disabled { cursor: default; }
+.dissertation-step-btn:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 4px; border-radius: 12px; }
+@media (hover: hover) {
+  .dissertation-step-btn:not(:disabled):hover .dissertation-step-badge { box-shadow: var(--neo-in); }
+}
+
+.dissertation-step-badge {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+}
+.dissertation-step.is-validated .dissertation-step-badge {
+  color: var(--ok);
+  box-shadow: var(--neo-in);
+}
+.dissertation-step.is-current .dissertation-step-badge { color: var(--accent-dark); }
+.dissertation-step.is-warning .dissertation-step-badge { color: var(--warn); }
+.dissertation-step-warn {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--warn);
+}
+
+.dissertation-step-title { font-size: 0.9rem; line-height: 1.3; padding: 0 0.4rem; }
+.dissertation-step.is-locked .dissertation-step-title { color: var(--text-muted); }
+.dissertation-step.is-current .dissertation-step-title { font-weight: 700; }
+
+/* Détail de l'étape courante, sous la frise */
+.dissertation-step-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 0.4rem;
+  text-align: center;
+}
+.dissertation-step-detail p { margin: 0; font-size: 0.82rem; color: var(--text-muted); line-height: 1.45; }
+
+.dissertation-tools { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+.dissertation-tools-empty { font-style: italic; }
+
+.dissertation-tool {
+  border: none;
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.8rem;
+  color: var(--accent-dark);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+  cursor: pointer;
+}
+
+.dissertation-step-note { font-style: italic; }
+
+.dissertation-step-error {
+  margin: 0 0 0.6rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--warn);
+}
+
+.dissertation-step-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+.dissertation-io { display: flex; gap: 0.5rem; }
+
+.dissertation-io-btn {
+  flex: 0 0 auto;
+  width: 2.6rem;
+  height: 2.6rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  line-height: 0;
+  color: var(--accent-dark);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: box-shadow 0.25s ease;
+}
+.dissertation-io-btn svg { display: block; }
+.dissertation-io-btn:active { box-shadow: var(--neo-in); }
+.dissertation-io-btn:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 2px; }
+@media (hover: hover) {
+  .dissertation-io-btn:hover { box-shadow: var(--neo-in); }
+}
+
+.dissertation-notice { margin: 0.6rem 0 0; text-align: center; font-size: 0.8rem; line-height: 1.4; }
+.dissertation-notice.is-ok { color: var(--ok); }
+.dissertation-notice.is-error { color: var(--warn); }
+
+.dissertation-intro-actions { display: flex; align-items: center; justify-content: center; gap: 0.6rem; }
+
+.dissertation-panel-done { margin: 0.5rem 0 0; text-align: center; font-size: 0.85rem; color: var(--ok); font-weight: 600; }
+
+/* ---------- Recommandation plein écran (écran du sujet) ---------- */
+
+.dissertation-fs-hint {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+.dissertation-fs-hint-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 0.4rem 1rem;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent-dark);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+  cursor: pointer;
+  transition: box-shadow 0.25s ease;
+}
+.dissertation-fs-hint-btn:active { box-shadow: var(--neo-in); }
+@media (hover: hover) {
+  .dissertation-fs-hint-btn:hover { box-shadow: var(--neo-in); }
+}
+
+/* ---------- Bouton plein écran (entrer / quitter) ---------- */
+
+.dissertation-fullscreen {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 20;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: none;
+  box-sizing: border-box;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  line-height: 0;
+  color: var(--accent-dark);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+  cursor: pointer;
+  transition: box-shadow 0.25s ease;
+}
+.dissertation-fullscreen:active { box-shadow: var(--neo-in); }
+/* svg en bloc : évite le décalage de ligne de base qui le faisait paraître de travers dans le cercle */
+.dissertation-fullscreen svg {
+  display: block;
+  flex: none;
+  margin: 0;
+}
+
+/* ---------- PC / grand écran : hamburger en haut à gauche, tiroir depuis le bord gauche ---------- */
+
+@media (min-width: 768px) {
+  .dissertation-dock {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: auto;
+    width: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    flex-direction: column;
+  }
+
+  .dissertation-fullscreen {
+    top: 0.75rem;
+    right: 0.75rem;
+    bottom: auto;
+    left: auto;
+  }
+
+  .dissertation-burger {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    margin: 0;
+    z-index: 2; /* reste visible au-dessus du tiroir ouvert */
+  }
+
+  .dissertation-drawer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 300px;
+    max-width: 90vw;
+    display: block;
+    transform: translateX(-100%);
+    transition: transform 0.35s ease, visibility 0s linear 0.35s;
+  }
+  .dissertation-drawer.is-open {
+    transform: none;
+    transition: transform 0.35s ease, visibility 0s;
+  }
+
+  .dissertation-panel {
+    height: 100%;
+    border-radius: 0 20px 20px 0;
+    box-shadow: 6px 0 14px rgba(201, 197, 190, 0.45);
+  }
+  .dissertation-panel-scroll {
+    height: 100%;
+    max-height: none;
+    padding: 4.5rem 1.25rem 1.5rem; /* laisse la place au hamburger */
+  }
+
+  .dissertation-steps {
+    flex-direction: column;
+    align-items: stretch;
+    overflow-x: visible;
+    padding: 0.2rem 0 0;
+  }
+
+  .dissertation-step {
+    flex: 0 0 auto;
+    min-width: 0;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1rem;
+    padding-bottom: 1.6rem;
+    text-align: left;
+  }
+
+  /* Trait + flèche verticaux vers l'étape suivante */
+  .dissertation-step:not(:last-child)::before {
+    top: 46px;
+    bottom: 6px;
+    left: 19px;
+    right: auto;
+    width: 2px;
+    height: auto;
+  }
+  .dissertation-step:not(:last-child)::after {
+    top: auto;
+    bottom: 0;
+    left: 14px;
+    right: auto;
+    border: 6px solid transparent;
+    border-top: 8px solid var(--border);
+    border-bottom: 0;
+  }
+
+  .dissertation-step-btn {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .dissertation-step-title { padding: 0.5rem 0 0; }
+
+  .dissertation-step-detail { align-items: flex-start; text-align: left; margin-top: 0.2rem; }
+  .dissertation-step-actions { flex-direction: column; align-items: flex-start; }
+  .dissertation-notice { text-align: left; }
+  .dissertation-tools { justify-content: flex-start; }
+  .dissertation-panel-done { text-align: left; }
+}
+
+/* ---------- Fenêtre d'export (prénom, nom) ---------- */
+
+.dissertation-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(40, 30, 20, 0.35);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}
+
+.dissertation-modal {
+  width: min(360px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.3rem 1.4rem 1.2rem;
+  border-radius: 22px;
+  color: var(--text);
+  font-family: var(--sans);
+  background: var(--bg);
+  box-shadow: var(--neo-out);
+}
+.dissertation-modal h2 { margin: 0; font-family: var(--serif); font-size: 1.3rem; }
+
+.dissertation-modal-field { display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.85rem; color: var(--text-muted); }
+.dissertation-modal-field input {
+  border: none;
+  border-radius: 14px;
+  padding: 0.65rem 0.9rem;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--bg);
+  box-shadow: var(--neo-in);
+  outline: none;
+}
+.dissertation-modal-field input:focus-visible { box-shadow: var(--neo-in), 0 0 0 2px var(--accent); }
+
+.dissertation-modal-error { margin: 0; font-size: 0.8rem; color: var(--warn); }
+
+.dissertation-modal-actions { display: flex; justify-content: flex-end; align-items: center; gap: 0.6rem; margin-top: 0.2rem; }
+.dissertation-modal-actions .dissertation-validate { align-self: auto; }
+.dissertation-modal-cancel {
+  border: none;
+  background: none;
+  padding: 0.5rem 0.8rem;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.dissertation-modal-cancel:hover,
+.dissertation-modal-cancel:focus-visible { color: var(--accent-dark); text-decoration: underline; outline: none; }
+

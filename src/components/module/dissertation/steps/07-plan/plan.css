@@ -1,0 +1,83 @@
+/* Étape « Plan dialectique » : onglets et champs de la bulle, nœuds des parties. Importé par PlanProvider.jsx.
+   La mise en page de la bulle (.is-workspace) et les cartes viennent de lib/ui.css. */
+
+/* ---------- Connaissances : parties qui les utilisent ---------- */
+
+.dissertation-plan-used {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+.dissertation-plan-badge {
+  padding: 0.05rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: var(--knowledge);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+}
+.dissertation-plan-badge.is-current { color: var(--bg); background: var(--knowledge); box-shadow: none; }
+
+/* ---------- Éditeur : onglets, consigne, deux champs ---------- */
+
+.dissertation-plan-tabs {
+  display: flex;
+  gap: 0.3rem;
+  padding: 0.3rem;
+  border-radius: 999px;
+  background: var(--bg);
+  box-shadow: var(--neo-in);
+}
+.dissertation-plan-tab {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.5rem;
+  border: none;
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-muted);
+  background: transparent;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, color 0.2s ease;
+}
+.dissertation-plan-tab.is-active {
+  color: var(--accent-dark);
+  font-weight: 600;
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+}
+.dissertation-plan-tab:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 2px; }
+.dissertation-plan-tab-num { font-family: var(--serif); font-weight: 700; }
+.dissertation-plan-tab.is-done .dissertation-plan-tab-num { color: var(--ok); }
+
+.dissertation-plan-goal { margin: 0; font-size: 0.8rem; line-height: 1.4; color: var(--text-muted); }
+
+/* Grand écran : deux champs de hauteur raisonnable */
+.dissertation-bubble.is-plan:not(.is-sheet) .dissertation-ws-write .dissertation-field textarea { min-height: 8rem; }
+
+/* Plein écran : consigne plus discrète, masquée clavier ouvert */
+.dissertation-bubble.is-plan.is-sheet .dissertation-plan-goal { font-size: 0.75rem; }
+.dissertation-bubble.is-plan.is-compact .dissertation-plan-goal { display: none; }
+
+/* ---------- Nœuds des parties (lib/TextNode) ---------- */
+
+.dissertation-textnode p.dissertation-plannode-second { margin-top: 0.4rem; font-size: 0.78rem; color: var(--text-muted); }
+.dissertation-plannode-count {
+  display: block;
+  margin-top: 0.4rem;
+  font-family: var(--sans);
+  font-size: 0.68rem;
+  color: var(--knowledge);
+}

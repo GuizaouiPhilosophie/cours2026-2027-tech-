@@ -4,6 +4,7 @@ import CorpusImage from "./CorpusImage";
 import CorpusDivider from "./CorpusDivider";
 import CorpusPdf from "./CorpusPdf";
 import ContentBlock from "./ContentBlock";
+import SeanceButton, { buttonTarget, isTitleButton } from "./SeanceButton";
 import { renderMarkdown } from "../../lib/markdown";
 import { getCorpusText, getBibEntry } from "../../lib/loadCorpusTexts";
 import { formatCitation } from "../../lib/bib";
@@ -21,6 +22,11 @@ import { formatCitation } from "../../lib/bib";
  *   [[pdf:mon-id]]                           -> PDF (CorpusPdf), lecteur intégré
  *   [[pdf:mon-id|Une légende]]               -> PDF avec légende
  *   [[pdf:mon-id|height:800px]]              -> PDF avec hauteur de lecteur personnalisée
+ *   [[bouton:dissertation]]                  -> bouton « S'exercer » vers /dissertation, dans le texte
+ *   [[bouton:dissertation|Mon libellé]]      -> libellé personnalisé
+ *   [[bouton:dissertation|align:center]]     -> left (défaut), center ou right
+ *   [[bouton:dissertation|place:titre]]      -> bouton placé à droite du titre du cours
+ *   [[bouton:lien|to:https://...]]           -> lien externe (nouvel onglet)
  *
  * `align` accepte "left", "right" ou "center" (défaut). En "left"/"right"
  * l'image flotte et le texte qui suit s'écrit à côté (utile pour les
@@ -35,7 +41,7 @@ import { formatCitation } from "../../lib/bib";
  * Les [[corpus:id]] sont en plus ajoutés à la bibliographie en bas de la
  * séance ; les [[image:id]] n'y apparaissent pas.
  */
-const TOKEN_RE = /\[\[(corpus|image|divider|pdf):([a-z0-9_-]+)((?:\|[^\]|]+)*)\]\]/gi;
+const TOKEN_RE = /\[\[(corpus|image|divider|pdf|bouton):([a-z0-9_-]+)((?:\|[^\]|]+)*)\]\]/gi;
 
 /**
  * Blocs génériques ::: type [titre optionnel] ... :::
@@ -185,6 +191,18 @@ function renderParts(parts, keyPrefix = "") {
         />
       );
     }
+    if (part.type === "bouton") {
+      // Les boutons « place:titre » sont rendus dans l'en-tête par <Cours>.
+      if (isTitleButton(part)) return null;
+      return (
+        <SeanceButton
+          key={key}
+          to={buttonTarget(part)}
+          label={part.caption}
+          align={part.params.align}
+        />
+      );
+    }
     if (part.type === "block") {
       return (
         <ContentBlock key={key} type={part.blockType} title={part.title}>
@@ -221,8 +239,25 @@ export default function SeanceMarkdown({ title, markdown }) {
   }
   const corpusIds = [...new Set(collectCorpusIds(parts))];
 
+  // Bouton à placer à côté du titre : le premier [[bouton:...|place:titre]]
+  // trouvé (y compris dans un bloc :::). Les suivants sont ignorés.
+  function findTitleButton(list) {
+    for (const p of list) {
+      if (isTitleButton(p)) return p;
+      if (p.type === "block") {
+        const nested = findTitleButton(splitInline(p.value));
+        if (nested) return nested;
+      }
+    }
+    return null;
+  }
+  const titleButton = findTitleButton(parts);
+  const action = titleButton
+    ? { to: buttonTarget(titleButton), label: titleButton.caption }
+    : undefined;
+
   return (
-    <Cours title={title}>
+    <Cours title={title} action={action}>
       {renderParts(parts)}
 
       {corpusIds.length > 0 && (

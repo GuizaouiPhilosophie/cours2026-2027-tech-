@@ -1,0 +1,930 @@
+{
+  "termes": [
+    {
+      "id": "absolu",
+      "terme": "Absolu",
+      "repere": "Absolu / Relatif",
+      "definition": "Ce qui est indépendant de toute condition, de tout point de vue.",
+      "exemple": "la vérité absolue",
+      "associes": [
+        "relatif"
+      ],
+      "voir_aussi": [
+        "necessaire",
+        "objectif"
+      ]
+    },
+    {
+      "id": "relatif",
+      "terme": "Relatif",
+      "repere": "Absolu / Relatif",
+      "definition": "Ce qui dépend d’un point de vue, d’un contexte ou d’une condition.",
+      "exemple": "les goûts sont relatifs",
+      "associes": [
+        "absolu"
+      ],
+      "voir_aussi": [
+        "contingent",
+        "subjectif"
+      ]
+    },
+    {
+      "id": "abstrait",
+      "terme": "Abstrait",
+      "repere": "Abstrait / Concret",
+      "definition": "Ce qui est saisi par l’esprit en isolant certaines qualités.",
+      "exemple": "la justice, la beauté",
+      "associes": [
+        "concret"
+      ],
+      "voir_aussi": [
+        "concept",
+        "formel",
+        "genre",
+        "ideal"
+      ]
+    },
+    {
+      "id": "concret",
+      "terme": "Concret",
+      "repere": "Abstrait / Concret",
+      "definition": "Ce qui est donné dans l’expérience sensible, réel, tangible.",
+      "exemple": "un tribunal, une œuvre d’art",
+      "associes": [
+        "abstrait"
+      ],
+      "voir_aussi": [
+        "exemple",
+        "image",
+        "individu",
+        "materiel",
+        "reel"
+      ]
+    },
+    {
+      "id": "en-puissance",
+      "terme": "En puissance",
+      "repere": "En acte / En puissance",
+      "definition": "Ce qui peut être, mais ne l’est pas encore.",
+      "exemple": "la graine est arbre en puissance",
+      "auteur": "Aristote",
+      "associes": [
+        "en-acte"
+      ],
+      "voir_aussi": [
+        "possible"
+      ]
+    },
+    {
+      "id": "en-acte",
+      "terme": "En acte",
+      "repere": "En acte / En puissance",
+      "definition": "Ce qui est réalisé, accompli.",
+      "exemple": "l’arbre est la graine en acte",
+      "auteur": "Aristote",
+      "associes": [
+        "en-puissance"
+      ],
+      "voir_aussi": [
+        "reel"
+      ]
+    },
+    {
+      "id": "analyse",
+      "terme": "Analyse",
+      "repere": "Analyse / Synthèse",
+      "definition": "Décomposer un tout en ses éléments pour comprendre.",
+      "exemple": "analyser une phrase",
+      "associes": [
+        "synthese"
+      ],
+      "voir_aussi": [
+        "discursif"
+      ]
+    },
+    {
+      "id": "synthese",
+      "terme": "Synthèse",
+      "repere": "Analyse / Synthèse",
+      "definition": "Rassembler les éléments pour reconstituer un tout cohérent.",
+      "exemple": "rédiger un résumé",
+      "associes": [
+        "analyse"
+      ],
+      "voir_aussi": [
+        "concept"
+      ]
+    },
+    {
+      "id": "concept",
+      "terme": "Concept",
+      "repere": "Concept / Image / Métaphore",
+      "definition": "Idée générale, rigoureuse, définie par la raison.",
+      "associes": [
+        "image",
+        "metaphore"
+      ],
+      "voir_aussi": [
+        "abstrait",
+        "synthese"
+      ]
+    },
+    {
+      "id": "image",
+      "terme": "Image",
+      "repere": "Concept / Image / Métaphore",
+      "definition": "Représentation sensible d’une idée.",
+      "associes": [
+        "concept",
+        "metaphore"
+      ],
+      "voir_aussi": [
+        "concret"
+      ]
+    },
+    {
+      "id": "metaphore",
+      "terme": "Métaphore",
+      "repere": "Concept / Image / Métaphore",
+      "definition": "Image utilisée pour exprimer une idée abstraite.",
+      "exemple": "le temps, c’est de l’argent",
+      "associes": [
+        "concept",
+        "image"
+      ],
+      "voir_aussi": []
+    },
+    {
+      "id": "contingent",
+      "terme": "Contingent",
+      "repere": "Contingent / Nécessaire",
+      "definition": "Ce qui peut être ou ne pas être.",
+      "exemple": "il pleut aujourd’hui",
+      "associes": [
+        "necessaire"
+      ],
+      "voir_aussi": [
+        "accidentel",
+        "possible",
+        "relatif"
+      ]
+    },
+    {
+      "id": "necessaire",
+      "terme": "Nécessaire",
+      "repere": "Contingent / Nécessaire",
+      "definition": "Ce qui ne peut pas ne pas être.",
+      "exemple": "2+2=4",
+      "associes": [
+        "contingent"
+      ],
+      "voir_aussi": [
+        "absolu",
+        "consequence",
+        "essentiel",
+        "impossible"
+      ]
+    },
+    {
+      "id": "croire",
+      "terme": "Croire",
+      "repere": "Croire / Savoir",
+      "definition": "Adhérer sans preuve certaine.",
+      "associes": [
+        "savoir"
+      ],
+      "voir_aussi": [
+        "subjectif"
+      ]
+    },
+    {
+      "id": "savoir",
+      "terme": "Savoir",
+      "repere": "Croire / Savoir",
+      "definition": "Tenir pour vrai avec des raisons ou preuves démontrées.",
+      "associes": [
+        "croire"
+      ],
+      "voir_aussi": [
+        "intersubjectif",
+        "objectif",
+        "preuve"
+      ]
+    },
+    {
+      "id": "essentiel",
+      "terme": "Essentiel",
+      "repere": "Essentiel / Accidentel",
+      "definition": "Ce sans quoi une chose ne serait pas ce qu’elle est.",
+      "associes": [
+        "accidentel"
+      ],
+      "voir_aussi": [
+        "identite",
+        "necessaire"
+      ]
+    },
+    {
+      "id": "accidentel",
+      "terme": "Accidentel",
+      "repere": "Essentiel / Accidentel",
+      "definition": "Ce qui peut être modifié sans changer la nature de la chose.",
+      "associes": [
+        "essentiel"
+      ],
+      "voir_aussi": [
+        "contingent"
+      ]
+    },
+    {
+      "id": "exemple",
+      "terme": "Exemple",
+      "repere": "Exemple / Preuve",
+      "definition": "Cas particulier illustrant une idée.",
+      "associes": [
+        "preuve"
+      ],
+      "voir_aussi": [
+        "concret"
+      ]
+    },
+    {
+      "id": "preuve",
+      "terme": "Preuve",
+      "repere": "Exemple / Preuve",
+      "definition": "Démonstration rationnelle établissant la vérité d’une proposition.",
+      "associes": [
+        "exemple"
+      ],
+      "voir_aussi": [
+        "conclusion",
+        "discursif",
+        "hypothese",
+        "savoir"
+      ]
+    },
+    {
+      "id": "expliquer",
+      "terme": "Expliquer",
+      "repere": "Expliquer / Comprendre",
+      "definition": "Dégager les causes objectives (démarche scientifique).",
+      "associes": [
+        "comprendre"
+      ],
+      "voir_aussi": [
+        "objectif"
+      ]
+    },
+    {
+      "id": "comprendre",
+      "terme": "Comprendre",
+      "repere": "Expliquer / Comprendre",
+      "definition": "Saisir le sens ou les raisons subjectives (démarche interprétative).",
+      "associes": [
+        "expliquer"
+      ],
+      "voir_aussi": [
+        "subjectif"
+      ]
+    },
+    {
+      "id": "en-fait",
+      "terme": "En fait",
+      "repere": "En fait / En droit",
+      "definition": "Ce qui est dans la réalité (constat).",
+      "associes": [
+        "en-droit"
+      ],
+      "voir_aussi": [
+        "reel"
+      ]
+    },
+    {
+      "id": "en-droit",
+      "terme": "En droit",
+      "repere": "En fait / En droit",
+      "definition": "Ce qui doit être selon la norme ou la justice.",
+      "associes": [
+        "en-fait"
+      ],
+      "voir_aussi": [
+        "ideal",
+        "legal",
+        "legitime",
+        "obligation"
+      ]
+    },
+    {
+      "id": "formel",
+      "terme": "Formel",
+      "repere": "Formel / Matériel",
+      "definition": "Ce qui concerne la forme, la structure.",
+      "associes": [
+        "materiel"
+      ],
+      "voir_aussi": [
+        "abstrait"
+      ]
+    },
+    {
+      "id": "materiel",
+      "terme": "Matériel",
+      "repere": "Formel / Matériel",
+      "definition": "Ce qui concerne la matière, le contenu.",
+      "associes": [
+        "formel"
+      ],
+      "voir_aussi": [
+        "concret"
+      ]
+    },
+    {
+      "id": "genre",
+      "terme": "Genre",
+      "repere": "Genre / Espèce / Individu",
+      "definition": "Catégorie large.",
+      "exemple": "animal",
+      "associes": [
+        "espece",
+        "individu"
+      ],
+      "voir_aussi": [
+        "abstrait"
+      ]
+    },
+    {
+      "id": "espece",
+      "terme": "Espèce",
+      "repere": "Genre / Espèce / Individu",
+      "definition": "Sous-catégorie du genre.",
+      "exemple": "humain",
+      "associes": [
+        "genre",
+        "individu"
+      ],
+      "voir_aussi": []
+    },
+    {
+      "id": "individu",
+      "terme": "Individu",
+      "repere": "Genre / Espèce / Individu",
+      "definition": "Être singulier d’une espèce.",
+      "exemple": "Socrate",
+      "associes": [
+        "genre",
+        "espece"
+      ],
+      "voir_aussi": [
+        "concret"
+      ]
+    },
+    {
+      "id": "hypothese",
+      "terme": "Hypothèse",
+      "repere": "Hypothèse / Conséquence / Conclusion",
+      "definition": "Proposition de départ à vérifier.",
+      "associes": [
+        "consequence",
+        "conclusion"
+      ],
+      "voir_aussi": [
+        "preuve"
+      ]
+    },
+    {
+      "id": "consequence",
+      "terme": "Conséquence",
+      "repere": "Hypothèse / Conséquence / Conclusion",
+      "definition": "Ce qui découle logiquement d’une hypothèse.",
+      "associes": [
+        "hypothese",
+        "conclusion"
+      ],
+      "voir_aussi": [
+        "necessaire"
+      ]
+    },
+    {
+      "id": "conclusion",
+      "terme": "Conclusion",
+      "repere": "Hypothèse / Conséquence / Conclusion",
+      "definition": "Résultat final du raisonnement.",
+      "associes": [
+        "hypothese",
+        "consequence"
+      ],
+      "voir_aussi": [
+        "preuve"
+      ]
+    },
+    {
+      "id": "ideal",
+      "terme": "Idéal",
+      "repere": "Idéal / Réel",
+      "definition": "Ce qui relève de la perfection, du modèle.",
+      "associes": [
+        "reel"
+      ],
+      "voir_aussi": [
+        "abstrait",
+        "en-droit"
+      ]
+    },
+    {
+      "id": "reel",
+      "terme": "Réel",
+      "repere": "Idéal / Réel",
+      "definition": "Ce qui existe effectivement, avec ses limites.",
+      "associes": [
+        "ideal"
+      ],
+      "voir_aussi": [
+        "concret",
+        "en-acte",
+        "en-fait"
+      ]
+    },
+    {
+      "id": "identite",
+      "terme": "Identité",
+      "repere": "Identité / Égalité / Différence",
+      "definition": "Ce qui reste le même à travers le changement.",
+      "associes": [
+        "egalite",
+        "difference"
+      ],
+      "voir_aussi": [
+        "essentiel"
+      ]
+    },
+    {
+      "id": "egalite",
+      "terme": "Égalité",
+      "repere": "Identité / Égalité / Différence",
+      "definition": "Rapport d’équivalence entre des choses différentes.",
+      "associes": [
+        "identite",
+        "difference"
+      ],
+      "voir_aussi": []
+    },
+    {
+      "id": "difference",
+      "terme": "Différence",
+      "repere": "Identité / Égalité / Différence",
+      "definition": "Ce qui distingue une chose d’une autre.",
+      "associes": [
+        "identite",
+        "egalite"
+      ],
+      "voir_aussi": []
+    },
+    {
+      "id": "impossible",
+      "terme": "Impossible",
+      "repere": "Impossible / Possible",
+      "definition": "Ce qui ne peut pas être ou se réaliser.",
+      "associes": [
+        "possible"
+      ],
+      "voir_aussi": [
+        "necessaire"
+      ]
+    },
+    {
+      "id": "possible",
+      "terme": "Possible",
+      "repere": "Impossible / Possible",
+      "definition": "Ce qui peut être, même si ce n’est pas encore réalisé.",
+      "associes": [
+        "impossible"
+      ],
+      "voir_aussi": [
+        "contingent",
+        "en-puissance"
+      ]
+    },
+    {
+      "id": "intuitif",
+      "terme": "Intuitif",
+      "repere": "Intuitif / Discursif",
+      "definition": "Saisi immédiatement, sans raisonnement.",
+      "associes": [
+        "discursif"
+      ],
+      "voir_aussi": [
+        "immediat"
+      ]
+    },
+    {
+      "id": "discursif",
+      "terme": "Discursif",
+      "repere": "Intuitif / Discursif",
+      "definition": "Saisi par un enchaînement de raisons.",
+      "associes": [
+        "intuitif"
+      ],
+      "voir_aussi": [
+        "analyse",
+        "mediat",
+        "preuve"
+      ]
+    },
+    {
+      "id": "legal",
+      "terme": "Légal",
+      "repere": "Légal / Légitime",
+      "definition": "Conforme à la loi.",
+      "associes": [
+        "legitime"
+      ],
+      "voir_aussi": [
+        "contrainte",
+        "en-droit"
+      ]
+    },
+    {
+      "id": "legitime",
+      "terme": "Légitime",
+      "repere": "Légal / Légitime",
+      "definition": "Conforme à la justice ou à la morale (peut être au-delà de la loi).",
+      "associes": [
+        "legal"
+      ],
+      "voir_aussi": [
+        "en-droit",
+        "obligation"
+      ]
+    },
+    {
+      "id": "mediat",
+      "terme": "Médiat",
+      "repere": "Médiat / Immédiat",
+      "definition": "Obtenu par l’intermédiaire d’un raisonnement ou d’un moyen.",
+      "associes": [
+        "immediat"
+      ],
+      "voir_aussi": [
+        "discursif"
+      ]
+    },
+    {
+      "id": "immediat",
+      "terme": "Immédiat",
+      "repere": "Médiat / Immédiat",
+      "definition": "Donné directement, sans médiation.",
+      "associes": [
+        "mediat"
+      ],
+      "voir_aussi": [
+        "intuitif"
+      ]
+    },
+    {
+      "id": "objectif",
+      "terme": "Objectif",
+      "repere": "Objectif / Subjectif / Intersubjectif",
+      "definition": "Indépendant du sujet, fondé sur les faits.",
+      "associes": [
+        "subjectif",
+        "intersubjectif"
+      ],
+      "voir_aussi": [
+        "absolu",
+        "expliquer",
+        "savoir"
+      ]
+    },
+    {
+      "id": "subjectif",
+      "terme": "Subjectif",
+      "repere": "Objectif / Subjectif / Intersubjectif",
+      "definition": "Dépendant du point de vue ou du ressenti personnel.",
+      "associes": [
+        "objectif",
+        "intersubjectif"
+      ],
+      "voir_aussi": [
+        "comprendre",
+        "croire",
+        "relatif"
+      ]
+    },
+    {
+      "id": "intersubjectif",
+      "terme": "Intersubjectif",
+      "repere": "Objectif / Subjectif / Intersubjectif",
+      "definition": "Fondé sur un accord entre plusieurs sujets.",
+      "exemple": "consensus scientifique",
+      "associes": [
+        "objectif",
+        "subjectif"
+      ],
+      "voir_aussi": [
+        "savoir"
+      ]
+    },
+    {
+      "id": "obligation",
+      "terme": "Obligation",
+      "repere": "Obligation / Contrainte",
+      "definition": "Devoir moral librement consenti.",
+      "associes": [
+        "contrainte"
+      ],
+      "voir_aussi": [
+        "en-droit",
+        "legitime"
+      ]
+    },
+    {
+      "id": "contrainte",
+      "terme": "Contrainte",
+      "repere": "Obligation / Contrainte",
+      "definition": "Force extérieure qui s’impose sans liberté.",
+      "associes": [
+        "obligation"
+      ],
+      "voir_aussi": [
+        "legal"
+      ]
+    },
+    {
+      "id": "origine",
+      "terme": "Origine",
+      "repere": "Origine / Fondement",
+      "definition": "Ce par quoi quelque chose commence.",
+      "associes": [
+        "fondement"
+      ],
+      "voir_aussi": []
+    },
+    {
+      "id": "fondement",
+      "terme": "Fondement",
+      "repere": "Origine / Fondement",
+      "definition": "Ce qui justifie, ce sur quoi repose une chose.",
+      "associes": [
+        "origine"
+      ],
+      "voir_aussi": [
+        "legitime",
+        "preuve"
+      ]
+    },
+    {
+      "id": "persuader",
+      "terme": "Persuader",
+      "repere": "Persuader / Convaincre",
+      "definition": "Faire adhérer par les émotions.",
+      "associes": [
+        "convaincre"
+      ],
+      "voir_aussi": [
+        "croire"
+      ]
+    },
+    {
+      "id": "convaincre",
+      "terme": "Convaincre",
+      "repere": "Persuader / Convaincre",
+      "definition": "Faire adhérer par la raison et les arguments.",
+      "associes": [
+        "persuader"
+      ],
+      "voir_aussi": [
+        "preuve",
+        "savoir"
+      ]
+    },
+    {
+      "id": "principe",
+      "terme": "Principe",
+      "repere": "Principe / Cause / Fin",
+      "definition": "Ce qui est premier dans l’ordre logique ou moral.",
+      "associes": [
+        "cause",
+        "fin"
+      ],
+      "voir_aussi": [
+        "hypothese"
+      ]
+    },
+    {
+      "id": "cause",
+      "terme": "Cause",
+      "repere": "Principe / Cause / Fin",
+      "definition": "Ce qui produit un effet.",
+      "associes": [
+        "principe",
+        "fin"
+      ],
+      "voir_aussi": [
+        "expliquer",
+        "consequence"
+      ]
+    },
+    {
+      "id": "fin",
+      "terme": "Fin",
+      "repere": "Principe / Cause / Fin",
+      "definition": "Le but visé par une action.",
+      "associes": [
+        "principe",
+        "cause"
+      ],
+      "voir_aussi": []
+    },
+    {
+      "id": "public",
+      "terme": "Public",
+      "repere": "Public / Privé",
+      "definition": "Ce qui concerne la collectivité, accessible à tous.",
+      "associes": [
+        "prive"
+      ],
+      "voir_aussi": []
+    },
+    {
+      "id": "prive",
+      "terme": "Privé",
+      "repere": "Public / Privé",
+      "definition": "Ce qui concerne l’individu, sa sphère personnelle.",
+      "associes": [
+        "public"
+      ],
+      "voir_aussi": []
+    },
+    {
+      "id": "ressemblance",
+      "terme": "Ressemblance",
+      "repere": "Ressemblance / Analogie",
+      "definition": "Similitude partielle entre deux choses.",
+      "associes": [
+        "analogie"
+      ],
+      "voir_aussi": [
+        "difference",
+        "identite"
+      ]
+    },
+    {
+      "id": "analogie",
+      "terme": "Analogie",
+      "repere": "Ressemblance / Analogie",
+      "definition": "Rapport de proportion entre deux relations.",
+      "exemple": "l’œil est au corps ce que la raison est à l’âme",
+      "associes": [
+        "ressemblance"
+      ],
+      "voir_aussi": [
+        "metaphore"
+      ]
+    },
+    {
+      "id": "theorie",
+      "terme": "Théorie",
+      "repere": "Théorie / Pratique",
+      "definition": "Ensemble d’idées permettant d’expliquer.",
+      "associes": [
+        "pratique"
+      ],
+      "voir_aussi": [
+        "hypothese",
+        "expliquer"
+      ]
+    },
+    {
+      "id": "pratique",
+      "terme": "Pratique",
+      "repere": "Théorie / Pratique",
+      "definition": "Action concrète, mise en œuvre de la théorie.",
+      "associes": [
+        "theorie"
+      ],
+      "voir_aussi": [
+        "concret"
+      ]
+    },
+    {
+      "id": "transcendant",
+      "terme": "Transcendant",
+      "repere": "Transcendant / Immanent",
+      "definition": "Ce qui dépasse le monde, lui est extérieur.",
+      "exemple": "Dieu pour certaines religions",
+      "associes": [
+        "immanent"
+      ],
+      "voir_aussi": [
+        "absolu"
+      ]
+    },
+    {
+      "id": "immanent",
+      "terme": "Immanent",
+      "repere": "Transcendant / Immanent",
+      "definition": "Ce qui est intérieur au monde, présent en lui.",
+      "exemple": "la nature chez Spinoza",
+      "associes": [
+        "transcendant"
+      ],
+      "voir_aussi": []
+    },
+    {
+      "id": "universel",
+      "terme": "Universel",
+      "repere": "Universel / Général / Particulier / Singulier",
+      "definition": "Valable pour tous, sans exception.",
+      "exemple": "les lois mathématiques",
+      "associes": [
+        "general",
+        "particulier",
+        "singulier"
+      ],
+      "voir_aussi": [
+        "necessaire"
+      ]
+    },
+    {
+      "id": "general",
+      "terme": "Général",
+      "repere": "Universel / Général / Particulier / Singulier",
+      "definition": "Valable pour la plupart des cas.",
+      "associes": [
+        "universel",
+        "particulier",
+        "singulier"
+      ],
+      "voir_aussi": [
+        "genre"
+      ]
+    },
+    {
+      "id": "particulier",
+      "terme": "Particulier",
+      "repere": "Universel / Général / Particulier / Singulier",
+      "definition": "Valable pour certains cas seulement.",
+      "associes": [
+        "universel",
+        "general",
+        "singulier"
+      ],
+      "voir_aussi": []
+    },
+    {
+      "id": "singulier",
+      "terme": "Singulier",
+      "repere": "Universel / Général / Particulier / Singulier",
+      "definition": "Valable pour un seul cas.",
+      "associes": [
+        "universel",
+        "general",
+        "particulier"
+      ],
+      "voir_aussi": [
+        "individu"
+      ]
+    },
+    {
+      "id": "vrai",
+      "terme": "Vrai",
+      "repere": "Vrai / Probable / Certain",
+      "definition": "Conforme à la réalité ou à la logique.",
+      "associes": [
+        "probable",
+        "certain"
+      ],
+      "voir_aussi": [
+        "objectif",
+        "savoir"
+      ]
+    },
+    {
+      "id": "probable",
+      "terme": "Probable",
+      "repere": "Vrai / Probable / Certain",
+      "definition": "Ce qui a de fortes chances d’être vrai.",
+      "associes": [
+        "vrai",
+        "certain"
+      ],
+      "voir_aussi": [
+        "possible"
+      ]
+    },
+    {
+      "id": "certain",
+      "terme": "Certain",
+      "repere": "Vrai / Probable / Certain",
+      "definition": "Ce dont on ne peut douter.",
+      "associes": [
+        "vrai",
+        "probable"
+      ],
+      "voir_aussi": [
+        "savoir",
+        "croire"
+      ]
+    }
+  ]
+}

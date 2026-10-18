@@ -1,0 +1,361 @@
+/* Étape « Définition » : mots du sujet, contenu de la bulle, glossaire, nœuds de définition.
+   Importé par DefinitionProvider.jsx. La bulle elle-même, les champs et les pastilles sont dans lib/ui.css. */
+
+/* ---------- Sujet : mots cliquables ---------- */
+
+.dissertation-subject-hint {
+  display: block;
+  margin-top: 0.6rem;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.dissertation-word {
+  margin: 0;
+  padding: 0 0.06em;
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  border-bottom: 2px dotted var(--border);
+  border-radius: 4px 4px 0 0;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.dissertation-word:hover,
+.dissertation-word:focus-visible { background: rgba(0, 0, 0, 0.05); outline: none; }
+.dissertation-word.is-defined {
+  color: var(--accent-dark);
+  border-bottom: 2px solid var(--accent-dark);
+}
+
+/* ---------- Bulle de définition : recherche ---------- */
+
+.dissertation-dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.dissertation-dialog-head h2 { margin: 0; font-family: var(--serif); font-size: 1.3rem; }
+
+.dissertation-search input,
+.dissertation-dialog-search {
+  border: none;
+  border-radius: 14px;
+  padding: 0.7rem 0.9rem;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: var(--bg);
+  box-shadow: var(--neo-in);
+  outline: none;
+}
+
+.dissertation-search { display: flex; align-items: center; gap: 0.5rem; }
+.dissertation-search input { flex: 1; min-width: 0; }
+
+.dissertation-tool:hover { box-shadow: var(--neo-in); }
+.dissertation-tool.is-active { box-shadow: var(--neo-in); font-weight: 600; }
+
+/* ---------- Confirmation de remplacement ---------- */
+
+.dissertation-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 14px;
+  background: var(--bg);
+  box-shadow: var(--neo-in);
+}
+.dissertation-confirm p { margin: 0; font-size: 0.85rem; line-height: 1.4; }
+.dissertation-confirm-actions { display: flex; align-items: center; justify-content: center; gap: 0.6rem; }
+
+/* ---------- Résultats & glossaire ---------- */
+
+.dissertation-results,
+.dissertation-glossary ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.dissertation-result {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: 12px;
+  text-align: left;
+  font-family: var(--sans);
+  color: var(--text);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+  cursor: pointer;
+}
+.dissertation-result:hover,
+.dissertation-result.is-selected { box-shadow: var(--neo-in); }
+.dissertation-result strong { font-size: 0.9rem; }
+.dissertation-result span {
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--text-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dissertation-glossary { padding: 0.3rem 0.5rem 0.6rem; }
+/* Dans la bulle, seule la liste du glossaire se réduit quand la place manque : le reste garde sa taille. */
+.dissertation-bubble-body > .dissertation-glossary-resizable { flex-shrink: 1; min-height: 0; }
+.dissertation-glossary-resizable { display: flex; flex-direction: column; }
+.dissertation-glossary-box { flex: 0 1 auto; min-height: 0; overflow: hidden; } /* flex-basis = hauteur demandée (JSX) */
+.dissertation-bubble .dissertation-glossary {
+  box-sizing: border-box;
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* Barre de glissement : règle la hauteur de la liste (souris, doigt, flèches haut/bas) */
+.dissertation-grip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.6rem;
+  cursor: ns-resize;
+  flex: 0 0 auto;
+  touch-action: none; /* le doigt déplace la barre au lieu de faire défiler */
+  outline: none;
+}
+.dissertation-grip span {
+  width: 3rem;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--bg);
+  box-shadow: var(--neo-in);
+  transition: box-shadow 0.2s ease;
+}
+.dissertation-grip:hover span,
+.dissertation-grip:focus-visible span { box-shadow: var(--neo-out-sm); }
+.dissertation-glossary h4 {
+  margin: 0.7rem 0 0.4rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+}
+.dissertation-glossary section:first-child h4 { margin-top: 0; }
+
+/* ---------- Fiche d'un terme ---------- */
+
+.dissertation-termcard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.9rem 1rem;
+  border-radius: 16px;
+  background: var(--bg);
+  box-shadow: var(--neo-in);
+}
+.dissertation-termcard header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.6rem; }
+.dissertation-termcard h3 { margin: 0; font-family: var(--serif); font-size: 1.1rem; }
+.dissertation-termcard-repere { font-size: 0.72rem; color: var(--text-muted); }
+.dissertation-termcard p { margin: 0; font-size: 0.88rem; line-height: 1.5; }
+.dissertation-termcard .dissertation-termcard-ex { font-style: italic; color: var(--text-muted); }
+.dissertation-termcard-group { display: flex; flex-direction: column; gap: 0.35rem; }
+.dissertation-termcard-group > span {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ---------- Fenêtre « Glossaire » (outil de l'étape) ---------- */
+
+.dissertation-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(60, 55, 48, 0.35);
+}
+.dissertation-dialog {
+  width: min(860px, 100%);
+  max-height: min(720px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.1rem 1.25rem 1.25rem;
+  border-radius: 22px;
+  color: var(--text);
+  font-family: var(--sans);
+  background: var(--bg);
+  box-shadow: var(--neo-out);
+}
+.dissertation-dialog-body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-content: start;
+  gap: 1rem;
+  overflow-y: auto;
+  padding: 0.4rem;
+}
+
+@media (min-width: 768px) {
+  .dissertation-dialog-body { grid-template-columns: 1fr 1fr; overflow: hidden; }
+  .dissertation-dialog-body > * { min-height: 0; overflow-y: auto; padding: 0.4rem; }
+  .dissertation-dialog-body > .dissertation-termcard { align-self: start; max-height: 100%; }
+}
+
+/* ---------- Nœud de définition (carte mentale) ---------- */
+
+.dissertation-wordwrap { position: relative; }
+
+.dissertation-defnode {
+  width: 220px;
+  padding: 0.7rem 0.85rem;
+  border-radius: 14px;
+  text-align: left;
+  font-family: var(--sans);
+  color: var(--text);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+  cursor: pointer;
+}
+.dissertation-defnode:focus-visible { outline: none; }
+.dissertation-defnode strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  color: var(--accent-dark);
+}
+.dissertation-defnode p {
+  margin: 0;
+  max-height: 9em;
+  overflow: hidden;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.dissertation-defnode-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+.dissertation-defnode-head strong { margin-bottom: 0; }
+/* Terme défini différent du mot du sujet : rappel discret du mot d'origine */
+.dissertation-defnode-word {
+  display: block;
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.dissertation-defnode-toggle {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: var(--sans);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.dissertation-defnode-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+  cursor: default;
+}
+.dissertation-defnode-group { display: flex; flex-direction: column; gap: 0.3rem; }
+.dissertation-defnode-group > span {
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.dissertation-defnode .dissertation-chips { gap: 0.35rem; }
+.dissertation-defnode .dissertation-chip { padding: 0.15rem 0.55rem; font-size: 0.7rem; }
+
+/* ---------- Bouton « + définition » au-dessus d'un mot déjà défini ---------- */
+
+/* Le sujet passe au-dessus des liens tant que ce bouton est affiché : voir view.menuOpen dans step.js. */
+.dissertation-addword {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  padding: 0.2rem 0.65rem;
+  border: none;
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  white-space: nowrap;
+  color: var(--accent-dark);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+  cursor: pointer;
+}
+.dissertation-addword:hover,
+.dissertation-addword:focus-visible { box-shadow: var(--neo-in); outline: none; }
+
+/* ---------- Nœuds enfants et aperçu d'une pastille ---------- */
+
+.dissertation-defnode.is-child { cursor: default; }
+.dissertation-defnode-links .dissertation-chip.is-active { box-shadow: var(--neo-in); }
+
+.dissertation-defnode-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 12px;
+  background: var(--bg);
+  box-shadow: var(--neo-in);
+}
+.dissertation-defnode-preview strong { margin-bottom: 0; font-size: 0.85rem; }
+.dissertation-defnode-preview p { max-height: none; font-size: 0.75rem; }
+
+.dissertation-defnode-create {
+  align-self: flex-start;
+  padding: 0.2rem 0.65rem;
+  border: none;
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  color: var(--accent-dark);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+  cursor: pointer;
+}
+.dissertation-defnode-create:hover:not(:disabled),
+.dissertation-defnode-create:focus-visible { box-shadow: var(--neo-in); outline: none; }
+.dissertation-defnode-create:disabled { color: var(--text-muted); cursor: default; }
+
+/* Hors de l'étape : les mots sont du texte simple, soulignés s'ils sont définis */
+.dissertation-word.is-static { cursor: inherit; }
+.dissertation-word.is-static:hover { background: none; }
+.dissertation-word.is-static:not(.is-defined) { border-bottom-color: transparent; }

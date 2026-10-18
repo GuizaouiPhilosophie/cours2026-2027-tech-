@@ -8,6 +8,9 @@
 :::epigraphe
 « *Sapere aude! (Ose savoir) Aie le courage de te servir de ton propre entendement* » - Kant dans *Qu'est-ce que les Lumières?*
 :::
+[[divider:fantasy-1|width:30%]]
+
+[[bouton:dissertation|S’entraîner à rédiger une dissertation|align:center]]
 
 [[divider:fantasy-1|width:30%]]
 
@@ -117,6 +120,10 @@ proposer le traitement "I) La vérité, II) L'opinion, III) La vérité est-elle
     1. Le concept est bénéfique.
     2. Le concept est impossible ou indiscernable.
     3. Le concept est parfois nuisible.
+
+[[divider:fantasy-1|width:30%]]
+
+[[bouton:dissertation|S’entraîner à rédiger une dissertation|align:center]]
 
 [[divider:fantasy-1|width:30%]]
 

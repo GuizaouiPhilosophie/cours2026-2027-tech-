@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import SeancePage from "./pages/SeancePage";
 import ExplicationPage from "./pages/ExplicationPage";
+import DissertationPage from "./pages/DissertationPage";
 
 /**
  * BrowserRouter (et non HashRouter) : chaque séance a une vraie URL de
@@ -32,6 +33,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/sequence/:sequenceId/seance/:seanceId" element={<SeancePage />} />
         <Route path="/explication/:textId" element={<ExplicationPage />} />
+        <Route path="/dissertation" element={<DissertationPage />} />
       </Routes>
     </BrowserRouter>
   );

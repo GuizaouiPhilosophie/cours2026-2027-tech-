@@ -1,0 +1,436 @@
+/* Composants partagés par toutes les étapes : bulles, champs, pastilles, cartes, atelier,
+   consigne, nœuds texte, liens, poignées. Les variables (--neo-*, --contradiction, --knowledge)
+   sont définies sur .dissertation-editor (dissertation.css). */
+
+/* ---------- Poignées invisibles ---------- */
+
+.dissertation-handle { opacity: 0; pointer-events: none; }
+
+/* ---------- Liens ---------- */
+
+.dissertation-edge .react-flow__edge-path { stroke: var(--text-muted); stroke-width: 2; }
+.dissertation-edge.is-contradiction .react-flow__edge-path { stroke: var(--contradiction); stroke-width: 2.5; }
+.dissertation-edge.is-knowledge .react-flow__edge-path { stroke: var(--knowledge); stroke-width: 2.5; }
+.dissertation-edge.is-clickable { cursor: pointer; }
+.dissertation-edge.is-clickable:hover .react-flow__edge-path { stroke-width: 3.5; }
+
+/* ---------- Nœud texte ---------- */
+
+.dissertation-textnode {
+  position: relative;
+  box-sizing: border-box;
+  padding: 1.7rem 0.9rem 0.8rem;
+  border-radius: 14px;
+  text-align: left;
+  color: var(--text);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+  cursor: pointer;
+}
+.dissertation-textnode.is-serif { font-family: var(--serif); }
+.dissertation-textnode.is-sans { font-family: var(--sans); }
+.dissertation-textnode.is-accent { box-shadow: var(--neo-out-sm), 0 0 0 2px var(--accent); }
+.dissertation-textnode.is-strong { box-shadow: var(--neo-out-sm), 0 0 0 2px var(--accent-dark); }
+.dissertation-textnode.is-contradiction { box-shadow: var(--neo-out-sm), 0 0 0 2px var(--contradiction); }
+.dissertation-textnode.is-knowledge { box-shadow: var(--neo-out-sm), 0 0 0 2px var(--knowledge); }
+
+.dissertation-textnode-label {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.85rem;
+  right: 2.6rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-dark);
+}
+.dissertation-textnode.is-contradiction .dissertation-textnode-label { color: var(--contradiction); }
+.dissertation-textnode.is-knowledge .dissertation-textnode-label { color: var(--knowledge); }
+
+.dissertation-textnode p {
+  margin: 0;
+  max-height: 10em;
+  overflow: hidden;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.dissertation-textnode.is-sans p { font-size: 0.82rem; }
+.dissertation-textnode p.is-empty { font-style: italic; color: var(--text-muted); }
+
+/* Bouton dans le coin d'un nœud (ex. modifier un commentaire) */
+.dissertation-node-action {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.35rem;
+  width: 1.8rem;
+  height: 1.8rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  line-height: 0;
+  color: var(--accent-dark);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+  cursor: pointer;
+}
+.dissertation-node-action svg { display: block; }
+.dissertation-node-action:active,
+.dissertation-node-action:focus-visible { box-shadow: var(--neo-in); outline: none; }
+@media (hover: hover) {
+  .dissertation-node-action:hover { box-shadow: var(--neo-in); }
+}
+
+/* ---------- Consigne en haut de l'écran ---------- */
+
+.dissertation-hintbar {
+  position: fixed;
+  top: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: calc(100vw - 7.5rem);
+  pointer-events: none;
+}
+.dissertation-hint {
+  margin: 0;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  text-align: center;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  line-height: 1.3;
+  color: var(--text-muted);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+}
+.dissertation-hintbar button {
+  flex: 0 0 auto;
+  pointer-events: auto;
+  padding: 0.35rem 0.8rem;
+  border: none;
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent-dark);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+  cursor: pointer;
+}
+.dissertation-hintbar button:active,
+.dissertation-hintbar button:focus-visible { box-shadow: var(--neo-in); outline: none; }
+
+/* ---------- Bulle ---------- */
+
+.dissertation-bubble {
+  position: fixed;
+  z-index: 40;
+  width: 380px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  box-shadow: var(--neo-out);
+  color: var(--text);
+  font-family: var(--sans);
+  outline: none;
+}
+.dissertation-bubble::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--arrow-x) - 9px);
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  background: var(--bg);
+  transform: rotate(45deg);
+}
+.dissertation-bubble.is-below::before { top: -7px; }
+.dissertation-bubble.is-above::before { bottom: -7px; }
+
+/* Petit écran : plein écran ; hauteur ajustée au clavier par useSheetViewport, ces valeurs servent de repli */
+.dissertation-bubble.is-sheet {
+  left: 8px;
+  right: 8px;
+  top: calc(8px + env(safe-area-inset-top, 0px));
+  bottom: auto;
+  width: auto;
+  height: calc(100vh - 16px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  height: calc(100dvh - 16px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  max-height: none;
+}
+.dissertation-bubble.is-sheet::before { display: none; }
+
+.dissertation-bubble-body {
+  position: relative; /* au-dessus de la pointe */
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1rem 1.1rem 1.1rem;
+  border-radius: 20px;
+  background: var(--bg);
+}
+.dissertation-bubble-body > * { flex-shrink: 0; }
+
+.dissertation-bubble-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.dissertation-bubble-title { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 0.15rem; }
+.dissertation-bubble-head h2 { margin: 0; font-family: var(--serif); font-size: 1.3rem; overflow-wrap: anywhere; }
+.dissertation-bubble.is-sheet .dissertation-bubble-head h2 { font-size: 1.15rem; }
+.dissertation-bubble-subtitle { font-size: 0.75rem; color: var(--text-muted); }
+
+/* Boutons au bord droit de l'en-tête : modifier le titre, fermer */
+.dissertation-bubble-actions { flex: 0 0 auto; display: flex; align-items: center; gap: 0.45rem; margin-left: auto; }
+.dissertation-bubble-actions .dissertation-close { display: grid; place-items: center; padding: 0; }
+.dissertation-bubble-actions svg { display: block; }
+
+.dissertation-title-input {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0.25rem 0.6rem;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  color: var(--text);
+  background: var(--bg);
+  box-shadow: var(--neo-in);
+  outline: none;
+}
+
+.dissertation-close {
+  flex: 0 0 auto;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--accent-dark);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+  cursor: pointer;
+}
+.dissertation-close:active,
+.dissertation-close:focus-visible { box-shadow: var(--neo-in); outline: none; }
+@media (hover: hover) {
+  .dissertation-close:hover { box-shadow: var(--neo-in); }
+}
+
+/* ---------- Champs ---------- */
+
+.dissertation-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.dissertation-field textarea {
+  min-height: 6rem;
+  border: none;
+  border-radius: 14px;
+  padding: 0.7rem 0.9rem;
+  font: inherit;
+  font-family: var(--serif);
+  font-size: 1rem;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--text);
+  background: var(--bg);
+  box-shadow: var(--neo-in);
+  outline: none;
+  resize: vertical;
+}
+.dissertation-field textarea[readonly] { opacity: 0.8; resize: none; }
+
+/* Plein écran : le champ principal prend la hauteur restante */
+.dissertation-bubble.is-sheet .dissertation-bubble-body > .dissertation-field-grow { flex: 1 1 auto; min-height: 8rem; }
+.dissertation-bubble.is-sheet .dissertation-field-grow textarea { flex: 1; min-height: 0; resize: none; }
+
+/* ---------- Pastilles ---------- */
+
+.dissertation-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.dissertation-chip {
+  border: none;
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--accent-dark);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+  cursor: pointer;
+}
+.dissertation-chip:hover,
+.dissertation-chip:focus-visible,
+.dissertation-chip.is-active { box-shadow: var(--neo-in); outline: none; }
+
+/* ---------- Blocs et cartes ---------- */
+
+.dissertation-block { display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
+.dissertation-block-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.dissertation-reftext {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.dissertation-reftext em { color: var(--text-muted); }
+.dissertation-reftext.is-accent,
+.dissertation-reftext.is-strong {
+  padding: 0.5rem 0.7rem;
+  border-radius: 12px;
+  background: var(--bg);
+}
+.dissertation-reftext.is-accent { box-shadow: var(--neo-in), inset 0 0 0 1.5px var(--accent); }
+.dissertation-reftext.is-strong { box-shadow: var(--neo-in), inset 0 0 0 1.5px var(--accent-dark); }
+
+.dissertation-cardrow {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.dissertation-cardrow-item { display: flex; min-width: 0; }
+
+.dissertation-card {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 14px;
+  text-align: left;
+  color: var(--text);
+  background: var(--bg);
+  box-shadow: var(--neo-in);
+}
+.dissertation-card p {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.dissertation-card p.is-empty { font-style: italic; color: var(--text-muted); }
+.dissertation-card.is-linked { margin-left: 0.8rem; }
+.dissertation-card-title { font-family: var(--serif); font-size: 0.88rem; }
+.dissertation-card-note { font-size: 0.7rem; color: var(--accent-dark); }
+.dissertation-card-links { font-size: 0.7rem; line-height: 1.35; color: var(--knowledge); }
+
+.dissertation-card.is-contradiction { box-shadow: var(--neo-in), inset 0 0 0 1.5px var(--contradiction); }
+.dissertation-card.is-contradiction .dissertation-card-title { color: var(--contradiction); }
+.dissertation-card.is-knowledge { box-shadow: var(--neo-in), inset 0 0 0 1.5px var(--knowledge); }
+
+/* Carte cliquable (ex. connaissance à mobiliser) */
+.dissertation-card.is-button {
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity 0.2s ease, box-shadow 0.2s ease;
+}
+.dissertation-card.is-active { opacity: 1; box-shadow: var(--neo-out-sm), inset 0 0 0 2px var(--knowledge); }
+.dissertation-card.is-button:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 2px; }
+
+/* ---------- Atelier : grand écran, deux colonnes ---------- */
+
+.dissertation-bubble.is-workspace:not(.is-sheet) .dissertation-ws {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 1.1rem;
+  align-items: stretch;
+}
+.dissertation-ws-sources { display: flex; flex-direction: column; gap: 0.9rem; padding: 0.2rem; }
+.dissertation-ws-write { display: flex; flex-direction: column; gap: 0.6rem; min-width: 0; }
+.dissertation-ws-write .dissertation-field textarea { resize: none; }
+.dissertation-bubble.is-workspace:not(.is-sheet) .dissertation-ws-write > .dissertation-field:only-child { flex: 1; }
+.dissertation-bubble.is-workspace:not(.is-sheet) .dissertation-ws-write > .dissertation-field:only-child textarea {
+  flex: 1;
+  min-height: 16rem;
+}
+
+/* ---------- Atelier : plein écran mobile, vertical, sans défilement vertical ---------- */
+
+.dissertation-bubble.is-workspace.is-sheet .dissertation-bubble-body { overflow: hidden; gap: 0.6rem; padding: 0.85rem 0.9rem 0.9rem; }
+
+.dissertation-bubble.is-workspace.is-sheet .dissertation-bubble-body > .dissertation-ws {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.dissertation-bubble.is-workspace.is-sheet .dissertation-ws-sources { flex: 0 0 auto; gap: 0.55rem; padding: 0; }
+.dissertation-bubble.is-workspace.is-sheet .dissertation-ws-write { flex: 1 1 0; min-height: 0; gap: 0.5rem; }
+.dissertation-bubble.is-workspace.is-sheet .dissertation-ws-write > .dissertation-field { flex: 1 1 0; min-height: 0; }
+.dissertation-bubble.is-workspace.is-sheet .dissertation-ws-write .dissertation-field textarea { flex: 1; min-height: 3rem; }
+
+/* Textes de référence coupés à --lines lignes */
+.dissertation-bubble.is-workspace.is-sheet .dissertation-reftext {
+  font-size: 0.85rem;
+  display: -webkit-box;
+  -webkit-line-clamp: var(--lines, 2);
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Pastilles et cartes : une seule ligne, défilement horizontal */
+.dissertation-bubble.is-workspace.is-sheet .dissertation-chiprow,
+.dissertation-bubble.is-workspace.is-sheet .dissertation-cardrow {
+  flex-direction: row;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: 0.3rem 0.3rem 0.45rem; /* laisse respirer les ombres */
+  margin: 0 -0.3rem;
+}
+.dissertation-bubble.is-workspace.is-sheet .dissertation-chiprow::-webkit-scrollbar,
+.dissertation-bubble.is-workspace.is-sheet .dissertation-cardrow::-webkit-scrollbar { display: none; }
+.dissertation-bubble.is-workspace.is-sheet .dissertation-chip { flex: 0 0 auto; white-space: nowrap; }
+.dissertation-bubble.is-workspace.is-sheet .dissertation-cardrow-item { flex: 0 0 76%; scroll-snap-align: start; }
+.dissertation-bubble.is-workspace.is-sheet .dissertation-card {
+  height: 5.6rem;
+  overflow-y: auto; /* seul un texte très long défile, à l'intérieur de sa carte */
+}
+.dissertation-bubble.is-workspace.is-sheet .dissertation-card.is-linked { margin-left: 0; }
+
+/* Clavier ouvert : blocs facultatifs masqués, cartes plus basses */
+.dissertation-bubble.is-workspace.is-compact .dissertation-block.is-optional { display: none; }
+.dissertation-bubble.is-workspace.is-compact .dissertation-card { height: 4.2rem; }
+.dissertation-bubble.is-workspace.is-compact .dissertation-reftext { -webkit-line-clamp: 1; }

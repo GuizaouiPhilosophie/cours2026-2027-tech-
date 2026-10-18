@@ -606,3 +606,69 @@ main.container {
   height: var(--corpus-pdf-height);
   border: 1px solid #ddd;
 }
+
+/* ---------- Bouton « S'exercer » (shortcode [[bouton:...]]) ---------- */
+
+.cours-action {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--bg-card);
+  background: var(--accent-dark);
+  border: 2px solid var(--accent-dark);
+  padding: 0.45rem 1.1rem;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.cours-action:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.cours-action:focus-visible {
+  outline: 2px solid var(--accent-dark);
+  outline-offset: 2px;
+}
+
+/* Dans le texte : paragraphe qui porte l'alignement */
+.seance-bouton {
+  margin: 1.5rem 0;
+  clear: both;
+}
+.seance-bouton--left   { text-align: left; }
+.seance-bouton--center { text-align: center; }
+.seance-bouton--right  { text-align: right; }
+
+/* À côté du titre : titre centré, bouton à droite */
+.cours-header {
+  position: relative;
+  margin: 0 0 2rem;
+}
+
+.cours-header .cours-title {
+  margin: 0;
+  padding: 0 8rem; /* réserve la place du bouton pour garder le titre centré */
+}
+
+.cours-header .cours-action {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@media (max-width: 640px) {
+  .cours-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .cours-header .cours-title { padding: 0; }
+  .cours-header .cours-action {
+    position: static;
+    transform: none;
+  }
+}
