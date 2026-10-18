@@ -1,13 +1,13 @@
 import { useState } from "react";
 import steps from "./stepRegistry";
-import { IoIcon } from "./lib/icons";
+import { IoIcon, HomeIcon } from "./lib/icons";
 
 /**
  * Menu « Parcours de rédaction » (en bas sur mobile, à gauche sur grand écran) : un bouton
  * hamburger ouvre la frise des étapes. Les étapes validées et la première non validée sont
  * cliquables : on peut revenir sur une étape validée pour la modifier, sans perdre la suite.
  * Une étape validée qui ne passe plus sa validation (ex. élément supprimé en amont) est marquée « À revoir ».
- * Boutons Exporter / Importer : sous « Valider l'étape » sur grand écran, à sa droite sur mobile.
+ * Boutons Accueil (retour à la saisie du sujet) / Exporter / Importer : sous « Valider l'étape » sur grand écran, à sa droite sur mobile.
  */
 export default function StepPanel({
   active,
@@ -18,6 +18,7 @@ export default function StepPanel({
   onValidate,
   onExport,
   onImport,
+  onHome,
   notice,
   error,
 }) {
@@ -115,6 +116,15 @@ export default function StepPanel({
                 </button>
               )}
               <div className="dissertation-io">
+                <button
+                  type="button"
+                  className="dissertation-io-btn"
+                  onClick={onHome}
+                  aria-label="Retour à la saisie du sujet (nouvelle dissertation)"
+                  title="Retour à la saisie du sujet (nouvelle dissertation)"
+                >
+                  <HomeIcon />
+                </button>
                 <button
                   type="button"
                   className="dissertation-io-btn"

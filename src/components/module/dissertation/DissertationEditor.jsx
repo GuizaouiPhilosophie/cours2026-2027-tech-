@@ -18,6 +18,7 @@ import {
   restoreSnapshot,
   loadFromStorage,
   saveToStorage,
+  clearStorage,
   readSnapshotFile,
   downloadText,
   exportFileName,
@@ -490,6 +491,27 @@ function Editor() {
 
   const openImport = () => fileInput.current?.click();
 
+  /** Retour à l'écran du sujet : le travail en cours est effacé (après confirmation). */
+  const goHome = () => {
+    const ok = window.confirm(
+      "Revenir à la saisie du sujet ?\n\nLe travail en cours sera effacé de ce navigateur. " +
+        "Exportez-le d’abord si vous voulez le conserver."
+    );
+    if (!ok) return;
+    clearStorage();
+    setSubject(null);
+    setData(initialData());
+    setValidated([]);
+    setActive(steps[0]?.id ?? null);
+    setUi({});
+    setViews({});
+    setError(null);
+    setNotice(null);
+    setToolId(null);
+    setExporting(false);
+    // l'auteur est conservé : il resservira au prochain export
+  };
+
   const ActiveTool = useMemo(
     () => (toolId ? steps.flatMap((s) => s.tools).find((t) => t.id === toolId)?.Component ?? null : null),
     [toolId]
@@ -569,6 +591,7 @@ function Editor() {
                 onOpenTool={setToolId}
                 onExport={() => setExporting(true)}
                 onImport={openImport}
+                onHome={goHome}
                 notice={notice}
                 error={shownError}
               />

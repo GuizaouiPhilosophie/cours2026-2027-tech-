@@ -88,6 +88,15 @@ export function saveToStorage(snapshot) {
   }
 }
 
+/** Efface la sauvegarde du navigateur (retour à l'écran du sujet). */
+export function clearStorage() {
+  try {
+    window.localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    /* stockage indisponible : rien à effacer */
+  }
+}
+
 /* ---------- Fichiers ---------- */
 
 /** JSON sûr à placer dans une balise <script> (« < » échappé). */
