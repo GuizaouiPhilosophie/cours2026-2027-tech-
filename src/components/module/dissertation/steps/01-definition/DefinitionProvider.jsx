@@ -6,6 +6,7 @@ import { placeBelow, placeChild, defNodeId, childNodeId } from "./lib/placement"
 import { useWorkspace, useCanvasEvents } from "../../lib/workspace";
 import { rectAnchor } from "../../lib/anchor";
 import { newId } from "../../lib/canvas";
+import HintBar from "../../lib/HintBar";
 
 const STEP_ID = "definition";
 
@@ -128,6 +129,7 @@ export default function DefinitionProvider({ status, data, setData, setView, eve
   return (
     <DefinitionContext.Provider value={value}>
       {children}
+      {editable && !bubble && <HintBar>Cliquez sur un mot du sujet pour le définir.</HintBar>}
       {bubble && (
         <DefinitionBubble
           key={`${bubble.key}-${bubble.defId}`}

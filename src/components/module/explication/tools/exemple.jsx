@@ -23,7 +23,7 @@
 import { snapOnWordWithPunctuation, snapOnWordTolerant, makeId } from "../lib/grab";
 import { createGroupOverlay } from "../lib/groupOverlay";
 import { usePanelList } from "../lib/panelList";
-import ExplicationCard from "../ExplicationCard";
+import ExplicationCard, { locateInText } from "../ExplicationCard";
 import "./exemple.css";
 
 const isTouchDevice = () => typeof window !== "undefined" && window.matchMedia?.("(pointer: coarse)").matches;
@@ -157,7 +157,7 @@ function getBadge(container) {
 function PanelContent({ containerRef, version, helpers, bounceTarget }) {
   const container = containerRef.current;
   const items = container ? Group.listGroups(container) : [];
-  const { order, byId, bouncingId, startCardDrag, setCardRef } = usePanelList({
+  const { order, byId, bouncingId, startCardDrag, setCardRef, remove } = usePanelList({
     items,
     toolId: "exemple",
     version,
@@ -167,7 +167,7 @@ function PanelContent({ containerRef, version, helpers, bounceTarget }) {
     },
   });
 
-  if (order.length === 0) return <p className="explication-panel-empty">Aucun exemple pour l’instant.</p>;
+  if (order.length === 0) return <p className="explication-panel-empty">Aucun exemple pour l’instant : encadrez un passage avec l’outil Exemple.</p>;
 
   return (
     <div className="explication-panel-list">
@@ -180,9 +180,12 @@ function PanelContent({ containerRef, version, helpers, bounceTarget }) {
             cardRef={setCardRef(id)}
             className="explication-card--exemple"
             accentColor="#3a7d68"
-            width="10rem"
+            width="15rem"
             bouncing={bouncingId === id}
             onGripPointerDown={startCardDrag(id)}
+            onLocate={() => locateInText(it.segs[0])}
+            onDelete={() => remove(id)}
+            deleteLabel="Supprimer cet exemple"
             title={{ value: formatExempleTitle(it.segs), editable: false }}
             description={{
               value: getDescription(it.segs[0]),

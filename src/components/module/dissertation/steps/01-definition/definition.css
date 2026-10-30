@@ -7,7 +7,7 @@
   display: block;
   margin-top: 0.6rem;
   font-family: var(--sans);
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   color: var(--text-muted);
 }
 
@@ -104,7 +104,7 @@
 .dissertation-result.is-selected { box-shadow: var(--neo-in); }
 .dissertation-result strong { font-size: 0.9rem; }
 .dissertation-result span {
-  font-size: 0.78rem;
+  font-size: 0.85rem;
   line-height: 1.35;
   color: var(--text-muted);
   display: -webkit-box;
@@ -147,8 +147,7 @@
 .dissertation-grip:focus-visible span { box-shadow: var(--neo-out-sm); }
 .dissertation-glossary h4 {
   margin: 0.7rem 0 0.4rem;
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
+  font-size: 0.85rem;
   color: var(--text-muted);
 }
 .dissertation-glossary section:first-child h4 { margin-top: 0; }
@@ -166,14 +165,12 @@
 }
 .dissertation-termcard header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.6rem; }
 .dissertation-termcard h3 { margin: 0; font-family: var(--serif); font-size: 1.1rem; }
-.dissertation-termcard-repere { font-size: 0.72rem; color: var(--text-muted); }
+.dissertation-termcard-repere { font-size: 0.85rem; color: var(--text-muted); }
 .dissertation-termcard p { margin: 0; font-size: 0.88rem; line-height: 1.5; }
 .dissertation-termcard .dissertation-termcard-ex { font-style: italic; color: var(--text-muted); }
 .dissertation-termcard-group { display: flex; flex-direction: column; gap: 0.35rem; }
 .dissertation-termcard-group > span {
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 0.85rem;
   color: var(--text-muted);
 }
 
@@ -244,9 +241,7 @@
 }
 .dissertation-defnode p {
   margin: 0;
-  max-height: 9em;
-  overflow: hidden;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   line-height: 1.45;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -264,7 +259,7 @@
 .dissertation-defnode-word {
   display: block;
   font-family: var(--sans);
-  font-size: 0.65rem;
+  font-size: 0.78rem;
   font-weight: 400;
   color: var(--text-muted);
 }
@@ -276,7 +271,7 @@
   border: none;
   background: none;
   font-family: var(--sans);
-  font-size: 0.68rem;
+  font-size: 0.78rem;
   color: var(--text-muted);
   text-decoration: underline;
   cursor: pointer;
@@ -291,13 +286,11 @@
 }
 .dissertation-defnode-group { display: flex; flex-direction: column; gap: 0.3rem; }
 .dissertation-defnode-group > span {
-  font-size: 0.62rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 0.78rem;
   color: var(--text-muted);
 }
 .dissertation-defnode .dissertation-chips { gap: 0.35rem; }
-.dissertation-defnode .dissertation-chip { padding: 0.15rem 0.55rem; font-size: 0.7rem; }
+.dissertation-defnode .dissertation-chip { padding: 0.15rem 0.55rem; font-size: 0.85rem; }
 
 /* ---------- Bouton « + définition » au-dessus d'un mot déjà défini ---------- */
 
@@ -312,7 +305,7 @@
   border: none;
   border-radius: 999px;
   font-family: var(--sans);
-  font-size: 0.72rem;
+  font-size: 0.85rem;
   white-space: nowrap;
   color: var(--accent-dark);
   background: var(--bg);
@@ -337,7 +330,7 @@
   box-shadow: var(--neo-in);
 }
 .dissertation-defnode-preview strong { margin-bottom: 0; font-size: 0.85rem; }
-.dissertation-defnode-preview p { max-height: none; font-size: 0.75rem; }
+.dissertation-defnode-preview p { max-height: none; font-size: 0.85rem; }
 
 .dissertation-defnode-create {
   align-self: flex-start;
@@ -345,7 +338,7 @@
   border: none;
   border-radius: 999px;
   font-family: var(--sans);
-  font-size: 0.72rem;
+  font-size: 0.85rem;
   color: var(--accent-dark);
   background: var(--bg);
   box-shadow: var(--neo-out-sm);

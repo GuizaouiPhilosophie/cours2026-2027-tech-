@@ -1,12 +1,29 @@
-/* ---------- Éditeur du module d'explication (page à part) ---------- */
+/* ---------- Éditeur du module d'explication (page à part) ----------
+   Même langage que le reste du site : relief néomorphique (ombres claire / foncée),
+   Georgia pour le texte, cartes à liseré coloré dans le panneau du bas. */
 
 .explication-editor {
+  --neo-dark: #c9c5be;
+  --neo-light: #ffffff;
+  --neo-out: 8px 8px 16px var(--neo-dark), -8px -8px 16px var(--neo-light);
+  --neo-out-sm: 4px 4px 9px var(--neo-dark), -4px -4px 9px var(--neo-light);
+  --neo-in: inset 5px 5px 10px var(--neo-dark), inset -5px -5px 10px var(--neo-light);
+  /* Lisibilité : gris plus foncé que celui du site (contraste suffisant sur le beige) */
+  --text-muted: #6b5747;
+
   display: flex;
+  /* Calé sur la zone visible au-dessus du clavier (src/lib/useVisibleViewport.js) :
+     sur iPhone, Safari décale la page pour montrer le champ ; l'éditeur suit ce décalage. */
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: var(--vv-top, 0px);
   height: 100vh; /* fallback navigateurs anciens */
-  height: 100dvh; /* vrai viewport visible mobile (barre d'adresse incluse) */
-  height: var(--app-height, 100dvh); /* posée en JS (visualViewport), plus fiable que dvh sur iOS Safari */
+  height: 100dvh;
+  height: var(--vv-height, 100dvh);
   overflow: hidden;
   background: var(--bg, #f7f1ea);
+  color: var(--text, #3a2a1d);
   font-family: var(--sans, "Helvetica Neue", Arial, sans-serif);
 }
 
@@ -17,111 +34,98 @@
   gap: 1rem;
 }
 
-/* Barre d'outils verticale */
+.explication-editor button { -webkit-tap-highlight-color: transparent; }
+.explication-editor button:focus:not(:focus-visible) { outline: none; }
+
+/* ---------- Boutons en relief ---------- */
+
+.explication-pill,
+.explication-disc {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  border: none;
+  border-radius: 999px;
+  font: 600 0.92rem var(--sans, "Helvetica Neue", Arial, sans-serif);
+  color: var(--accent-dark, #664930);
+  background: var(--bg, #f7f1ea);
+  box-shadow: var(--neo-out-sm);
+  cursor: pointer;
+  text-decoration: none;
+  transition: box-shadow 0.25s ease;
+}
+.explication-pill { padding: 0 1.2rem; }
+.explication-disc { width: 44px; flex: 0 0 44px; padding: 0; }
+.explication-pill svg,
+.explication-disc svg { display: block; flex: none; }
+.explication-pill:active,
+.explication-disc:active { box-shadow: var(--neo-in); }
+.explication-pill:focus-visible,
+.explication-disc:focus-visible { outline: 2px solid var(--accent-dark, #664930); outline-offset: 3px; }
+@media (hover: hover) {
+  .explication-pill:hover,
+  .explication-disc:hover { box-shadow: var(--neo-in); }
+}
+
+/* ---------- Barre d'outils (gauche sur grand écran) ---------- */
 
 .explication-toolbar {
   flex-shrink: 0;
-  width: 92px;
+  width: 116px;
   height: 100%;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  padding: 1rem 0.5rem;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 0.5rem;
   background: var(--bg-card, #fffdfb);
   border-right: 1px solid var(--border, #e3d7ca);
   overflow-y: auto;
 }
 
-.explication-toolbar-tools {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
+.explication-toolbar-tools { display: flex; flex-direction: column; align-items: center; gap: 1.25rem; }
 
-.explication-toolbar-empty {
-  font-size: 0.7rem;
-  color: var(--text-muted, #8a7566);
+.explication-toolbar-hint {
+  margin: 0;
+  padding: 0 0.25rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
   text-align: center;
-  font-style: italic;
-  margin: 0.5rem 0.25rem;
+  color: var(--text-muted);
 }
 
-.explication-tool-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.6rem 0.25rem;
-  border: 1px solid var(--border, #e3d7ca);
-  border-radius: 10px;
-  background: var(--bg, #f7f1ea);
-  cursor: pointer;
-  color: var(--text, #3a1d23);
-}
-
-.explication-tool-btn:hover {
-  background: rgba(153, 126, 103, 0.12);
-}
-
-.explication-tool-btn.is-active {
-  background: var(--accent-dark, #664930);
-  border-color: var(--accent-dark, #664930);
-  color: #fff;
-}
-
-.explication-tool-icon {
-  font-size: 1.1rem;
-  line-height: 1;
-}
-
-.explication-tool-label {
-  font-size: 0.65rem;
-  text-align: center;
-  line-height: 1.15;
-}
-
-/* Export / Import : groupés avec la poubelle en bas de la toolbar
-   (desktop). margin-top: auto sur CE bloc suffit à pousser tout ce qui
-   le suit (la poubelle, en flux normal juste après) au bas de la
-   colonne avec lui — pas besoin de justify-content: space-between sur
-   le parent, qui aurait plutôt réparti les 3 blocs à intervalles égaux
-   au lieu de les coller ensemble. */
-.explication-toolbar-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-top: auto;
-  padding-top: 1rem;
-}
-
-/* Corbeille, sous la barre d'outils */
-
+/* Poubelle : un puits en creux */
 .explication-trash {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 1rem;
-  height: 56px;
-  border: none;
-  border-radius: 10px;
-  font-size: 1.3rem;
-  color: var(--text-muted, #8a7566);
-  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  gap: 0.35rem;
+  margin-top: auto;
+  width: 84px;
+  min-height: 88px;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  border-radius: 16px;
+  text-align: center;
+  font-size: 0.75rem;
+  line-height: 1.25;
+  color: var(--text-muted);
+  background: var(--bg, #f7f1ea);
+  box-shadow: var(--neo-in);
+  transition: color 0.15s ease, box-shadow 0.15s ease;
 }
+.explication-trash svg { display: block; }
+/* Survol pendant un glisser : l'objet transporté est au-dessus, le lâcher le supprimera. */
+.explication-trash.is-drag-over { color: #b3402e; box-shadow: var(--neo-in), inset 0 0 0 2px #b3402e; }
 
-/* Survol pendant un grab (voir startGrab dans lib/grab.js) : l'objet
-   transporté est au-dessus de la poubelle, le lâcher le supprimera. */
-.explication-trash.is-drag-over {
-  border: none;
-  background: none;
-  color: #c1694c;
-}
+/* ---------- Colonne principale ---------- */
 
-/* Colonne de droite : canvas + menu du bas empilés, tous deux dans le
-   flux normal. C'est elle qui prend toute la largeur restante à côté
-   de la toolbar (le rôle que jouait .explication-canvas-wrap seul
-   avant l'ajout du menu du bas). */
 .explication-content-col {
+  position: relative;
   flex: 1;
   min-width: 0;
   min-height: 0;
@@ -130,107 +134,284 @@
   flex-direction: column;
 }
 
-/* Zone de texte */
+.explication-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem 0.75rem;
+}
+.explication-back { flex: 0 0 44px; }
+.explication-titles { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 0.25rem; }
+.explication-kicker { font-size: 0.9rem; font-weight: 600; color: var(--accent-dark, #664930); }
+.explication-titles h1 {
+  margin: 0;
+  font-family: var(--serif, Georgia, serif);
+  font-size: clamp(1.25rem, 2.4vw, 1.9rem);
+  line-height: 1.2;
+  color: var(--text, #3a2a1d);
+  overflow-wrap: anywhere;
+}
+.explication-subtitle {
+  margin: 0;
+  font: italic 400 0.98rem/1.4 var(--serif, Georgia, serif);
+  color: var(--text-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.explication-file-actions { flex: none; display: flex; align-items: center; gap: 0.75rem; }
+.explication-saved { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.85rem; color: #2e7d32; }
+.explication-saved svg { display: block; }
+
+/* ---------- Texte ---------- */
 
 .explication-canvas-wrap {
   flex: 1;
   min-width: 0;
   min-height: 0;
   /* --mouvement-gutter est posé dynamiquement par mouvement.jsx (via
-     OverlayLayer) sur CET élément : il vaut la largeur nécessaire pour
-     accueillir le trait le plus excentré (lane la plus éloignée), 0px
-     s'il n'y a aucun mouvement affiché. Sans cette réserve, les traits
-     (positionnés en `left` négatif par rapport au canvas) débordaient
-     dans la marge de centrage du canvas — un espace non garanti, qui
-     disparaissait dès que l'écran devenait trop étroit ou qu'il y avait
-     plusieurs mouvements imbriqués (plusieurs lanes). */
-  padding: 2.5rem 3rem 5rem calc(3rem + var(--mouvement-gutter, 0px));
+     OverlayLayer) sur CET élément : la largeur nécessaire pour accueillir
+     le trait le plus excentré, 0px s'il n'y a aucun mouvement affiché. */
+  padding: 1rem 2rem 3rem calc(2rem + var(--mouvement-gutter, 0px));
   overflow-y: auto;
-  /* auto plutôt que hidden : si le gutter ci-dessus n'a pas encore été
-     posé (tout premier rendu) ou s'avère insuffisant, le texte reste
-     scrollable horizontalement au lieu que les traits soient purement
-     invisibles, rognés sans recours par un overflow caché. */
+  /* auto plutôt que hidden : si le gutter n'a pas encore été posé, le texte
+     reste défilable au lieu que les traits soient rognés. */
   overflow-x: auto;
 }
 
-.explication-canvas-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  max-width: 720px;
-  margin: 0 auto 2rem;
+.explication-canvas-stage {
+  position: relative;
+  max-width: 760px;
+  margin: 0 auto;
 }
 
-.explication-canvas-header h1 {
-  font-family: var(--serif, Georgia, serif);
-  font-size: 1.3rem;
-  margin: 0;
-  color: var(--text, #3a2a1d);
-}
-
+/* La feuille : papier en relief */
 .explication-canvas {
   position: relative;
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
   padding: 2rem 2.5rem;
+  box-sizing: border-box;
   background: var(--bg-card, #fffdfb);
-  border: 1px solid var(--border, #e3d7ca);
-  border-radius: 12px;
+  border-radius: 18px;
+  box-shadow: var(--neo-out);
   font-family: var(--serif, Georgia, serif);
-  line-height: 1.85;
+  font-size: 1.125rem;
+  line-height: 1.8;
   color: var(--text, #3a2a1d);
 }
+/* Aligné à gauche : le justifié creuse des trous entre les mots, surtout sur mobile */
+.explication-canvas p { margin: 0 0 1.2rem; text-align: left; }
+.explication-canvas p:last-child { margin-bottom: 0; }
 
-.explication-canvas p {
-  margin: 0 0 1.2rem;
-  text-align: justify;
-  text-justify: inter-word;
+/* « Retrouver dans le texte » : l'élément visé clignote brièvement */
+@keyframes explication-flash {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(193, 105, 76, 0); }
+  20%, 60% { box-shadow: 0 0 0 4px rgba(193, 105, 76, 0.45); }
 }
+.explication-flash { animation: explication-flash 1.5s ease; border-radius: 4px; }
 
-.explication-canvas p:last-child {
-  margin-bottom: 0;
-}
-
-/* Bandeau "brouillon restauré" (sauvegarde automatique locale, voir
-   ExplicationEditor.jsx) : affiché uniquement quand un brouillon plus
-   récent que le texte d'origine a été rechargé au démarrage. */
+/* Bandeau « travail repris » (sauvegarde automatique locale) */
 .explication-draft-banner {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  max-width: 720px;
-  margin: -1rem auto 1.5rem;
-  padding: 0.6rem 0.9rem;
-  border: 1px solid var(--accent, #997e67);
-  border-radius: 2px;
-  background: rgba(153, 126, 103, 0.12);
+  max-width: 760px;
+  margin: 0 auto 1.25rem;
+  padding: 0.75rem 1rem;
+  box-sizing: border-box;
+  border-radius: 16px;
+  background: var(--bg, #f7f1ea);
+  box-shadow: var(--neo-in);
   color: var(--text, #3a2a1d);
-  font-size: 0.82rem;
+  font-size: 0.92rem;
   line-height: 1.4;
 }
+.explication-draft-banner-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; flex-shrink: 0; }
+.explication-draft-banner-actions button {
+  min-height: 38px;
+  border: none;
+  border-radius: 999px;
+  padding: 0 1rem;
+  font: 600 0.85rem var(--sans, "Helvetica Neue", Arial, sans-serif);
+  color: var(--accent-dark, #664930);
+  background: var(--bg, #f7f1ea);
+  box-shadow: var(--neo-out-sm);
+  cursor: pointer;
+}
+.explication-draft-banner-actions button:active { box-shadow: var(--neo-in); }
 
-.explication-draft-banner-actions {
+/* ---------- Pilule « outil actif » (placement en deux touchers) ---------- */
+
+.explication-armed {
+  position: absolute;
+  left: 50%;
+  bottom: 4.25rem;
+  transform: translateX(-50%);
+  z-index: 45;
   display: flex;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.7rem;
+  max-width: calc(100% - 1.5rem);
+  padding: 0.35rem 0.35rem 0.35rem 1rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  background: var(--bg-card, #fffdfb);
+  box-shadow: var(--neo-out);
+}
+.explication-armed > span:nth-child(2) { overflow: hidden; text-overflow: ellipsis; }
+.explication-armed-icon { font: 700 1rem Georgia, serif; color: #8e3b2b; }
+.explication-armed button {
+  flex: none;
+  min-height: 38px;
+  padding: 0 1rem;
+  border: none;
+  border-radius: 999px;
+  font: 600 0.88rem var(--sans, "Helvetica Neue", Arial, sans-serif);
+  color: var(--accent-dark, #664930);
+  background: var(--bg, #f7f1ea);
+  box-shadow: inset 3px 3px 6px var(--neo-dark), inset -3px -3px 6px var(--neo-light);
+  cursor: pointer;
+}
+
+/* ---------- Panneau du bas : onglets intercalaires + cards ---------- */
+
+/* Enfant normal de .explication-content-col : sa hauteur réelle (contenu,
+   plafonnée) pousse le texte au lieu de flotter par-dessus. */
+.explication-panel-bar {
+  flex-shrink: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  max-height: 48vh;
+  padding: 0 1rem;
+}
+
+.explication-panel-tags {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.4rem;
+  overflow-x: auto;
+  flex-shrink: 0;
+  scrollbar-width: none;
+}
+.explication-panel-tags::-webkit-scrollbar { display: none; }
+
+.explication-panel-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 40px;
+  padding: 0 1rem;
+  border: 1px solid var(--border, #e3d7ca);
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+  background: #f2e9de;
+  color: var(--text, #3a2a1d);
+  font: 500 0.92rem var(--sans, "Helvetica Neue", Arial, sans-serif);
+  cursor: pointer;
   flex-shrink: 0;
 }
+.explication-panel-tag:focus-visible { outline: 2px solid var(--accent-dark, #664930); outline-offset: -3px; }
+@media (hover: hover) {
+  .explication-panel-tag:hover { background: #eadfd1; }
+}
+.explication-panel-tag.is-active {
+  background: var(--accent-dark, #664930);
+  border-color: var(--accent-dark, #664930);
+  color: #fff;
+}
+.explication-panel-tag-count { font-size: 0.8rem; opacity: 0.8; }
 
-.explication-draft-banner-actions button {
-  border: 1px solid var(--border, #e3d7ca);
-  background: var(--bg-card, #fffdfb);
-  border-radius: 8px;
-  padding: 0.3rem 0.65rem;
-  font-size: 0.78rem;
+.explication-panel-close {
+  margin: 0 0 6px auto;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  color: var(--accent-dark, #664930);
+  background: var(--bg, #f7f1ea);
+  box-shadow: var(--neo-out-sm);
   cursor: pointer;
-  color: var(--text, #3a2a1d);
+}
+.explication-panel-close svg { display: block; }
+.explication-panel-close:active { box-shadow: var(--neo-in); }
+
+/* Panneau replié : seuls les onglets restent, posés sur un trait */
+.explication-panel-bar:not(.is-open) .explication-panel-tags { border-bottom: 1px solid var(--border, #e3d7ca); }
+
+.explication-panel-body {
+  border: 1px solid var(--border, #e3d7ca);
+  border-bottom: none;
+  border-radius: 0 14px 0 0;
+  background: var(--bg-card, #fffdfb);
+  padding: 1.1rem 1.1rem 1.4rem;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 
-.explication-draft-banner-actions button:hover {
-  background: rgba(153, 126, 103, 0.18);
+.explication-panel-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 1.1rem;
+  padding: 0.3rem 0.3rem 0.5rem;
 }
+
+.explication-panel-empty {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+  font-style: italic;
+  text-align: center;
+  margin: 0.75rem auto;
+  max-width: 34rem;
+}
+
+/* ---------- Onglet Plan ---------- */
+
+.explication-plan { display: flex; flex-direction: column; gap: 1rem; max-width: 760px; }
+.explication-plan-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1rem; }
+.explication-plan-part { display: flex; flex-direction: column; gap: 0.4rem; }
+.explication-plan-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0;
+  border: none;
+  background: none;
+  text-align: left;
+  font: 600 1.1rem/1.3 var(--serif, Georgia, serif);
+  color: var(--text, #3a2a1d);
+  cursor: pointer;
+}
+.explication-plan-title:hover { text-decoration: underline; }
+.explication-plan-num { color: #8e3b2b; }
+.explication-plan-desc { margin: 0; font-size: 0.95rem; line-height: 1.5; color: var(--text, #3a2a1d); }
+.explication-plan-desc.is-missing { color: #b3402e; font-style: italic; }
+.explication-plan-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.explication-plan-chip {
+  min-height: 32px;
+  padding: 0 0.8rem;
+  border: none;
+  border-radius: 999px;
+  font: 500 0.85rem var(--sans, "Helvetica Neue", Arial, sans-serif);
+  background: var(--bg, #f7f1ea);
+  box-shadow: 2px 2px 5px var(--neo-dark), -2px -2px 5px var(--neo-light);
+  cursor: pointer;
+}
+.explication-plan-chip.is-concept { color: #a4492d; }
+.explication-plan-chip.is-exemple { color: #2c6152; }
+.explication-plan > .explication-pill { align-self: flex-start; }
 
 /* Modal d'export */
 
@@ -316,192 +497,128 @@
   50% { opacity: 1; }
 }
 
-/* ---------- Menu du bas (info par outil, ex. Mouvement) ---------- */
 
-/* Le menu du bas est un enfant normal de .explication-content-col
-   (colonne flex avec .explication-canvas-wrap juste au-dessus) : sa
-   hauteur réelle (déterminée par son contenu, plafonnée à 45vh) pousse
-   donc naturellement le canvas au lieu de réserver un espace deviné
-   par-dessus lequel il flotterait en position fixe. */
-.explication-panel-bar {
-  flex-shrink: 0;
-  z-index: 40;
-  display: flex;
-  flex-direction: column;
-  max-height: 45vh;
-  background: var(--bg, #f7f1ea);
-}
-
-.explication-panel-tags {
-  display: flex;
-  align-items: center;
-  margin: 0 10px 0 10px;
-  gap: 0.5rem;
-  padding: 0rem;
-  overflow-x: auto;
-  flex-shrink: 0;
-}
-
-.explication-panel-tag {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.35rem 0.8rem;
-  border: 1px solid var(--border, #e3d7ca);
-  border-radius: 10px 10px 0 0;
-  background: var(--bg, #f7f1ea00);
-  color: var(--text, #3a2a1d);
-  font-size: 0.8rem;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.explication-panel-tag:hover {
-  background: var(--accent-dark, #664930);
-  color: #fff;
-}
-
-.explication-panel-tag.is-active {
-  background: var(--accent-dark, #664930);
-  border-color: var(--accent-dark, #664930);
-  color: #fff;
-}
-
-.explication-panel-tag-count {
-  font-size: 0.7rem;
-  opacity: 0.75;
-}
-
-.explication-panel-close {
-  margin-left: auto;
-  flex-shrink: 0;
-  border: none;
-  background: rgb(221, 204, 204);
-  border-radius: 50px 50px 0 0;
-  padding: 0.35rem 0.7rem;
-  cursor: pointer;
-  color: red;
-}
-
-.explication-panel-body {
-  border-top: none;
-  background: var(--bg-card, #fffdfb);
-  padding: 0.75rem 1rem 1.25rem;
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-
-.explication-panel-list {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: flex-start;
-  gap: 0.6rem;
-}
-
-.explication-panel-empty {
-  font-size: 0.85rem;
-  color: var(--text-muted, #8a7566);
-  font-style: italic;
-  text-align: center;
-  margin: 1rem 0;
-}
+/* ---------- Mobile : en-tête en haut, outils en bas (zone du pouce) ---------- */
 
 @media (max-width: 700px) {
-  .explication-panel-bar {
-    max-height: 55vh;
-    max-height: 55dvh;
-    max-height: calc(var(--app-height, 100dvh) * 0.55);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-}
+  .explication-editor { flex-direction: column; }
 
-/* ---------- Mobile : toolbar horizontale en haut, figée ---------- */
-
-@media (max-width: 700px) {
-  .explication-editor {
-    flex-direction: column;
-  }
+  .explication-content-col { order: 1; flex: 1; height: auto; min-height: 0; }
 
   .explication-toolbar {
+    order: 2;
     width: 100%;
     height: auto;
-    max-height: 30vh;
-    max-height: 30dvh;
     flex-direction: row;
     align-items: center;
-    justify-content: flex-start;
-    gap: 0.75rem;
+    gap: 0.6rem;
+    padding: 0.6rem 0.75rem calc(0.7rem + env(safe-area-inset-bottom, 0px));
+    border-right: none;
+    border-top: 1px solid var(--border, #e3d7ca);
     overflow-x: auto;
     overflow-y: hidden;
-    border-right: none;
-    border-bottom: 1px solid var(--border, #e3d7ca);
   }
+  .explication-toolbar-tools { flex: 1 1 auto; flex-direction: row; align-items: flex-end; justify-content: space-around; gap: 0.5rem; }
+  .explication-toolbar-hint { display: none; }
+  .explication-trash { flex: 0 0 64px; width: 64px; min-height: 64px; margin: 0; padding: 0.3rem; }
+  .explication-trash-label { display: none; }
 
-  .explication-toolbar-tools {
-    flex-direction: row;
-    align-items: center;
-    flex-shrink: 0;
-  }
-
-  .explication-trash {
-    margin-top: 0;
-    flex-shrink: 0;
-    width: fit-content;
-    background: none;
-    /* Elle reste après les outils dans le DOM (même structure qu'en
-       desktop, où elle est le dernier enfant du flex column) ; sur cette
-       toolbar devenue une ligne, `order: -1` la fait juste apparaître
-       visuellement en premier (tout à gauche), sans rien changer à
-       l'ordre réel des éléments. */
-    order: -1;
-    font-size: xx-large;
-  }
-
-  /* Exporter/Importer : même principe que la poubelle mais dans l'autre
-     sens — `order: 1` les fait apparaître en dernier (tout à droite) de
-     la ligne, et `margin-left: auto` absorbe l'espace restant pour les
-     coller au bord droit plutôt que de les laisser juste après les
-     outils s'il y a peu d'outils. Sur ordi c'était margin-top: auto (axe
-     vertical) ; ici c'est le même besoin sur l'axe horizontal. */
-  .explication-toolbar-actions {
-    flex-direction: row;
-    gap: 0.5rem;
-    margin-top: 0;
-    margin-left: auto;
-    padding-top: 0;
-    order: 1;
-    flex-shrink: 0;
-  }
+  .explication-header { gap: 0.6rem; padding: 0.75rem 0.75rem 0.5rem; }
+  .explication-kicker { font-size: 0.78rem; }
+  .explication-subtitle { display: none; }
+  .explication-titles h1 { font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .explication-file-actions { gap: 0.5rem; }
+  .explication-saved,
+  .explication-pill-label { display: none; }
+  .explication-file-actions .explication-pill { width: 44px; padding: 0; }
 
   .explication-canvas-wrap {
     width: 100%;
     height: auto;
     flex: 1;
     min-height: 0;
-    padding: 1.5rem 1rem 3rem calc(1rem + var(--mouvement-gutter, 0px));
-    overflow-x: auto;
+    padding: 0.5rem 0.85rem 2rem calc(0.85rem + var(--mouvement-gutter, 0px));
     -webkit-overflow-scrolling: touch;
   }
+  .explication-canvas { padding: 1.1rem 1.1rem; font-size: 1.03rem; line-height: 1.75; border-radius: 16px; }
 
-  .explication-canvas-header {
-    margin-bottom: 1.25rem;
-    flex-wrap: wrap;
-  }
+  .explication-draft-banner { flex-direction: column; align-items: stretch; }
 
-  .explication-canvas-header h1 {
-    font-size: 1.05rem;
+  .explication-panel-bar {
+    max-height: 55vh;
+    max-height: 55dvh;
+    max-height: calc(var(--app-height, 100dvh) * 0.55);
+    padding: 0 0.5rem;
   }
+  .explication-panel-tag { padding: 0 0.8rem; font-size: 0.88rem; }
+  .explication-panel-body { padding: 1rem 0.85rem 1.1rem; border-radius: 0; }
+  /* Cards : une à la fois, on fait défiler à l'horizontale */
+  .explication-panel-list { scroll-snap-type: x mandatory; }
+  .explication-panel-list > * { scroll-snap-align: start; }
 
-  .explication-canvas {
-    padding: 1rem 1rem;
-    font-size: var(--mobile-text-size, 0.92rem);
-    line-height: var(--mobile-text-line-height, 1.65);
-  }
+  .explication-armed { font-size: 0.9rem; }
 
-  .explication-draft-banner {
-    margin: -0.5rem 0 1.25rem;
-    flex-direction: column;
-    align-items: stretch;
-  }
+  /* Clavier ouvert : la barre d'outils du bas se retire, le panneau des cards prend la place */
+  .has-keyboard .explication-toolbar { display: none; }
+  .has-keyboard .explication-armed { display: none; }
+  .has-keyboard .explication-panel-bar.is-open { max-height: calc(var(--vv-height, 100dvh) * 0.72); }
+  .has-keyboard .explication-header { padding-top: 0.4rem; padding-bottom: 0.3rem; }
+  .has-keyboard .explication-kicker { display: none; }
+
+  /* En-tête étroit : le titre garde sa place, les boutons restent des disques de 40 px */
+  .explication-file-actions .explication-disc,
+  .explication-file-actions .explication-pill,
+  .explication-back { width: 40px; flex-basis: 40px; min-height: 40px; height: 40px; }
+}
+
+/* ---------- Widgets d'outils : pastilles en relief, libellés lisibles ----------
+   (les glyphes [ ] ◯ ▭ restent ceux de chaque outil ; ici seulement taille et relief) */
+
+.explication-mouvement-widget,
+.explication-concept-widget,
+.explication-exemple-widget { gap: 0.5rem; }
+
+.explication-mouvement-widget-label,
+.explication-concept-widget-label,
+.explication-exemple-widget-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text, #3a2a1d);
+}
+
+.explication-mouvement-widget-chips { gap: 0.5rem; }
+
+.explication-mouvement-chip,
+.explication-concept-chip,
+.explication-exemple-chip {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 12px;
+  background: var(--bg, #f7f1ea);
+  box-shadow: var(--neo-out-sm);
+  transition: box-shadow 0.2s ease;
+}
+.explication-mouvement-chip { width: 38px; font-size: 19px; color: #8e3b2b; }
+.explication-concept-chip { font-size: 21px; }
+.explication-exemple-chip { font-size: 21px; color: #3a7d68; }
+.explication-mouvement-chip:active,
+.explication-concept-chip:active,
+.explication-exemple-chip:active { box-shadow: var(--neo-in); }
+@media (hover: hover) {
+  .explication-mouvement-chip:hover,
+  .explication-concept-chip:hover,
+  .explication-exemple-chip:hover { box-shadow: var(--neo-in); }
+}
+/* Crochet armé (placement en deux touchers) : pastille enfoncée */
+.explication-mouvement-chip.explication-mouvement-chip--armed {
+  box-shadow: var(--neo-in), inset 0 0 0 2px #8e3b2b;
+  background: var(--bg, #f7f1ea);
+}
+
+@media (max-width: 700px) {
+  .explication-mouvement-widget-label,
+  .explication-concept-widget-label,
+  .explication-exemple-widget-label { font-size: 0.78rem; }
+  .explication-mouvement-chip { width: 36px; }
 }

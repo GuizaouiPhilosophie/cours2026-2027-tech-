@@ -22,8 +22,17 @@ import {
 } from "../lib/tapPlace";
 import { usePanelList } from "../lib/panelList";
 import { allMarkers, getPairs, assignLanes } from "../lib/overlayGeometry";
-import ExplicationCard from "../ExplicationCard";
+import ExplicationCard, { locateInText } from "../ExplicationCard";
 import "./mouvement.css";
+
+
+/** Numéro romain d'un mouvement (I, II, III…), dans l'ordre du texte. */
+export function roman(n) {
+  const t = [[1000, "M"], [900, "CM"], [500, "D"], [400, "CD"], [100, "C"], [90, "XC"], [50, "L"], [40, "XL"], [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]];
+  let out = "";
+  for (const [v, r] of t) while (n >= v) { out += r; n -= v; }
+  return out;
+}
 
 /* ---------- couleur d'une paire ---------- */
 
@@ -337,6 +346,13 @@ function OverlayLayer({ containerRef, helpers }) {
             >
               <div className="explication-mouvement-line" style={{ "--line-color": color }} />
             </div>
+            <span
+              className="explication-mouvement-num"
+              aria-hidden="true"
+              style={{ "--top": `${(top + bottom) / 2 - 12}px`, "--left": `${lineLeft + LINE_WIDTH / 2 - 12}px`, "--dot-color": color }}
+            >
+              {roman(laned.indexOf(it) + 1)}
+            </span>
             {[top, bottom].map((y, i) => (
               <div
                 key={i}
@@ -361,7 +377,8 @@ function getBadge(container) {
 function PanelContent({ containerRef, version, helpers, bounceTarget }) {
   const container = containerRef.current;
   const items = container ? getPairs(container) : [];
-  const { order, byId, bouncingId, startCardDrag, setCardRef } = usePanelList({
+  const textOrder = items.map((x) => x.pid);
+  const { order, byId, bouncingId, startCardDrag, setCardRef, remove } = usePanelList({
     items,
     idKey: "pid",
     toolId: "mouvement",
@@ -377,7 +394,16 @@ function PanelContent({ containerRef, version, helpers, bounceTarget }) {
     },
   });
 
-  if (order.length === 0) return <p className="explication-panel-empty">Aucun mouvement pour l’instant.</p>;
+  const hint = (
+    <div className="explication-card-slot">
+      <span className="explication-card-slot-icon" aria-hidden="true">
+        [ ]
+      </span>
+      <span>Posez un crochet ouvrant puis un fermant pour {order.length ? "ajouter" : "créer"} un mouvement.</span>
+    </div>
+  );
+
+  if (order.length === 0) return <div className="explication-panel-list">{hint}</div>;
 
   return (
     <div className="explication-panel-list">
@@ -396,6 +422,10 @@ function PanelContent({ containerRef, version, helpers, bounceTarget }) {
             background={soft}
             bouncing={bouncingId === pid}
             onGripPointerDown={startCardDrag(pid)}
+            number={roman(textOrder.indexOf(pid) + 1)}
+            onLocate={() => locateInText(it.openEl)}
+            onDelete={() => remove(pid)}
+            deleteLabel="Supprimer ce mouvement"
             title={{
               value: it.openEl.getAttribute("label") || "",
               placeholder: "Titre du mouvement…",
@@ -403,12 +433,13 @@ function PanelContent({ containerRef, version, helpers, bounceTarget }) {
             }}
             description={{
               value: it.openEl.getAttribute("description") || "",
-              placeholder: "Description…",
+              placeholder: "Que fait l’auteur dans ce passage ?",
               onChange: (val) => it.openEl.setAttribute("description", val),
             }}
           />
         );
       })}
+      {hint}
     </div>
   );
 }

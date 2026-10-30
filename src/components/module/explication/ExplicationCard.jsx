@@ -67,6 +67,10 @@ export default function ExplicationCard({
   bouncing = false,
   onGripPointerDown,
   gripTitle = "Glisser pour réordonner",
+  number,
+  onLocate,
+  onDelete,
+  deleteLabel = "Supprimer",
   title,
   description,
 }) {
@@ -80,8 +84,32 @@ export default function ExplicationCard({
         "--card-width": width,
       }}
     >
-      <div className="explication-card-grip" onPointerDown={onGripPointerDown} title={gripTitle}>
-        ⠿
+      <div className="explication-card-head">
+        {number && (
+          <span className="explication-card-num" aria-hidden="true">
+            {number}
+          </span>
+        )}
+        <div className="explication-card-grip" onPointerDown={onGripPointerDown} title={gripTitle} aria-hidden="true">
+          ⠿
+        </div>
+        {onLocate && (
+          <button type="button" className="explication-card-action" onClick={onLocate} aria-label="Retrouver dans le texte" title="Retrouver dans le texte">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="6" />
+              <path d="M20 20l-4.5-4.5" />
+            </svg>
+          </button>
+        )}
+        {onDelete && (
+          <button type="button" className="explication-card-action is-danger" onClick={onDelete} aria-label={deleteLabel} title={deleteLabel}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M3 6h18" />
+              <path d="M8 6V4h8v2" />
+              <path d="M19 6l-1 14H6L5 6" />
+            </svg>
+          </button>
+        )}
       </div>
       <div className="explication-card-fields">
         <Field spec={title} defaultClassName="explication-card-title" defaultRows={1} />
@@ -89,4 +117,15 @@ export default function ExplicationCard({
       </div>
     </div>
   );
+}
+
+/** Fait défiler le texte jusqu'à un élément et le fait brièvement clignoter (bouton « Retrouver »). */
+export function locateInText(el) {
+  if (!el) return;
+  el.scrollIntoView({ behavior: "smooth", block: "center" });
+  el.classList.remove("explication-flash");
+  // reflow : relance l'animation même si on reclique tout de suite
+  void el.offsetWidth;
+  el.classList.add("explication-flash");
+  setTimeout(() => el.classList.remove("explication-flash"), 1600);
 }

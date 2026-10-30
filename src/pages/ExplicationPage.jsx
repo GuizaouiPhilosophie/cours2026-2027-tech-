@@ -33,5 +33,5 @@ export default function ExplicationPage() {
   const { auteur, oeuvre, date, pages } = text.meta || {};
   const title = [auteur, oeuvre, date, pages].filter(Boolean).join(", ") || textId;
 
-  return <ExplicationEditor title={title} html={text.html} />;
+  return <ExplicationEditor title={title} meta={{ auteur, oeuvre, date, pages }} html={text.html} />;
 }

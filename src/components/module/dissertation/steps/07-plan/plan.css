@@ -8,13 +8,13 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.3rem;
-  font-size: 0.68rem;
+  font-size: 0.78rem;
   color: var(--text-muted);
 }
 .dissertation-plan-badge {
   padding: 0.05rem 0.45rem;
   border-radius: 999px;
-  font-size: 0.66rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: var(--knowledge);
   background: var(--bg);
@@ -68,16 +68,16 @@
 .dissertation-bubble.is-plan:not(.is-sheet) .dissertation-ws-write .dissertation-field textarea { min-height: 8rem; }
 
 /* Plein écran : consigne plus discrète, masquée clavier ouvert */
-.dissertation-bubble.is-plan.is-sheet .dissertation-plan-goal { font-size: 0.75rem; }
+.dissertation-bubble.is-plan.is-sheet .dissertation-plan-goal { font-size: 0.85rem; }
 .dissertation-bubble.is-plan.is-compact .dissertation-plan-goal { display: none; }
 
 /* ---------- Nœuds des parties (lib/TextNode) ---------- */
 
-.dissertation-textnode p.dissertation-plannode-second { margin-top: 0.4rem; font-size: 0.78rem; color: var(--text-muted); }
+.dissertation-textnode p.dissertation-plannode-second { margin-top: 0.4rem; font-size: 0.85rem; color: var(--text-muted); }
 .dissertation-plannode-count {
   display: block;
   margin-top: 0.4rem;
   font-family: var(--sans);
-  font-size: 0.68rem;
+  font-size: 0.78rem;
   color: var(--knowledge);
 }

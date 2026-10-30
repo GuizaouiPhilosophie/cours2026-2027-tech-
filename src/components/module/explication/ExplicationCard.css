@@ -3,64 +3,127 @@
 .explication-card {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   gap: 0.6rem;
-  width: fit-content;
+  width: max(var(--card-width, 0px), 17rem);
+  max-width: min(22rem, 80vw);
   flex-shrink: 0;
+  box-sizing: border-box;
   border-top-width: 4px;
   border-top-style: solid;
   border-top-color: var(--accent-color, var(--accent-dark, #664930));
-  border-radius: 8px;
-  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  padding: 0.4rem 0.8rem 0.85rem;
   background: var(--card-bg, var(--bg, #f7f1ea));
+  box-shadow: 4px 4px 9px #c9c5be, -4px -4px 9px #ffffff;
+}
+
+/* En-tête : numéro, poignée (réordonner), Retrouver dans le texte, Supprimer */
+.explication-card-head { display: flex; align-items: center; gap: 0.25rem; min-height: 34px; }
+.explication-card-num {
+  flex: none;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 0.3rem;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  font: 700 0.75rem/1 Georgia, serif;
+  color: #fff;
+  background: var(--accent-color, var(--accent-dark, #664930));
 }
 
 .explication-card-grip {
+  flex: 1 1 auto;
+  align-self: stretch;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 3px;
-  width: 0.1rem;
-  max-height: 0px;
-  flex-shrink: 0;
+  font-size: 1rem;
+  letter-spacing: 2px;
   cursor: grab;
-  color: var(--text-muted, #8a7566);
+  color: #a8978a;
   touch-action: none;
   user-select: none;
 }
 
+.explication-card-action {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  color: var(--text-muted, #6b5747);
+  background: transparent;
+  cursor: pointer;
+}
+.explication-card-action svg { display: block; }
+.explication-card-action.is-danger { color: #b3402e; }
+.explication-card-action:hover,
+.explication-card-action:focus-visible { box-shadow: inset 3px 3px 6px #c9c5be, inset -3px -3px 6px #ffffff; outline: none; }
+
 .explication-card-fields {
   min-width: 0;
-  max-width: var(--card-width, none);
   display: flex;
   flex-direction: column;
-  gap: 0.1rem;
+  gap: 0.45rem;
 }
 
 .explication-card-title,
 .explication-card-desc {
   font-family: inherit;
   border: 1px solid var(--border, #e3d7ca);
-  border-radius: 6px;
+  border-radius: 8px;
   background: var(--bg-card, #fffdfb);
   color: var(--text, #3a2a1d);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .explication-card-title {
   font-family: var(--serif, Georgia, serif);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 1rem;
+  line-height: 1.35;
   resize: none;
   overflow: hidden;
-  padding: 0.3rem 0.5rem;
+  padding: 0.45rem 0.6rem;
 }
 
 .explication-card-desc {
-  font-size: 0.8rem;
-  padding: 0.3rem 0.5rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  padding: 0.45rem 0.6rem;
   resize: none;
   overflow: hidden;
 }
+.explication-card-title:focus-visible,
+.explication-card-desc:focus-visible { outline: 2px solid var(--accent-color, #664930); outline-offset: 1px; }
+
+/* Emplacement vide : explique comment créer la card suivante */
+.explication-card-slot {
+  flex-shrink: 0;
+  width: 15rem;
+  max-width: 80vw;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1.5px dashed #d8c9b8;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: var(--text, #3a2a1d);
+}
+.explication-card-slot-icon { font: 700 1.3rem Georgia, serif; color: #8e3b2b; }
 
 @keyframes explication-card-bounce {
   0%, 100% { transform: translateY(0); }

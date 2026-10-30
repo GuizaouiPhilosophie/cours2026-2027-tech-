@@ -124,5 +124,8 @@ export function usePanelList({ items, idKey = "id", toolId, version, bounceTarge
     };
   }
 
-  return { order, byId, bouncingId, startCardDrag, setCardRef };
+  // Suppression depuis le bouton de la card (accessible au clavier, en plus de la poubelle).
+  const remove = (id) => onDelete?.(id);
+
+  return { order, byId, bouncingId, startCardDrag, setCardRef, remove };
 }

@@ -1,27 +1,39 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import useEscape from "./useEscape";
 import useSheetViewport from "./useSheetViewport";
 import { NARROW } from "./canvas";
+import { GripIcon, PinIcon } from "./icons";
 import "./ui.css";
 
 const COMPACT_H = 560; // plein écran plus bas que ça (clavier ouvert) : classe is-compact
 const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
 const FOCUSABLE = 'button:not([disabled]), [href], input:not([disabled]), textarea:not([disabled]), select, [tabindex]:not([tabindex="-1"])';
 
-/** Largeur de la fenêtre, suivie (rotation d'écran, redimensionnement). */
-function useViewportWidth() {
-  const [w, setW] = useState(() => window.innerWidth);
+/** Taille de la zone visible (clavier virtuel déduit), suivie : rotation, redimensionnement, clavier. */
+function useViewportSize() {
+  const read = () => ({ w: window.innerWidth, h: window.visualViewport?.height ?? window.innerHeight });
+  const [size, setSize] = useState(read);
   useEffect(() => {
-    const on = () => setW(window.innerWidth);
+    const on = () => setSize((prev) => {
+      const next = read();
+      return prev.w === next.w && prev.h === next.h ? prev : next;
+    });
     window.addEventListener("resize", on);
-    return () => window.removeEventListener("resize", on);
+    window.visualViewport?.addEventListener("resize", on);
+    return () => {
+      window.removeEventListener("resize", on);
+      window.visualViewport?.removeEventListener("resize", on);
+    };
   }, []);
-  return w;
+  return size;
 }
+
+/** En dessous de cette hauteur visible (téléphone en paysage, clavier ouvert), la bulle passe en plein écran. */
+const SHORT = 520;
 
 /** Sous (ou au-dessus de) l'ancre sur grand écran ; plein écran (« feuille ») sur petit écran. */
 function place(anchor, width, vw, vh) {
-  if (!anchor || vw < NARROW) return { sheet: true };
+  if (!anchor || vw < NARROW || vh < SHORT) return { sheet: true };
 
   const w = Math.min(width, vw - 16);
   const left = clamp(anchor.x - w / 2, 8, vw - w - 8);
@@ -76,10 +88,64 @@ export default function Bubble({
   children,
 }) {
   const ref = useRef(null);
-  const vw = useViewportWidth();
-  const pos = useMemo(() => place(anchor, width, vw, window.innerHeight), [anchor, width, vw]);
+  const { w: vw, h: vh } = useViewportSize();
+  // Hauteur visible = clavier déduit : une bulle flottante qui n'aurait plus la place passe en plein écran.
+  const pos = useMemo(() => place(anchor, width, vw, vh), [anchor, width, vw, vh]);
   const sheet = useSheetViewport(pos.sheet);
   const compact = sheet.height !== null && sheet.height < COMPACT_H;
+
+  // Grand écran : la bulle peut être attrapée par sa poignée et déplacée. Elle reste alors reliée
+  // à son nœud par un fil, et un bouton la replace à côté de lui.
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [dragging, setDragging] = useState(false);
+  const [tether, setTether] = useState(null); // { x1, y1, x2, y2 } en coordonnées écran
+  const drag = useRef(null);
+  const moved = !pos.sheet && (Math.abs(offset.x) > 4 || Math.abs(offset.y) > 4);
+
+  const onGripDown = (e) => {
+    if (pos.sheet || (e.button !== undefined && e.button !== 0)) return;
+    e.preventDefault();
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+    const r = ref.current.getBoundingClientRect();
+    drag.current = { x: e.clientX, y: e.clientY, ox: offset.x, oy: offset.y, left: r.left - offset.x, top: r.top - offset.y, w: r.width, h: r.height };
+    setDragging(true);
+  };
+  const onGripMove = (e) => {
+    const d = drag.current;
+    if (!d) return;
+    const vw2 = window.innerWidth;
+    const vh2 = window.innerHeight;
+    // la bulle reste entièrement à l'écran
+    const x = clamp(d.ox + e.clientX - d.x, 8 - d.left, vw2 - 8 - d.w - d.left);
+    const y = clamp(d.oy + e.clientY - d.y, 8 - d.top, Math.max(8 - d.top, vh2 - 8 - Math.min(d.h, vh2 - 16) - d.top));
+    setOffset({ x, y });
+  };
+  const onGripUp = () => {
+    drag.current = null;
+    setDragging(false);
+  };
+  const onGripKey = (e) => {
+    // Clavier : flèches pour déplacer la bulle (Maj = grands pas)
+    const step = e.shiftKey ? 40 : 10;
+    const d = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] }[e.key];
+    if (!d) return;
+    e.preventDefault();
+    setOffset((o) => ({ x: o.x + d[0], y: o.y + d[1] }));
+  };
+
+  // Fil entre le nœud et la bulle déplacée.
+  useLayoutEffect(() => {
+    if (!moved || !anchor || !ref.current) {
+      setTether(null);
+      return;
+    }
+    const r = ref.current.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const fromBelow = r.top >= anchor.bottom;
+    const x2 = clamp(anchor.x, r.left + 24, r.right - 24);
+    const y2 = fromBelow ? r.top : r.top > anchor.top ? r.top : r.bottom;
+    setTether({ x1: anchor.x, y1: fromBelow || r.top > anchor.top ? anchor.bottom : anchor.top, x2: Number.isFinite(x2) ? x2 : cx, y2 });
+  }, [moved, offset, anchor]);
 
   // Modification du titre : null = pas en cours, sinon le texte saisi.
   const [draft, setDraft] = useState(null);
@@ -138,14 +204,29 @@ export default function Bubble({
     "dissertation-bubble",
     pos.sheet ? "is-sheet" : `is-${pos.side}`,
     compact && "is-compact",
+    moved && "is-moved",
+    dragging && "is-dragging",
     className,
   ].filter(Boolean);
 
+  const style = pos.sheet
+    ? sheet.style
+    : { ...pos.style, "--arrow-x": `${pos.arrow}px`, transform: moved ? `translate(${offset.x}px, ${offset.y}px)` : undefined };
+
   return (
+    <>
+    {tether && (
+      <svg className="dissertation-tether" aria-hidden="true">
+        <path
+          d={`M${tether.x1} ${tether.y1} C ${tether.x1} ${(tether.y1 + tether.y2) / 2}, ${tether.x2} ${(tether.y1 + tether.y2) / 2}, ${tether.x2} ${tether.y2}`}
+        />
+        <circle cx={tether.x1} cy={tether.y1} r="4.5" />
+      </svg>
+    )}
     <div
       ref={ref}
       className={classes.join(" ")}
-      style={pos.sheet ? sheet.style : { ...pos.style, "--arrow-x": `${pos.arrow}px` }}
+      style={style}
       role="dialog"
       aria-modal={pos.sheet || undefined}
       aria-label={label ?? title}
@@ -154,6 +235,21 @@ export default function Bubble({
     >
       <div className="dissertation-bubble-body">
         <div className="dissertation-bubble-head">
+          {!pos.sheet && (
+            <button
+              type="button"
+              className="dissertation-bubble-grip"
+              aria-label="Déplacer la bulle (glisser, ou flèches du clavier)"
+              title="Glisser pour déplacer la bulle"
+              onPointerDown={onGripDown}
+              onPointerMove={onGripMove}
+              onPointerUp={onGripUp}
+              onPointerCancel={onGripUp}
+              onKeyDown={onGripKey}
+            >
+              <GripIcon />
+            </button>
+          )}
           <div className="dissertation-bubble-title">
             {draft === null ? (
               <h2>{title}</h2>
@@ -182,6 +278,17 @@ export default function Bubble({
           </div>
 
           <div className="dissertation-bubble-actions">
+            {moved && (
+              <button
+                type="button"
+                className="dissertation-close"
+                onClick={() => setOffset({ x: 0, y: 0 })}
+                aria-label="Replacer la bulle près de son nœud"
+                title="Replacer près du nœud"
+              >
+                <PinIcon />
+              </button>
+            )}
             {onRename && (
               <button
                 type="button"
@@ -203,5 +310,6 @@ export default function Bubble({
         {children}
       </div>
     </div>
+    </>
   );
 }

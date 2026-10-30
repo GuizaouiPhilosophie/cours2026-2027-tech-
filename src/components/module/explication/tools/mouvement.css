@@ -131,3 +131,19 @@
   background: var(--dot-color);
   box-shadow: 0 0 0 2px var(--bg-card, #fffdfb);
 }
+/* Numéro du mouvement (I, II…) posé sur son trait, comme sur la card du panneau */
+.explication-mouvement-num {
+  position: absolute;
+  top: var(--top);
+  left: var(--left);
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font: 700 11px/1 Georgia, serif;
+  color: var(--dot-color, #664930);
+  background: var(--bg-card, #fffdfb);
+  box-shadow: 2px 2px 5px #c9c5be, -2px -2px 5px #ffffff;
+  pointer-events: none;
+}

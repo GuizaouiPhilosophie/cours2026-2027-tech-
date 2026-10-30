@@ -43,25 +43,22 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font-family: var(--sans);
-  font-size: 0.62rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
   color: var(--accent-dark);
 }
 .dissertation-textnode.is-contradiction .dissertation-textnode-label { color: var(--contradiction); }
 .dissertation-textnode.is-knowledge .dissertation-textnode-label { color: var(--knowledge); }
 
+/* Texte entier, quelle que soit sa longueur : le nœud grandit (rien n'est coupé sur la carte) */
 .dissertation-textnode p {
   margin: 0;
-  max-height: 10em;
-  overflow: hidden;
-  font-size: 0.9rem;
-  line-height: 1.45;
+  font-size: 1rem;
+  line-height: 1.5;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
-.dissertation-textnode.is-sans p { font-size: 0.82rem; }
+.dissertation-textnode.is-sans p { font-size: 0.92rem; }
 .dissertation-textnode p.is-empty { font-style: italic; color: var(--text-muted); }
 
 /* Bouton dans le coin d'un nœud (ex. modifier un commentaire) */
@@ -93,7 +90,7 @@
 
 .dissertation-hintbar {
   position: fixed;
-  top: 0.75rem;
+  top: calc(var(--vv-top, 0px) + 0.85rem);
   left: 50%;
   transform: translateX(-50%);
   z-index: 15;
@@ -102,27 +99,59 @@
   gap: 0.5rem;
   max-width: calc(100vw - 7.5rem);
   pointer-events: none;
+  transition: left 0.35s ease;
+}
+/* Parcours ouvert à gauche : la consigne se centre sur la carte */
+.dissertation-editor.has-rail .dissertation-hintbar {
+  left: calc(50% + var(--rail-w) / 2);
+  max-width: calc(100vw - var(--rail-w) - 7.5rem);
 }
 .dissertation-hint {
   margin: 0;
-  padding: 0.35rem 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.4rem 1.1rem 0.4rem 0.4rem;
   border-radius: 999px;
-  text-align: center;
   font-family: var(--sans);
-  font-size: 0.75rem;
-  line-height: 1.3;
-  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.35;
+  color: var(--text);
   background: var(--bg);
   box-shadow: var(--neo-out-sm);
+}
+.dissertation-hint-step {
+  flex: none;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #fff;
+  background: var(--accent-dark);
+}
+.dissertation-hint-text { min-width: 0; }
+/* Petit écran : sous la pilule du parcours, sur toute la largeur */
+@media (max-width: 899.98px) {
+  .dissertation-hintbar {
+    top: calc(var(--vv-top, 0px) + 4.6rem + env(safe-area-inset-top, 0px));
+    left: 0.75rem;
+    right: 0.75rem;
+    transform: none;
+    max-width: none;
+    justify-content: center;
+  }
+  .dissertation-hint { font-size: 0.9rem; border-radius: 18px; }
 }
 .dissertation-hintbar button {
   flex: 0 0 auto;
   pointer-events: auto;
-  padding: 0.35rem 0.8rem;
+  min-height: 40px;
+  padding: 0.35rem 1rem;
   border: none;
   border-radius: 999px;
   font-family: var(--sans);
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--accent-dark);
   background: var(--bg);
@@ -158,6 +187,40 @@
 }
 .dissertation-bubble.is-below::before { top: -7px; }
 .dissertation-bubble.is-above::before { bottom: -7px; }
+/* Bulle déplacée : plus de pointe, un fil la relie à son nœud */
+.dissertation-bubble.is-moved::before { display: none; }
+.dissertation-bubble.is-dragging { box-shadow: 14px 14px 28px var(--neo-dark), -10px -10px 22px var(--neo-light); }
+
+.dissertation-bubble-grip {
+  flex: 0 0 auto;
+  align-self: stretch;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  margin: -0.3rem 0 -0.3rem -0.4rem;
+  padding: 0;
+  border: none;
+  border-radius: 10px;
+  color: #a8978a;
+  background: none;
+  cursor: grab;
+  touch-action: none;
+}
+.dissertation-bubble.is-dragging .dissertation-bubble-grip { cursor: grabbing; }
+.dissertation-bubble-grip:hover,
+.dissertation-bubble-grip:focus-visible { color: var(--accent-dark); box-shadow: var(--neo-in); outline: none; }
+
+.dissertation-tether {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 39;
+  pointer-events: none;
+  overflow: visible;
+}
+.dissertation-tether path { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 3 6; stroke-linecap: round; }
+.dissertation-tether circle { fill: var(--accent); }
 
 /* Petit écran : plein écran ; hauteur ajustée au clavier par useSheetViewport, ces valeurs servent de repli */
 .dissertation-bubble.is-sheet {
@@ -193,9 +256,9 @@
   gap: 0.5rem;
 }
 .dissertation-bubble-title { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 0.15rem; }
-.dissertation-bubble-head h2 { margin: 0; font-family: var(--serif); font-size: 1.3rem; overflow-wrap: anywhere; }
+.dissertation-bubble-head h2 { margin: 0; font-family: var(--serif); font-size: 1.35rem; overflow-wrap: anywhere; }
 .dissertation-bubble.is-sheet .dissertation-bubble-head h2 { font-size: 1.15rem; }
-.dissertation-bubble-subtitle { font-size: 0.75rem; color: var(--text-muted); }
+.dissertation-bubble-subtitle { font-size: 0.85rem; color: var(--text-muted); }
 
 /* Boutons au bord droit de l'en-tête : modifier le titre, fermer */
 .dissertation-bubble-actions { flex: 0 0 auto; display: flex; align-items: center; gap: 0.45rem; margin-left: auto; }
@@ -219,8 +282,11 @@
 
 .dissertation-close {
   flex: 0 0 auto;
-  width: 2rem;
-  height: 2rem;
+  width: 2.3rem;
+  height: 2.3rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
   border: none;
   border-radius: 50%;
   font-size: 1.2rem;
@@ -241,11 +307,10 @@
 .dissertation-field {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-muted);
+  gap: 0.45rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
 }
 .dissertation-field textarea {
   min-height: 6rem;
@@ -254,7 +319,9 @@
   padding: 0.7rem 0.9rem;
   font: inherit;
   font-family: var(--serif);
-  font-size: 1rem;
+  font-size: 1.05rem;
+  font-weight: 400;
+  line-height: 1.55;
   letter-spacing: normal;
   text-transform: none;
   color: var(--text);
@@ -275,9 +342,10 @@
 .dissertation-chip {
   border: none;
   border-radius: 999px;
-  padding: 0.25rem 0.7rem;
+  min-height: 34px;
+  padding: 0.3rem 0.85rem;
   font: inherit;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: var(--accent-dark);
   background: var(--bg);
   box-shadow: var(--neo-out-sm);
@@ -291,17 +359,16 @@
 
 .dissertation-block { display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
 .dissertation-block-label {
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 0.85rem;
+  font-weight: 600;
   color: var(--text-muted);
 }
 
 .dissertation-reftext {
   margin: 0;
   font-family: var(--serif);
-  font-size: 0.95rem;
-  line-height: 1.45;
+  font-size: 1rem;
+  line-height: 1.5;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
@@ -340,16 +407,16 @@
 }
 .dissertation-card p {
   margin: 0;
-  font-size: 0.82rem;
+  font-size: 0.9rem;
   line-height: 1.45;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 .dissertation-card p.is-empty { font-style: italic; color: var(--text-muted); }
 .dissertation-card.is-linked { margin-left: 0.8rem; }
-.dissertation-card-title { font-family: var(--serif); font-size: 0.88rem; }
-.dissertation-card-note { font-size: 0.7rem; color: var(--accent-dark); }
-.dissertation-card-links { font-size: 0.7rem; line-height: 1.35; color: var(--knowledge); }
+.dissertation-card-title { font-family: var(--serif); font-size: 0.98rem; }
+.dissertation-card-note { font-size: 0.8rem; color: var(--accent-dark); }
+.dissertation-card-links { font-size: 0.8rem; line-height: 1.35; color: var(--knowledge); }
 
 .dissertation-card.is-contradiction { box-shadow: var(--neo-in), inset 0 0 0 1.5px var(--contradiction); }
 .dissertation-card.is-contradiction .dissertation-card-title { color: var(--contradiction); }

@@ -8,9 +8,7 @@
 
 .dissertation-know-block { display: flex; flex-direction: column; gap: 0.45rem; }
 .dissertation-know-block > span {
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 0.85rem;
   color: var(--text-muted);
 }
 .dissertation-know-block .dissertation-tools-empty { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
@@ -34,7 +32,7 @@
 }
 .dissertation-know-link p {
   margin: 0.15rem 0 0;
-  font-size: 0.76rem;
+  font-size: 0.85rem;
   line-height: 1.4;
   color: var(--text-muted);
   display: -webkit-box;

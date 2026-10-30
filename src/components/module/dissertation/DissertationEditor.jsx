@@ -3,16 +3,19 @@ import { Link } from "react-router-dom";
 import { ReactFlow, ReactFlowProvider, Background, Controls, useReactFlow } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import "./dissertation.css";
-import StepPanel from "./StepPanel";
+import StepPanel, { WIDE_QUERY, useWide } from "./StepPanel";
 import ExportDialog from "./ExportDialog";
 import steps from "./stepRegistry";
-import { useFullscreen } from "./lib/useFullscreen";
+import { useFullscreen } from "../../../lib/useFullscreen";
+import { useVisibleViewport } from "../../../lib/useVisibleViewport";
 import { WorkspaceContext } from "./lib/workspace";
+import { StepInfoContext } from "./lib/HintBar";
 import { SUBJECT_ID, NODE_Z, EDGE_Z } from "./lib/canvas";
 import { rectAnchor, pointAnchor } from "./lib/anchor";
 import NodeHandles from "./lib/NodeHandles";
 import FloatingEdge from "./lib/FloatingEdge";
-import { IoIcon } from "./lib/icons";
+import { IoIcon, ArrowIcon, EyeIcon, ChevronIcon } from "./lib/icons";
+import { useExamples, loadExample } from "./lib/examples";
 import {
   makeSnapshot,
   restoreSnapshot,
@@ -199,8 +202,8 @@ function StepProviders({ statusOf, data, views, binders, children }) {
   }, children);
 }
 
-/** Écran d'entrée : saisie du sujet. */
-function SubjectForm({ onSubmit, onImport, notice, fullscreen }) {
+/** Écran d'entrée : saisie du sujet, aperçu du parcours, exemples terminés. */
+function SubjectForm({ onSubmit, onImport, notice, examples, onOpenExample }) {
   const [value, setValue] = useState("");
   const submit = (e) => {
     e.preventDefault();
@@ -209,56 +212,96 @@ function SubjectForm({ onSubmit, onImport, notice, fullscreen }) {
   };
 
   return (
-    <form className="dissertation-intro" onSubmit={submit}>
-      <span className="eyebrow">Dissertation</span>
-      <h1>Quel est votre sujet ?</h1>
-      <textarea
-        autoFocus
-        rows={3}
-        value={value}
-        placeholder="Ex. : Peut-on être heureux sans être libre ?"
-        aria-label="Sujet de la dissertation"
-        onChange={(e) => setValue(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && !e.shiftKey) submit(e);
-        }}
-      />
-      <div className="dissertation-intro-actions">
-        <button type="submit" className="dissertation-validate" disabled={!value.trim()}>
-          Valider le sujet
-        </button>
-        <button
-          type="button"
-          className="dissertation-io-btn"
-          onClick={onImport}
-          aria-label="Importer un travail (fichier exporté)"
-          title="Importer un travail (fichier exporté)"
-        >
-          <IoIcon kind="import" />
-        </button>
-      </div>
-      {notice && (
-        <p className={`dissertation-notice is-${notice.tone}`} role="status">
-          {notice.text}
-        </p>
-      )}
-      {fullscreen.supported && (
-        <p className="dissertation-fs-hint">
-          <button type="button" className="dissertation-fs-hint-btn" onClick={fullscreen.toggle}>
-            {fullscreen.isFullscreen ? "Quitter le plein écran" : "Passer en plein écran"}
-          </button>
-        </p>
-      )}
+    <div className="dissertation-intro-page">
       <Link to="/" className="dissertation-back">
-        ← Retour à l’accueil
+        <ChevronIcon dir="left" />
+        Retour au cours
       </Link>
-    </form>
+
+      <form className="dissertation-intro" onSubmit={submit}>
+        <div className="dissertation-intro-head">
+          <span className="eyebrow">Dissertation</span>
+          <h1>Quel est votre sujet ?</h1>
+          <p>Recopiez le sujet exactement comme il est donné.</p>
+        </div>
+        <textarea
+          autoFocus
+          rows={2}
+          value={value}
+          placeholder="Ex. : Peut-on être heureux sans être libre ?"
+          aria-label="Sujet de la dissertation"
+          onChange={(e) => setValue(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) submit(e);
+          }}
+        />
+        <div className="dissertation-intro-actions">
+          <button type="submit" className="dissertation-validate is-primary" disabled={!value.trim()}>
+            Commencer
+            <ArrowIcon />
+          </button>
+          <button type="button" className="dissertation-pill" onClick={onImport} title="Ouvrir un fichier exporté depuis cet éditeur">
+            <IoIcon kind="import" />
+            Reprendre mon travail
+          </button>
+        </div>
+        {notice && (
+          <p className={`dissertation-notice is-${notice.tone}`} role="status">
+            {notice.text}
+          </p>
+        )}
+      </form>
+
+      <section className="dissertation-intro-steps" aria-labelledby="intro-steps-title">
+        <h2 id="intro-steps-title">Le parcours en {steps.length} étapes</h2>
+        <ol>
+          {steps.map((s, i) => (
+            <li key={s.id}>
+              <span className="dissertation-intro-dot" aria-hidden="true">
+                {i + 1}
+              </span>
+              <span className="dissertation-intro-step">{s.title}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {examples.length > 0 && (
+        <section className="dissertation-intro-examples" aria-labelledby="intro-ex-title">
+          <div className="dissertation-intro-examples-head">
+            <h2 id="intro-ex-title">Voir un exemple terminé</h2>
+            <p>Ouvrez une dissertation complète pour voir le résultat attendu à chaque étape.</p>
+          </div>
+          <ul>
+            {examples.map((ex) => (
+              <li key={ex.file}>
+                <button type="button" className="dissertation-example-card" onClick={() => onOpenExample(ex)}>
+                  <span className="dissertation-example-thumb" aria-hidden="true">
+                    <i />
+                    <i />
+                    <i />
+                    <i />
+                  </span>
+                  <span className="dissertation-example-text">
+                    <span className="dissertation-example-title">{ex.title}</span>
+                    <span className="dissertation-example-open">Ouvrir l’exemple</span>
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <p className="dissertation-intro-foot">Votre travail reste dans ce navigateur. Exportez-le pour le rendre.</p>
+    </div>
   );
 }
 
 function Editor() {
   const rf = useReactFlow();
   const fullscreen = useFullscreen();
+  useVisibleViewport(); // clavier mobile : l'éditeur se cale sur la zone visible
   const [boot] = useState(bootState);
   const [subject, setSubject] = useState(boot.subject);
   const [data, setData] = useState(boot.data);
@@ -272,6 +315,13 @@ function Editor() {
   const [exporting, setExporting] = useState(false); // fenêtre d'export ouverte
   const fileInput = useRef(null);
   const [toolId, setToolId] = useState(null);
+  // Parcours ouvert : par défaut sur grand écran (colonne à gauche), fermé sur téléphone.
+  const [railOpen, setRailOpen] = useState(() => !!window.matchMedia?.(WIDE_QUERY).matches);
+  // Mode exemple (lecture seule) : { title, focus } ; le travail de l'élève est mis de côté dans savedWork.
+  const [example, setExample] = useState(null);
+  const savedWork = useRef(null);
+  const examples = useExamples();
+  const wide = useWide();
 
   const registry = useRef(new Map()); // étape -> ref de ses gestionnaires d'événements
   const dragged = useRef(false);
@@ -297,13 +347,26 @@ function Editor() {
     [subject, data, views, topics]
   );
   const graph = useMemo(() => makeGraph(derived.nodes), [derived]);
+  const focus = example?.focus ?? null;
   const nodes = useMemo(
     () =>
       derived.nodes.map((n) => {
         const u = ui[n.id];
-        return u ? { ...n, ...u, position: u.position ?? n.position } : n;
+        const out = u ? { ...n, ...u, position: u.position ?? n.position } : n;
+        // Mode exemple, une étape choisie : ce qui n'appartient pas à cette étape est estompé.
+        if (focus && n.id !== SUBJECT_ID && n.data?.owner !== focus) {
+          return { ...out, className: `${out.className ?? ""} is-dimmed`.trim() };
+        }
+        return out;
       }),
-    [derived, ui]
+    [derived, ui, focus]
+  );
+  const edges = useMemo(
+    () =>
+      focus
+        ? derived.edges.map((e) => (e.data?.owner === focus ? e : { ...e, className: `${e.className ?? ""} is-dimmed`.trim() }))
+        : derived.edges,
+    [derived, focus]
   );
   const onNodesChange = useCallback((changes) => setUi((prev) => applyUiChanges(prev, changes)), []);
 
@@ -443,13 +506,13 @@ function Editor() {
 
   // Sauvegarde automatique dans le navigateur, peu après chaque modification.
   useEffect(() => {
-    if (subject === null) return;
+    if (subject === null || example) return; // un exemple ouvert n'est jamais enregistré
     const t = setTimeout(() => {
       const ok = saveToStorage(makeSnapshot({ subject, data, validated, active, ui, author }));
       if (!ok) setNotice({ tone: "error", text: "Sauvegarde du navigateur impossible : pensez à exporter votre travail." });
     }, AUTOSAVE_MS);
     return () => clearTimeout(t);
-  }, [subject, data, validated, active, ui, author]);
+  }, [subject, data, validated, active, ui, author, example]);
 
   // Les confirmations disparaissent seules ; les erreurs restent jusqu'à la prochaine action.
   useEffect(() => {
@@ -459,12 +522,28 @@ function Editor() {
   }, [notice]);
 
   /** Export après saisie du prénom et du nom : fichier nom_prenom_dissertation.html. */
+  /** HTML du poster pour le travail affiché (export, ou aperçu sans bouton « Reprendre dans l'éditeur »). */
+  const makePoster = async (who, { preview = false } = {}) => {
+    const snapshot = makeSnapshot({ subject, data, validated, active, ui, author: who });
+    const divider = await loadDividerDataUrl(); // ornement du site, embarqué ; null → trait simple
+    // Numéro de l'étape qui publie chaque topic (pastilles 1 à 7 du poster).
+    const numbers = {};
+    steps.forEach((st, i) => Object.keys(st.provides ?? {}).forEach((t) => (numbers[t] = i + 1)));
+    const editorUrl = preview ? null : `${window.location.origin}${import.meta.env.BASE_URL}dissertation`;
+    return buildPosterHtml({ subject, topics, describe: graph.describe, snapshot, author: who, divider, numbers, editorUrl });
+  };
+
+  /** Aperçu du poster par-dessus la carte : dans l'éditeur comme dans un exemple. */
+  const [posterHtml, setPosterHtml] = useState(null);
+  const openPoster = async () => {
+    setRailOpen((o) => (wide ? o : false));
+    setPosterHtml(await makePoster(example ? example.author : author, { preview: true }));
+  };
+
   const exportHtml = async (who) => {
     setAuthor(who);
     setExporting(false);
-    const snapshot = makeSnapshot({ subject, data, validated, active, ui, author: who });
-    const divider = await loadDividerDataUrl(); // ornement du site, embarqué ; null → trait simple
-    const html = buildPosterHtml({ subject, topics, describe: graph.describe, snapshot, author: who, divider });
+    const html = await makePoster(who);
     downloadText(exportFileName(who), html);
     setNotice({ tone: "ok", text: "Export téléchargé." });
   };
@@ -512,13 +591,80 @@ function Editor() {
     // l'auteur est conservé : il resservira au prochain export
   };
 
+  /* ---------- Exemples (lecture seule) ---------- */
+
+  /** Ouvre un exemple terminé : le travail en cours est mis de côté (pas effacé) le temps de la lecture. */
+  const openExample = async (ex) => {
+    try {
+      const restored = restoreSnapshot(await loadExample(ex.file), steps);
+      if (!restored) throw new Error("Cet exemple ne contient pas de dissertation lisible.");
+      savedWork.current = { subject, data, validated, active, ui, author };
+      setSubject(restored.subject);
+      setData(restored.data);
+      setValidated(steps.map((st) => st.id)); // tout est lisible, rien n'est modifiable
+      setActive(null);
+      setUi(restored.ui);
+      setViews({});
+      setError(null);
+      setNotice(null);
+      setExample({ title: ex.title, focus: null, author: restored.author });
+      setTimeout(() => rf.fitView({ maxZoom: 1, padding: 0.4 }), 100);
+    } catch (e) {
+      setNotice({ tone: "error", text: e.message || "Impossible d’ouvrir cet exemple." });
+    }
+  };
+
+  /** Referme l'exemple et rend à l'élève son travail exactement comme il l'avait laissé. */
+  const quitExample = () => {
+    const w = savedWork.current;
+    savedWork.current = null;
+    setExample(null);
+    setViews({});
+    if (!w) return;
+    setSubject(w.subject);
+    setData(w.data);
+    setValidated(w.validated);
+    setActive(w.active);
+    setUi(w.ui);
+    setAuthor(w.author);
+    setTimeout(() => rf.fitView({ maxZoom: 1, padding: 0.5 }), 100);
+  };
+
+  const setExampleFocus = (id) => setExample((x) => (x ? { ...x, focus: x.focus === id ? null : id } : x));
+
+  // Mode exemple : la vue suit l'étape mise en avant.
+  useEffect(() => {
+    if (!example) return;
+    const ids = example.focus ? derived.nodes.filter((n) => n.data?.owner === example.focus).map((n) => ({ id: n.id })) : undefined;
+    const t = setTimeout(() => rf.fitView({ nodes: ids?.length ? ids : undefined, maxZoom: 1, padding: 0.5, duration: 400 }), 30);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [example?.focus]);
+
+  const recenter = () => rf.fitView({ maxZoom: 1, padding: 0.5, duration: 300 });
+
   const ActiveTool = useMemo(
     () => (toolId ? steps.flatMap((s) => s.tools).find((t) => t.id === toolId)?.Component ?? null : null),
     [toolId]
   );
 
+  const activeIndex = steps.findIndex((st) => st.id === active);
+  const stepInfo = useMemo(
+    () => (activeIndex >= 0 && !example ? { index: activeIndex + 1, total: steps.length } : null),
+    [activeIndex, example]
+  );
+  const readiness = active && !example ? validateStep(active) : null;
+  const wideRail = railOpen && subject !== null && wide;
+
+  const classes = [
+    "dissertation-editor",
+    subject === null && "is-intro",
+    wideRail && "has-rail",
+    example && "is-example",
+  ].filter(Boolean);
+
   return (
-    <div className="dissertation-editor">
+    <div className={classes.join(" ")}>
       {fullscreen.supported && (
         <button
           type="button"
@@ -544,68 +690,157 @@ function Editor() {
       />
 
       {subject === null ? (
-        <SubjectForm onSubmit={setSubject} onImport={openImport} notice={notice} fullscreen={fullscreen} />
+        <SubjectForm
+          onSubmit={setSubject}
+          onImport={openImport}
+          notice={notice}
+          examples={examples}
+          onOpenExample={openExample}
+        />
       ) : (
         <WorkspaceContext.Provider value={workspace}>
-          <StepProviders statusOf={statusOf} data={data} views={views} binders={binders}>
-            <>
-              <div
-                className="dissertation-canvas"
-                onPointerDownCapture={() => {
-                  dragged.current = false;
-                }}
-                onKeyDown={onCanvasKeyDown}
-              >
-                <ReactFlow
-                  nodes={nodes}
-                  edges={derived.edges}
-                  onNodesChange={onNodesChange}
-                  nodeTypes={nodeTypes}
-                  edgeTypes={edgeTypes}
-                  onNodeClick={onNodeClick}
-                  onEdgeClick={onEdgeClick}
-                  onPaneClick={onPaneClick}
-                  onNodeDragStart={() => {
-                    dragged.current = true;
+          <StepInfoContext.Provider value={stepInfo}>
+            <StepProviders statusOf={statusOf} data={data} views={views} binders={binders}>
+              <>
+                <div
+                  className="dissertation-canvas"
+                  onPointerDownCapture={() => {
+                    dragged.current = false;
                   }}
-                  deleteKeyCode={null} // le contenu appartient aux étapes : pas de suppression au clavier
-                  zoomOnDoubleClick={false} // le double-clic dans le vide est transmis aux étapes
-                  fitView
-                  fitViewOptions={{ maxZoom: 1, padding: 0.5 }}
-                  minZoom={0.1}
-                  maxZoom={3}
-                  proOptions={{ hideAttribution: true }}
+                  onKeyDown={onCanvasKeyDown}
                 >
-                  <Background gap={28} size={1.5} color="#d9cfc2" />
-                  <Controls showInteractive={false} position="bottom-right" />
-                </ReactFlow>
-              </div>
+                  <ReactFlow
+                    nodes={nodes}
+                    edges={edges}
+                    onNodesChange={onNodesChange}
+                    nodeTypes={nodeTypes}
+                    edgeTypes={edgeTypes}
+                    onNodeClick={onNodeClick}
+                    onEdgeClick={onEdgeClick}
+                    onPaneClick={onPaneClick}
+                    onNodeDragStart={() => {
+                      dragged.current = true;
+                    }}
+                    nodesDraggable={!example}
+                    deleteKeyCode={null} // le contenu appartient aux étapes : pas de suppression au clavier
+                    zoomOnDoubleClick={false} // le double-clic dans le vide est transmis aux étapes
+                    fitView
+                    fitViewOptions={{ maxZoom: 1, padding: 0.5 }}
+                    minZoom={0.1}
+                    maxZoom={3}
+                    proOptions={{ hideAttribution: true }}
+                  >
+                    <Background gap={28} size={1.5} color="#e0d6ca" />
+                    <Controls showInteractive={false} position="bottom-right" />
+                  </ReactFlow>
+                </div>
 
-              <StepPanel
-                active={active}
-                validated={validated}
-                reachable={reachable}
-                warnings={warnings}
-                onSelect={goTo}
-                onValidate={validateActive}
-                onOpenTool={setToolId}
-                onExport={() => setExporting(true)}
-                onImport={openImport}
-                onHome={goHome}
-                notice={notice}
-                error={shownError}
-              />
+                {example && (
+                  <ExampleBanner
+                    title={example.title}
+                    focus={example.focus}
+                    onFocus={(id) => setExample((x) => (x ? { ...x, focus: id } : x))}
+                    onQuit={quitExample}
+                    onPoster={openPoster}
+                  />
+                )}
 
-              {ActiveTool && <ActiveTool subject={subject} onClose={() => setToolId(null)} />}
+                <StepPanel
+                  subject={subject}
+                  active={active}
+                  validated={validated}
+                  reachable={reachable}
+                  warnings={warnings}
+                  readiness={readiness}
+                  onSelect={goTo}
+                  onValidate={validateActive}
+                  onExport={() => setExporting(true)}
+                  onImport={openImport}
+                  onHome={goHome}
+                  onRecenter={recenter}
+                  onPoster={openPoster}
+                  notice={notice}
+                  error={shownError}
+                  open={railOpen}
+                  setOpen={setRailOpen}
+                  example={example ? { focus: example.focus, setFocus: setExampleFocus } : null}
+                />
 
-              {exporting && (
-                <ExportDialog author={author} onConfirm={exportHtml} onCancel={() => setExporting(false)} />
-              )}
-            </>
-          </StepProviders>
+                {posterHtml && <PosterPreview html={posterHtml} onClose={() => setPosterHtml(null)} />}
+
+                {ActiveTool && <ActiveTool subject={subject} onClose={() => setToolId(null)} />}
+
+                {exporting && (
+                  <ExportDialog author={author} onConfirm={exportHtml} onCancel={() => setExporting(false)} />
+                )}
+              </>
+            </StepProviders>
+          </StepInfoContext.Provider>
         </WorkspaceContext.Provider>
       )}
     </div>
+  );
+}
+
+/** Bandeau du mode exemple : lecture seule, navigation étape par étape, sortie. */
+/**
+ * Aperçu du poster, par-dessus l'éditeur : le vrai fichier exporté, affiché dans un cadre
+ * (avec sa barre Poster / Lecture / Imprimer). Échap ou « Revenir à la carte » pour le fermer.
+ */
+function PosterPreview({ html, onClose }) {
+  useEffect(() => {
+    const onKey = (e) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+  return (
+    <div className="dissertation-poster-preview" role="dialog" aria-modal="true" aria-label="Aperçu du poster">
+      <iframe title="Poster de la dissertation" srcDoc={html} />
+      <button type="button" className="dissertation-pill dissertation-poster-close" onClick={onClose} autoFocus aria-label="Revenir à la carte">
+        <ChevronIcon dir="left" />
+        <span className="dissertation-pill-label">Revenir à la carte</span>
+      </button>
+    </div>
+  );
+}
+
+function ExampleBanner({ title, focus, onFocus, onQuit, onPoster }) {
+  const i = steps.findIndex((s) => s.id === focus);
+  const prev = i > 0 ? steps[i - 1] : null;
+  const next = i >= 0 ? steps[i + 1] ?? null : steps[0] ?? null;
+  return (
+    <>
+      <div className="dissertation-example-banner" role="status">
+        <span className="dissertation-example-tag">
+          <EyeIcon />
+          Exemple
+        </span>
+        <span className="dissertation-example-banner-text" title={title}>
+          Lecture seule : rien n’est modifié ni enregistré.
+        </span>
+        <button type="button" className="dissertation-pill" onClick={onPoster} aria-label="Voir le poster de l’exemple">
+          <EyeIcon />
+          <span className="dissertation-pill-label">Poster</span>
+        </button>
+        <button type="button" className="dissertation-pill" onClick={onQuit}>
+          Quitter l’exemple
+        </button>
+      </div>
+      <div className="dissertation-example-nav">
+        {prev && (
+          <button type="button" className="dissertation-pill" onClick={() => onFocus(prev.id)}>
+            <ChevronIcon dir="left" />
+            {steps.indexOf(prev) + 1}. {prev.title}
+          </button>
+        )}
+        {next && (
+          <button type="button" className="dissertation-validate is-primary" onClick={() => onFocus(next.id)}>
+            {steps.indexOf(next) + 1}. {next.title}
+            <ArrowIcon />
+          </button>
+        )}
+      </div>
+    </>
   );
 }
 

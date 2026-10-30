@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Philosite — dissertation">
+<title>Un œuvre d'art n'est-elle qu'un « simple » objet ? · Yann GUIZAOUI</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;background:#f7f1ea;color:#3a2a1d}
+body{font-family:"Helvetica Neue",Arial,sans-serif;-webkit-text-size-adjust:100%}
+.subject,.reform,.lead p,h2,.item h3,.part h3{font-family:Georgia,"Iowan Old Style","Palatino Linotype",serif}
+
+/* ---------- Barre d'actions (jamais imprimée) ---------- */
+.bar{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;justify-content:flex-end;align-items:center;gap:10px;padding:12px 16px;background:linear-gradient(#f7f1ea 70%,rgba(247,241,234,0))}
+.bar .seg{display:flex;padding:4px;border-radius:999px;box-shadow:inset 3px 3px 6px #c9c5be,inset -3px -3px 6px #fff}
+.bar button,.bar a{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 16px;border:0;border-radius:999px;background:#f7f1ea;color:#664930;font:600 14px "Helvetica Neue",Arial,sans-serif;text-decoration:none;cursor:pointer;box-shadow:3px 3px 7px #c9c5be,-3px -3px 7px #fff}
+.bar .seg button{min-height:34px;padding:0 14px;box-shadow:none;background:transparent}
+.bar .seg button[aria-pressed="true"]{background:#664930;color:#fff}
+.bar button:focus-visible,.bar a:focus-visible{outline:2px solid #664930;outline-offset:2px}
+.bar svg{display:block;flex:none}
+@media (max-width:600px){.bar{gap:8px;padding:10px 12px}.bar .lbl{display:none}.bar>button,.bar>a{width:44px;padding:0;justify-content:center}}
+
+/* ---------- Poster : tient entièrement dans l'écran ---------- */
+body.mode-poster{height:100vh;overflow:hidden}
+.mode-poster .poster{position:absolute;top:0;left:0;transform-origin:0 0;padding:44px 56px 36px;display:grid;grid-template-columns:minmax(0,1.85fr) 1px minmax(0,1fr);column-gap:52px;row-gap:24px}
+.mode-poster .poster.no-plan{grid-template-columns:minmax(0,1fr)}
+.main{display:flex;flex-direction:column;gap:26px;min-width:0}
+
+.head{display:flex;flex-direction:column;gap:14px}
+.byline{margin:0;font-size:15px;font-weight:600;color:#5a4637}
+.subject{margin:0;font-size:42px;line-height:1.2}
+.reform{margin:0;display:flex;gap:10px;align-items:baseline;font-size:20px;font-style:italic;line-height:1.45;color:#3a2a1d}
+.reform .n{transform:translateY(4px)}
+.leads{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px 40px}
+.lead h3{display:flex;align-items:center;gap:8px;margin:0 0 6px;font-family:"Helvetica Neue",Arial,sans-serif;font-size:15px;font-weight:600;color:#5a4637}
+.lead p{margin:0;font-size:21px;line-height:1.5;white-space:pre-wrap}
+.lead.thesis p{color:#664930}
+
+.n{display:inline-flex;align-items:center;justify-content:center;flex:none;width:24px;height:24px;border-radius:50%;border:1.5px solid #997e67;font:600 12px/1 "Helvetica Neue",Arial,sans-serif;font-style:normal;color:#664930}
+
+/* Ornement : le fond blanc de l'image disparaît sur le beige (multiply) */
+.divider{display:flex;justify-content:center;align-items:center;gap:10px;align-self:center;width:100%}
+.divider img{display:block;width:100%;height:auto;mix-blend-mode:multiply;opacity:.85}
+.divider.under-head{max-width:380px}
+.divider.in-plan{max-width:240px}
+.divider.is-line i{flex:1;height:1px;background:linear-gradient(90deg,transparent,#c9b8a6)}
+.divider.is-line i+b+i{background:linear-gradient(90deg,#c9b8a6,transparent)}
+.divider.is-line b{width:7px;height:7px;transform:rotate(45deg);border:1px solid #b9a690}
+
+.rule{background:linear-gradient(180deg,transparent,#d9cbbb 12%,#d9cbbb 88%,transparent)}
+.no-plan .rule{display:none}
+
+h2{display:flex;align-items:center;gap:10px;margin:0;font-size:29px;font-weight:400;line-height:1.2;color:#3a2a1d}
+.columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:44px;align-items:start}
+.side{display:flex;flex-direction:column;gap:32px;min-width:0}
+.block h2{margin-bottom:12px}
+.item{padding:13px 0}
+.item:first-of-type{padding-top:0}
+.item+.item{border-top:1px solid #e3d7ca}
+.item h3{margin:0 0 4px;font-size:20px;color:#664930}
+.item h3 small{font-family:"Helvetica Neue",Arial,sans-serif;font-size:14px;font-weight:400;color:#5a4637}
+.item p{margin:0;font-size:17px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}
+.item .note{margin-top:4px;font-size:15px;color:#5a4637}
+.item .related{margin-top:6px;font-size:15px;color:#5a4637}
+.item.know h3{color:#2a5f9e}
+.item.know.untitled p:first-of-type::before{content:"";display:inline-block;width:8px;height:8px;margin-right:8px;border-radius:50%;vertical-align:2px;background:#2a5f9e}
+.item.contra h3{color:#a8321f}
+.empty{font-style:italic;color:#5a4637}
+
+.plan{display:flex;flex-direction:column;justify-content:space-between;gap:20px;min-width:0}
+.part{display:flex;flex-direction:column;gap:10px}
+.part h3{margin:0;font-size:24px;color:#664930}
+.field span{display:block;margin-bottom:2px;font-size:14px;font-weight:600;color:#5a4637}
+.field p{margin:0;font-size:17px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+.field.uses p{color:#2a5f9e}
+.toc{display:none}
+
+/* ---------- Lecture : une colonne qui défile ---------- */
+body.mode-lecture{overflow:auto}
+.mode-lecture .poster{width:auto !important;max-width:760px;margin:0 auto;padding:12px 22px 48px;display:flex;flex-direction:column;gap:30px;transform:none !important;position:static}
+.mode-lecture .main{display:contents}
+.mode-lecture .head{order:0}
+.mode-lecture .columns{display:contents}
+.mode-lecture .side{display:contents}
+.mode-lecture .rule{display:none}
+.mode-lecture .subject{font-size:clamp(28px,7vw,40px)}
+.mode-lecture .lead p{font-size:19px}
+.mode-lecture .item p,.mode-lecture .field p{font-size:17px}
+.mode-lecture h2{font-size:26px}
+.mode-lecture .plan{gap:24px}
+.mode-lecture .toc{display:flex;position:sticky;top:64px;z-index:4;gap:8px;margin:0 -22px;padding:8px 22px 12px;overflow-x:auto;scrollbar-width:none;background:#f7f1ea;border-bottom:1px solid #e3d7ca}
+.toc::-webkit-scrollbar{display:none}
+.toc a{flex:none;display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border-radius:999px;background:#f7f1ea;color:#3a2a1d;font-size:14px;font-weight:500;text-decoration:none;box-shadow:2px 2px 5px #c9c5be,-2px -2px 5px #fff}
+.toc a[aria-current="true"]{background:#664930;color:#fff}
+.mode-lecture .poster{padding-top:68px}
+.mode-lecture .block,.mode-lecture .plan,.mode-lecture #essentiel{scroll-margin-top:130px}
+.foot{grid-column:1/-1;margin:6px 0 0;text-align:center;font-size:14px;color:#5a4637}
+
+/* ---------- Impression : la lecture, sans la barre ---------- */
+@media print{
+  @page{size:A4;margin:16mm}
+  .bar,.toc{display:none !important}
+  html,body{height:auto !important;overflow:visible !important;background:#fff}
+  .poster{position:static !important;transform:none !important;width:auto !important;max-width:none !important;padding:0 !important;display:block !important}
+  .main,.columns,.side{display:block !important}
+  .rule{display:none}
+  .block,.plan,.head{margin-bottom:22px}
+  .item,.part{break-inside:avoid}
+  .subject{font-size:28px}
+  .lead p{font-size:15px}
+  .item p,.field p{font-size:12pt}
+  h2{font-size:20px;margin-top:8px}
+}
+</style>
+</head>
+<body class="mode-poster">
+<div class="bar" id="bar" role="toolbar" aria-label="Affichage du document">
+  <div class="seg" role="group" aria-label="Affichage">
+    <button type="button" data-mode="poster" aria-pressed="true">Poster</button>
+    <button type="button" data-mode="lecture" aria-pressed="false">Lecture</button>
+  </div>
+  <button type="button" id="print" aria-label="Imprimer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg><span class="lbl">Imprimer</span></button>
+  <a href="http://localhost:5173/cours2026-2027-tech-/dissertation" target="_blank" rel="noopener" title="Ouvre l’éditeur : choisissez-y « Reprendre mon travail » puis ce fichier" aria-label="Reprendre dans l’éditeur"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg><span class="lbl">Reprendre dans l’éditeur</span></a>
+</div>
+<main class="poster" id="poster">
+  <div class="main">
+    <header class="head">
+      <p class="byline">Dissertation · Yann GUIZAOUI · 30 octobre 2026</p>
+      <h1 class="subject">Un œuvre d'art n'est-elle qu'un « simple » objet ?</h1>
+      <p class="reform"><span class="n" aria-label="Étape 2">2</span><span>Autrement dit : Une chose créée pour exprimer un idéal de beauté n’est-elle rien de plus qu’une chose ordinaire qui existe devant nous ?</span></p>
+    </header>
+    <nav class="toc" aria-label="Sommaire"><a href="#essentiel">L’essentiel</a><a href="#definitions">Définitions</a><a href="#contradictions">Contradictions</a><a href="#connaissances">Connaissances</a><a href="#plan">Plan</a></nav>
+    <div class="leads" id="essentiel"><section class="lead problem"><h3><span class="n" aria-label="Étape 4">4</span>Problématique</h3><p>Dans quelle mesure peut-on distinguer ce que fait l’artiste de ce que fait l’artisan, si tous deux mettent en œuvre un savoir-faire pour produire une chose ?</p></section><section class="lead thesis"><h3><span class="n" aria-label="Étape 6">6</span>Thèse</h3><p>C’est la liberté qui distingue l’artiste de l’artisan et qui, par la même occasion, distingue l’œuvre d’art du simple objet.</p></section></div>
+    <div class="divider under-head" aria-hidden="true"><img src="data:image/svg+xml;charset=utf-8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%20standalone%3D%22no%22%3F%3E%0A%3C!--%20Created%20with%20Inkscape%20(http%3A%2F%2Fwww.inkscape.org%2F)%20--%3E%0A%0A%3Csvg%0A%20%20%20version%3D%221.1%22%0A%20%20%20id%3D%22svg1%22%0A%20%20%20width%3D%22100.1678%22%0A%20%20%20height%3D%229.5747957%22%0A%20%20%20viewBox%3D%220%200%20100.1678%209.5747958%22%0A%20%20%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%0A%20%20%20xmlns%3Asvg%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Cdefs%0A%20%20%20%20%20id%3D%22defs1%22%20%2F%3E%0A%20%20%3Cg%0A%20%20%20%20%20id%3D%22g1%22%0A%20%20%20%20%20transform%3D%22translate(-13.967097%2C-7.0513353)%22%3E%0A%20%20%20%20%3Cpath%0A%20%20%20%20%20%20%20style%3D%22fill%3A%23000000%22%0A%20%20%20%20%20%20%20d%3D%22m%2063.380754%2C16.290731%20c%20-0.190489%2C-0.213306%20-1.16951%2C-1.142948%20-2.175602%2C-2.065873%20l%20-1.829258%2C-1.678045%20-0.942695%2C0.696964%20-0.942694%2C0.696964%20-2.250829%2C-0.737907%20c%20-2.244369%2C-0.735791%20-2.259295%2C-0.736326%20-5.201703%2C-0.186355%20-2.700604%2C0.504775%20-11.001402%2C1.111995%20-11.753027%2C0.859757%20-1.022077%2C-0.342998%200.112993%2C-0.622312%203.282151%2C-0.807659%204.596636%2C-0.268833%208.683503%2C-0.850734%208.343719%2C-1.188005%20-0.304385%2C-0.302133%20-4.312246%2C-0.814665%20-8.823719%2C-1.128391%20-1.716%2C-0.11933%20-3.12%2C-0.341234%20-3.12%2C-0.493121%200%2C-0.6698228%209.729303%2C0.0087%2013.778128%2C0.960875%200.876235%2C0.206069%201.668848%2C0.09027%203.444524%2C-0.503255%20l%202.306395%2C-0.7709148%200.978277%2C0.6965938%200.978277%2C0.696594%200.988351%2C-0.918025%20c%200.543593%2C-0.5049138%201.238738%2C-1.1340248%201.544767%2C-1.3980248%200.306029%2C-0.264%200.927362%2C-0.815603%201.380741%2C-1.2257841%20l%200.824326%2C-0.745784%201.688107%2C1.5492231%20c%203.149712%2C2.8905768%202.910008%2C2.7660108%203.869818%2C2.0110248%20l%200.840483%2C-0.6611238%202.46059%2C0.7757838%20c%202.276219%2C0.717656%202.594586%2C0.744683%204.248903%2C0.3607%204.049422%2C-0.93991%2012.828314%2C-1.4764578%2012.828314%2C-0.78404%200%2C0.176%20-0.54%2C0.321542%20-1.2%2C0.323426%20-2.047374%2C0.0058%20-10.000854%2C0.92525%20-10.520699%2C1.21617%20-0.608566%2C0.340571%203.359906%2C0.929326%208.280699%2C1.228511%202.503295%2C0.1522%203.44%2C0.322507%203.44%2C0.625445%200%2C0.302316%20-0.416165%2C0.379195%20-1.52%2C0.280794%20-0.836%2C-0.07453%20-2.929252%2C-0.208227%20-4.651672%2C-0.297116%20-1.72242%2C-0.08889%20-4.399858%2C-0.404725%20-5.949863%2C-0.701858%20-2.797539%2C-0.536282%20-2.834714%2C-0.534823%20-5.07316%2C0.199025%20l%20-2.25497%2C0.739266%20-0.915168%2C-0.648663%20-0.915167%2C-0.648664%20-2.24%2C2.039034%20c%20-2.325961%2C2.117282%20-2.647906%2C2.28018%20-3.226344%2C1.632458%20z%20m%202.842466%2C-2.493424%20c%201.003133%2C-0.894077%201.823878%2C-1.726043%201.823878%2C-1.848813%200%2C-0.12277%20-0.865177%2C-0.984778%20-1.922615%2C-1.915573%20l%20-1.922615%2C-1.6923558%20-0.825547%2C0.649375%20c%20-0.45405%2C0.357157%20-1.382548%2C1.1525928%20-2.063327%2C1.7676358%20l%20-1.23778%2C1.11826%201.825942%2C1.767084%20c%201.004268%2C0.971897%201.977197%2C1.769987%202.162064%2C1.773534%200.184868%2C0.0035%201.156868%2C-0.725069%202.16%2C-1.619147%20z%20m%20-3.056122%2C-0.640036%20c%20-0.308%2C-0.179393%20-0.56%2C-0.595237%20-0.56%2C-0.924097%200%2C-1.195824%200.370623%2C-1.610271%201.44%2C-1.610271%201.434914%2C0%201.966322%2C1.347963%200.937143%2C2.377143%20-0.578515%2C0.578514%20-1.027183%2C0.617335%20-1.817143%2C0.157225%20z%20m%20-5.190986%2C-0.624329%20c%200.530415%2C-0.586102%200.539641%2C-0.698526%200.0939%2C-1.144265%20-0.410785%2C-0.410784%20-0.718063%2C-0.434051%20-1.818611%2C-0.137705%20-0.728368%2C0.19613%20-1.321036%2C0.459049%20-1.31704%2C0.584265%200.0067%2C0.209245%201.823845%2C1.273281%202.263138%2C1.325174%200.104722%2C0.01237%200.455096%2C-0.269991%200.77861%2C-0.627469%20z%20m%2014.550986%2C-0.139651%201.12%2C-0.420922%20-1.189722%2C-0.514733%20c%20-1.478438%2C-0.639646%20-1.679579%2C-0.639718%20-2.318467%2C-8.3e-4%20-0.396776%2C0.396776%20-0.429521%2C0.615575%20-0.143674%2C0.96%200.447135%2C0.538764%201.05065%2C0.533159%202.531863%2C-0.02351%20z%20m%20-35.960001%2C0.303898%20c%20-0.267143%2C-0.267143%20-0.601429%2C-0.466091%20-0.742857%2C-0.442106%20-0.141429%2C0.02398%20-5.117143%2C0.02656%20-11.057143%2C0.0057%20-6.961404%2C-0.02441%20-10.800001%2C-0.151616%20-10.800001%2C-0.35788%200%2C-0.206999%203.926785%2C-0.323594%2011.120001%2C-0.330177%209.242865%2C-0.0085%2011.224263%2C-0.08905%2011.737645%2C-0.477429%200.545769%2C-0.412877%200.685413%2C-0.405921%201.2%2C0.05977%200.712324%2C0.644644%200.724587%2C0.879886%200.0795%2C1.524975%20-0.627938%2C0.627937%20-0.923057%2C0.631229%20-1.537143%2C0.01714%20z%20m%2053.57276%2C0.02109%20c%20-0.212084%2C-0.255545%20-0.336245%2C-0.723545%20-0.275914%2C-1.04%200.126034%2C-0.661081%201.447701%2C-0.958827%201.964063%2C-0.442465%200.235964%2C0.235965%203.861262%2C0.347093%2011.323094%2C0.347093%207.104%2C0%2010.976%2C0.112886%2010.976%2C0.32%200%2C0.379228%200.71708%2C0.358888%20-11.60166%2C0.32909%20-8.221658%2C-0.01989%20-9.996799%2C0.05642%20-10.784112%2C0.463552%20-1.150869%2C0.595137%20-1.126701%2C0.594794%20-1.601471%2C0.02273%20z%22%0A%20%20%20%20%20%20%20id%3D%22path1%22%20%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E%0A" alt=""></div><div class="columns"><div class="side"><section class="block defs" id="definitions" aria-labelledby="definitions-t"><h2 id="definitions-t"><span class="n" aria-label="Étape 1">1</span><span>Définitions</span></h2><article class="item">
+  <h3>œuvre</h3>
+  <p>1. Une œuvre est le résultat d’un travail de création. Elle peut être matérielle (un objet) ou immatérielle.</p>
+  
+  
+</article><article class="item">
+  <h3>œuvre</h3>
+  <p>L'œuvre peut désigner l'action de travailler.</p>
+  
+  
+</article><article class="item">
+  <h3>art</h3>
+  <p>Du grec technè, qui peut avoir plusieurs sens comme :
+Le savoir-faire, l'art de fabriquer quelque chose.
+L'habileté, la maîtrise d'un métier.
+La méthode, le processus rationnel pour arriver à un résultat.</p>
+  
+  
+</article><article class="item">
+  <h3>art</h3>
+  <p>CNRTL : Ensemble de moyens, de procédés conscients par lesquels l'homme tend à une certaine fin, cherche à atteindre un certain résultat</p>
+  
+  
+</article><article class="item">
+  <h3>art</h3>
+  <p>CNRTL : Expression dans les œuvres humaines d'un idéal de beauté.</p>
+  
+  
+</article><article class="item">
+  <h3>objet</h3>
+  <p>Objet vient de objectum, c'est « ce qui est jeté devant » (le regard ou l'esprit). Donc ce qui existe à l'extérieur de moi.</p>
+  
+  
+</article></section></div><div class="side"><section class="block contradictions" id="contradictions" aria-labelledby="contradictions-t"><h2 id="contradictions-t"><span class="n" aria-label="Étape 3">3</span><span>Contradictions</span></h2><article class="item contra">
+  <h3>objet ⟷ art</h3>
+  
+  <p>Un idéal n’est pas une chose matérielle. Comment pourrait-il simplement exister à l’extérieur de nous ?</p>
+</article><article class="item contra">
+  <h3>art ⟷ art</h3>
+  
+  <p>Ces deux définitions semblent opposées. L’artisan produit un objet comme un autre pour des raisons fonctionnelles, on est bien loin de la beauté, non ? Quant à l’artiste, on attend de lui qu’il aille au-delà de l’utilité.</p>
+</article><article class="item contra">
+  <h3>œuvre ⟷ objet</h3>
+  
+  <p>En ce sens, une œuvre peut être un objet, même si elle ne s’y réduit pas nécessairement, comme lorsqu’on parle de « l’œuvre d’une vie ».</p>
+</article></section><section class="block knowledge" id="connaissances" aria-labelledby="connaissances-t"><h2 id="connaissances-t"><span class="n" aria-label="Étape 5">5</span><span>Connaissances</span></h2><article class="item know untitled">
+  
+  <p>Platon, le beau lui-même.
+Le beau comme concept. Les choses belles nous guident vers le Beau.</p>
+  <p class="note">Reliée à : Contradiction, art, objet</p>
+</article><article class="item know untitled">
+  
+  <p>Kant, la beauté libre ne recherche pas l’utilité, contrairement à la beauté adhérente.</p>
+  <p class="note">Reliée à : Contradiction, art, art, œuvre</p>
+</article><article class="item know untitled">
+  
+  <p>Tanizaki, la nature nous pousse à certaines pratiques, et c’est par habitude que nous trouvons beaux les résultats de ces pratiques.</p>
+  <p class="note">Reliée à : œuvre</p>
+</article><article class="item know untitled">
+  
+  <p>Hume, le jugement qui permet de désigner une chose comme belle est le produit d’une interaction entre cette chose (l’objet) et mon corps ou mon esprit. Par conséquent, ce jugement est subjectif.</p>
+  <p class="note">Reliée à : art</p>
+</article></section></div></div>
+  </div>
+  <div class="rule" aria-hidden="true"></div><aside class="plan" id="plan" aria-labelledby="plan-t"><h2 id="plan-t"><span class="n" aria-label="Étape 7">7</span><span>Plan</span></h2><article class="part">
+  <h3>I. Oui</h3>
+  <div class="field"><span>Oui, parce que…</span><p>Une œuvre est toujours un objet, même lorsqu’elle est immatérielle, car il s’agit toujours de quelque chose qui possède une existence indépendante de la mienne. En ce sens, l’œuvre est objective.</p></div><div class="field"><span>Mais c'est insuffisant, car…</span><p>Mais une création n’est jamais un objet neutre. Elle contient toujours un peu de son créateur, de son intériorité et de sa volonté. Bien que l’œuvre continue d’exister après la disparition de son créateur, elle en demeure la trace.</p></div>
+  <div class="field uses"><span>Connaissances</span><p>Platon, le beau lui-même.
+Le beau comme… · Kant, la beauté libre ne recherche pas l…</p></div>
+</article><div class="divider in-plan" aria-hidden="true"><img src="data:image/svg+xml;charset=utf-8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%20standalone%3D%22no%22%3F%3E%0A%3C!--%20Created%20with%20Inkscape%20(http%3A%2F%2Fwww.inkscape.org%2F)%20--%3E%0A%0A%3Csvg%0A%20%20%20version%3D%221.1%22%0A%20%20%20id%3D%22svg1%22%0A%20%20%20width%3D%22100.1678%22%0A%20%20%20height%3D%229.5747957%22%0A%20%20%20viewBox%3D%220%200%20100.1678%209.5747958%22%0A%20%20%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%0A%20%20%20xmlns%3Asvg%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Cdefs%0A%20%20%20%20%20id%3D%22defs1%22%20%2F%3E%0A%20%20%3Cg%0A%20%20%20%20%20id%3D%22g1%22%0A%20%20%20%20%20transform%3D%22translate(-13.967097%2C-7.0513353)%22%3E%0A%20%20%20%20%3Cpath%0A%20%20%20%20%20%20%20style%3D%22fill%3A%23000000%22%0A%20%20%20%20%20%20%20d%3D%22m%2063.380754%2C16.290731%20c%20-0.190489%2C-0.213306%20-1.16951%2C-1.142948%20-2.175602%2C-2.065873%20l%20-1.829258%2C-1.678045%20-0.942695%2C0.696964%20-0.942694%2C0.696964%20-2.250829%2C-0.737907%20c%20-2.244369%2C-0.735791%20-2.259295%2C-0.736326%20-5.201703%2C-0.186355%20-2.700604%2C0.504775%20-11.001402%2C1.111995%20-11.753027%2C0.859757%20-1.022077%2C-0.342998%200.112993%2C-0.622312%203.282151%2C-0.807659%204.596636%2C-0.268833%208.683503%2C-0.850734%208.343719%2C-1.188005%20-0.304385%2C-0.302133%20-4.312246%2C-0.814665%20-8.823719%2C-1.128391%20-1.716%2C-0.11933%20-3.12%2C-0.341234%20-3.12%2C-0.493121%200%2C-0.6698228%209.729303%2C0.0087%2013.778128%2C0.960875%200.876235%2C0.206069%201.668848%2C0.09027%203.444524%2C-0.503255%20l%202.306395%2C-0.7709148%200.978277%2C0.6965938%200.978277%2C0.696594%200.988351%2C-0.918025%20c%200.543593%2C-0.5049138%201.238738%2C-1.1340248%201.544767%2C-1.3980248%200.306029%2C-0.264%200.927362%2C-0.815603%201.380741%2C-1.2257841%20l%200.824326%2C-0.745784%201.688107%2C1.5492231%20c%203.149712%2C2.8905768%202.910008%2C2.7660108%203.869818%2C2.0110248%20l%200.840483%2C-0.6611238%202.46059%2C0.7757838%20c%202.276219%2C0.717656%202.594586%2C0.744683%204.248903%2C0.3607%204.049422%2C-0.93991%2012.828314%2C-1.4764578%2012.828314%2C-0.78404%200%2C0.176%20-0.54%2C0.321542%20-1.2%2C0.323426%20-2.047374%2C0.0058%20-10.000854%2C0.92525%20-10.520699%2C1.21617%20-0.608566%2C0.340571%203.359906%2C0.929326%208.280699%2C1.228511%202.503295%2C0.1522%203.44%2C0.322507%203.44%2C0.625445%200%2C0.302316%20-0.416165%2C0.379195%20-1.52%2C0.280794%20-0.836%2C-0.07453%20-2.929252%2C-0.208227%20-4.651672%2C-0.297116%20-1.72242%2C-0.08889%20-4.399858%2C-0.404725%20-5.949863%2C-0.701858%20-2.797539%2C-0.536282%20-2.834714%2C-0.534823%20-5.07316%2C0.199025%20l%20-2.25497%2C0.739266%20-0.915168%2C-0.648663%20-0.915167%2C-0.648664%20-2.24%2C2.039034%20c%20-2.325961%2C2.117282%20-2.647906%2C2.28018%20-3.226344%2C1.632458%20z%20m%202.842466%2C-2.493424%20c%201.003133%2C-0.894077%201.823878%2C-1.726043%201.823878%2C-1.848813%200%2C-0.12277%20-0.865177%2C-0.984778%20-1.922615%2C-1.915573%20l%20-1.922615%2C-1.6923558%20-0.825547%2C0.649375%20c%20-0.45405%2C0.357157%20-1.382548%2C1.1525928%20-2.063327%2C1.7676358%20l%20-1.23778%2C1.11826%201.825942%2C1.767084%20c%201.004268%2C0.971897%201.977197%2C1.769987%202.162064%2C1.773534%200.184868%2C0.0035%201.156868%2C-0.725069%202.16%2C-1.619147%20z%20m%20-3.056122%2C-0.640036%20c%20-0.308%2C-0.179393%20-0.56%2C-0.595237%20-0.56%2C-0.924097%200%2C-1.195824%200.370623%2C-1.610271%201.44%2C-1.610271%201.434914%2C0%201.966322%2C1.347963%200.937143%2C2.377143%20-0.578515%2C0.578514%20-1.027183%2C0.617335%20-1.817143%2C0.157225%20z%20m%20-5.190986%2C-0.624329%20c%200.530415%2C-0.586102%200.539641%2C-0.698526%200.0939%2C-1.144265%20-0.410785%2C-0.410784%20-0.718063%2C-0.434051%20-1.818611%2C-0.137705%20-0.728368%2C0.19613%20-1.321036%2C0.459049%20-1.31704%2C0.584265%200.0067%2C0.209245%201.823845%2C1.273281%202.263138%2C1.325174%200.104722%2C0.01237%200.455096%2C-0.269991%200.77861%2C-0.627469%20z%20m%2014.550986%2C-0.139651%201.12%2C-0.420922%20-1.189722%2C-0.514733%20c%20-1.478438%2C-0.639646%20-1.679579%2C-0.639718%20-2.318467%2C-8.3e-4%20-0.396776%2C0.396776%20-0.429521%2C0.615575%20-0.143674%2C0.96%200.447135%2C0.538764%201.05065%2C0.533159%202.531863%2C-0.02351%20z%20m%20-35.960001%2C0.303898%20c%20-0.267143%2C-0.267143%20-0.601429%2C-0.466091%20-0.742857%2C-0.442106%20-0.141429%2C0.02398%20-5.117143%2C0.02656%20-11.057143%2C0.0057%20-6.961404%2C-0.02441%20-10.800001%2C-0.151616%20-10.800001%2C-0.35788%200%2C-0.206999%203.926785%2C-0.323594%2011.120001%2C-0.330177%209.242865%2C-0.0085%2011.224263%2C-0.08905%2011.737645%2C-0.477429%200.545769%2C-0.412877%200.685413%2C-0.405921%201.2%2C0.05977%200.712324%2C0.644644%200.724587%2C0.879886%200.0795%2C1.524975%20-0.627938%2C0.627937%20-0.923057%2C0.631229%20-1.537143%2C0.01714%20z%20m%2053.57276%2C0.02109%20c%20-0.212084%2C-0.255545%20-0.336245%2C-0.723545%20-0.275914%2C-1.04%200.126034%2C-0.661081%201.447701%2C-0.958827%201.964063%2C-0.442465%200.235964%2C0.235965%203.861262%2C0.347093%2011.323094%2C0.347093%207.104%2C0%2010.976%2C0.112886%2010.976%2C0.32%200%2C0.379228%200.71708%2C0.358888%20-11.60166%2C0.32909%20-8.221658%2C-0.01989%20-9.996799%2C0.05642%20-10.784112%2C0.463552%20-1.150869%2C0.595137%20-1.126701%2C0.594794%20-1.601471%2C0.02273%20z%22%0A%20%20%20%20%20%20%20id%3D%22path1%22%20%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E%0A" alt=""></div><article class="part">
+  <h3>II. Non</h3>
+  <div class="field"><span>Non, parce que…</span><p>Bien qu’une œuvre puisse être une chose matérielle, nous ne percevons jamais cette chose en elle-même. Nous percevons par nos organes des sens, or ceux-ci varient d’une personne à l’autre. Parler d’objet, c’est donc parler d’une chose que nous ne pouvons pas connaître telle qu’elle est. Ainsi, « pour nous », une œuvre d’art n’est jamais un simple objet.</p></div><div class="field"><span>Mais c'est insuffisant, car…</span><p>Mais si tel est le cas, cet argument vaut pour toute chose. La chaise de l’artisan nous apparaît elle aussi à travers nos sens, sans que nous la connaissions en elle-même. Il ne permet donc pas de distinguer l’œuvre d’art de l’œuvre en général.</p></div>
+  <div class="field uses"><span>Connaissances</span><p>Hume, le jugement qui permet de désigner… · Tanizaki, la nature nous pousse à certai…</p></div>
+</article><div class="divider in-plan" aria-hidden="true"><img src="data:image/svg+xml;charset=utf-8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%20standalone%3D%22no%22%3F%3E%0A%3C!--%20Created%20with%20Inkscape%20(http%3A%2F%2Fwww.inkscape.org%2F)%20--%3E%0A%0A%3Csvg%0A%20%20%20version%3D%221.1%22%0A%20%20%20id%3D%22svg1%22%0A%20%20%20width%3D%22100.1678%22%0A%20%20%20height%3D%229.5747957%22%0A%20%20%20viewBox%3D%220%200%20100.1678%209.5747958%22%0A%20%20%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%0A%20%20%20xmlns%3Asvg%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Cdefs%0A%20%20%20%20%20id%3D%22defs1%22%20%2F%3E%0A%20%20%3Cg%0A%20%20%20%20%20id%3D%22g1%22%0A%20%20%20%20%20transform%3D%22translate(-13.967097%2C-7.0513353)%22%3E%0A%20%20%20%20%3Cpath%0A%20%20%20%20%20%20%20style%3D%22fill%3A%23000000%22%0A%20%20%20%20%20%20%20d%3D%22m%2063.380754%2C16.290731%20c%20-0.190489%2C-0.213306%20-1.16951%2C-1.142948%20-2.175602%2C-2.065873%20l%20-1.829258%2C-1.678045%20-0.942695%2C0.696964%20-0.942694%2C0.696964%20-2.250829%2C-0.737907%20c%20-2.244369%2C-0.735791%20-2.259295%2C-0.736326%20-5.201703%2C-0.186355%20-2.700604%2C0.504775%20-11.001402%2C1.111995%20-11.753027%2C0.859757%20-1.022077%2C-0.342998%200.112993%2C-0.622312%203.282151%2C-0.807659%204.596636%2C-0.268833%208.683503%2C-0.850734%208.343719%2C-1.188005%20-0.304385%2C-0.302133%20-4.312246%2C-0.814665%20-8.823719%2C-1.128391%20-1.716%2C-0.11933%20-3.12%2C-0.341234%20-3.12%2C-0.493121%200%2C-0.6698228%209.729303%2C0.0087%2013.778128%2C0.960875%200.876235%2C0.206069%201.668848%2C0.09027%203.444524%2C-0.503255%20l%202.306395%2C-0.7709148%200.978277%2C0.6965938%200.978277%2C0.696594%200.988351%2C-0.918025%20c%200.543593%2C-0.5049138%201.238738%2C-1.1340248%201.544767%2C-1.3980248%200.306029%2C-0.264%200.927362%2C-0.815603%201.380741%2C-1.2257841%20l%200.824326%2C-0.745784%201.688107%2C1.5492231%20c%203.149712%2C2.8905768%202.910008%2C2.7660108%203.869818%2C2.0110248%20l%200.840483%2C-0.6611238%202.46059%2C0.7757838%20c%202.276219%2C0.717656%202.594586%2C0.744683%204.248903%2C0.3607%204.049422%2C-0.93991%2012.828314%2C-1.4764578%2012.828314%2C-0.78404%200%2C0.176%20-0.54%2C0.321542%20-1.2%2C0.323426%20-2.047374%2C0.0058%20-10.000854%2C0.92525%20-10.520699%2C1.21617%20-0.608566%2C0.340571%203.359906%2C0.929326%208.280699%2C1.228511%202.503295%2C0.1522%203.44%2C0.322507%203.44%2C0.625445%200%2C0.302316%20-0.416165%2C0.379195%20-1.52%2C0.280794%20-0.836%2C-0.07453%20-2.929252%2C-0.208227%20-4.651672%2C-0.297116%20-1.72242%2C-0.08889%20-4.399858%2C-0.404725%20-5.949863%2C-0.701858%20-2.797539%2C-0.536282%20-2.834714%2C-0.534823%20-5.07316%2C0.199025%20l%20-2.25497%2C0.739266%20-0.915168%2C-0.648663%20-0.915167%2C-0.648664%20-2.24%2C2.039034%20c%20-2.325961%2C2.117282%20-2.647906%2C2.28018%20-3.226344%2C1.632458%20z%20m%202.842466%2C-2.493424%20c%201.003133%2C-0.894077%201.823878%2C-1.726043%201.823878%2C-1.848813%200%2C-0.12277%20-0.865177%2C-0.984778%20-1.922615%2C-1.915573%20l%20-1.922615%2C-1.6923558%20-0.825547%2C0.649375%20c%20-0.45405%2C0.357157%20-1.382548%2C1.1525928%20-2.063327%2C1.7676358%20l%20-1.23778%2C1.11826%201.825942%2C1.767084%20c%201.004268%2C0.971897%201.977197%2C1.769987%202.162064%2C1.773534%200.184868%2C0.0035%201.156868%2C-0.725069%202.16%2C-1.619147%20z%20m%20-3.056122%2C-0.640036%20c%20-0.308%2C-0.179393%20-0.56%2C-0.595237%20-0.56%2C-0.924097%200%2C-1.195824%200.370623%2C-1.610271%201.44%2C-1.610271%201.434914%2C0%201.966322%2C1.347963%200.937143%2C2.377143%20-0.578515%2C0.578514%20-1.027183%2C0.617335%20-1.817143%2C0.157225%20z%20m%20-5.190986%2C-0.624329%20c%200.530415%2C-0.586102%200.539641%2C-0.698526%200.0939%2C-1.144265%20-0.410785%2C-0.410784%20-0.718063%2C-0.434051%20-1.818611%2C-0.137705%20-0.728368%2C0.19613%20-1.321036%2C0.459049%20-1.31704%2C0.584265%200.0067%2C0.209245%201.823845%2C1.273281%202.263138%2C1.325174%200.104722%2C0.01237%200.455096%2C-0.269991%200.77861%2C-0.627469%20z%20m%2014.550986%2C-0.139651%201.12%2C-0.420922%20-1.189722%2C-0.514733%20c%20-1.478438%2C-0.639646%20-1.679579%2C-0.639718%20-2.318467%2C-8.3e-4%20-0.396776%2C0.396776%20-0.429521%2C0.615575%20-0.143674%2C0.96%200.447135%2C0.538764%201.05065%2C0.533159%202.531863%2C-0.02351%20z%20m%20-35.960001%2C0.303898%20c%20-0.267143%2C-0.267143%20-0.601429%2C-0.466091%20-0.742857%2C-0.442106%20-0.141429%2C0.02398%20-5.117143%2C0.02656%20-11.057143%2C0.0057%20-6.961404%2C-0.02441%20-10.800001%2C-0.151616%20-10.800001%2C-0.35788%200%2C-0.206999%203.926785%2C-0.323594%2011.120001%2C-0.330177%209.242865%2C-0.0085%2011.224263%2C-0.08905%2011.737645%2C-0.477429%200.545769%2C-0.412877%200.685413%2C-0.405921%201.2%2C0.05977%200.712324%2C0.644644%200.724587%2C0.879886%200.0795%2C1.524975%20-0.627938%2C0.627937%20-0.923057%2C0.631229%20-1.537143%2C0.01714%20z%20m%2053.57276%2C0.02109%20c%20-0.212084%2C-0.255545%20-0.336245%2C-0.723545%20-0.275914%2C-1.04%200.126034%2C-0.661081%201.447701%2C-0.958827%201.964063%2C-0.442465%200.235964%2C0.235965%203.861262%2C0.347093%2011.323094%2C0.347093%207.104%2C0%2010.976%2C0.112886%2010.976%2C0.32%200%2C0.379228%200.71708%2C0.358888%20-11.60166%2C0.32909%20-8.221658%2C-0.01989%20-9.996799%2C0.05642%20-10.784112%2C0.463552%20-1.150869%2C0.595137%20-1.126701%2C0.594794%20-1.601471%2C0.02273%20z%22%0A%20%20%20%20%20%20%20id%3D%22path1%22%20%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E%0A" alt=""></div><article class="part">
+  <h3>III. Dépassement</h3>
+  <div class="field"><span>Votre thèse répond mieux, car…</span><p>Les deux premières parties partageaient un même présupposé. Elles cherchaient ce qui fait l’œuvre dans la chose une fois produite, qu’il s’agisse de l’objet lui-même ou de la façon dont il s’impose à nos sens. Or c’est dans l’acte, celui qui produit l’œuvre comme celui qui la contemple, qu’il faut chercher la différence. L’artisan produit en vue d’une fin extérieure, car son objet doit servir. Kant parle alors de beauté adhérente, une beauté soumise au concept de l’usage. L’artiste, lui, crée librement, sans autre fin que l’œuvre elle-même, et son œuvre relève de la beauté libre, qui ne recherche aucune utilité. Cette liberté se retrouve aussi chez le spectateur. Devant une œuvre d’art, je ne me contente pas de recevoir des sensations, et je ne me demande pas à quoi elle sert. Je la contemple de manière désintéressée et je laisse mon esprit libre de lui prêter mes propres interprétations. L’œuvre d’art devient ainsi la rencontre de deux libertés, celle qui la crée et celle qui la contemple.</p></div><div class="field"><span>Réponse au sujet</span><p>Une œuvre d’art est bien un objet, puisqu’elle existe hors de nous et qu’elle est le produit d’un savoir-faire, mais elle n’est jamais uniquement un objet. Ce qui l’en distingue, ce n’est pas sa matière ni la façon dont nous la percevons, mais la liberté qui la fait naître et celle qu’elle suscite chez celui qui la contemple.</p></div>
+  <div class="field uses"><span>Connaissances</span><p>Kant, la beauté libre ne recherche pas l…</p></div>
+</article></aside>
+  <p class="foot">Yann GUIZAOUI · 30 octobre 2026</p>
+</main>
+<script type="application/json" id="dissertation-data">{"app":"philosite-dissertation","version":1,"savedAt":"2026-10-30T14:06:31.226Z","subject":"Un œuvre d'art n'est-elle qu'un « simple » objet ?","data":{"definition":{"entries":{"œuvre":[{"id":"dmvuypi620","word":"œuvre","title":"","position":{"x":-46.34998321533203,"y":155.03330993652344},"text":"1. Une œuvre est le résultat d’un travail de création. Elle peut être matérielle (un objet) ou immatérielle."},{"id":"dmvuys9db1","word":"œuvre","title":"","position":{"x":26.65001678466797,"y":155.03330993652344},"text":"L'œuvre peut désigner l'action de travailler."}],"art":[{"id":"dmvuyt6da2","word":"art","title":"","position":{"x":266.65001678466797,"y":155.03330993652344},"text":"Du grec technè, qui peut avoir plusieurs sens comme :\nLe savoir-faire, l'art de fabriquer quelque chose.\nL'habileté, la maîtrise d'un métier.\nLa méthode, le processus rationnel pour arriver à un résultat."},{"id":"dmvuyx4yh3","word":"art","title":"","position":{"x":266.65001678466797,"y":155.03330993652344},"text":"CNRTL : Ensemble de moyens, de procédés conscients par lesquels l'homme tend à une certaine fin, cherche à atteindre un certain résultat"},{"id":"dmvuyzpe64","word":"art","title":"","position":{"x":266.65001678466797,"y":155.03330993652344},"text":"CNRTL : Expression dans les œuvres humaines d'un idéal de beauté."}],"objet":[{"id":"dmvuz1n8z6","word":"objet","title":"","position":{"x":266.65001678466797,"y":155.03330993652344},"text":"Objet vient de objectum, c'est « ce qui est jeté devant » (le regard ou l'esprit). Donc ce qui existe à l'extérieur de moi."}]},"children":{}},"reformulation":{"text":"Une chose créée pour exprimer un idéal de beauté n’est-elle rien de plus qu’une chose ordinaire qui existe devant nous ?","position":{"x":41.5,"y":-300}},"contradictions":{"items":{"cmvuzbwqf1":{"id":"cmvuzbwqf1","a":"def-objet-dmvuz1n8z6","b":"def-art-dmvuyzpe64","title":"","text":"Un idéal n’est pas une chose matérielle. Comment pourrait-il simplement exister à l’extérieur de nous ?","position":{"x":253.0776677804895,"y":-451.17403263630246}},"cmvuzdu6t2":{"id":"cmvuzdu6t2","a":"def-art-dmvuyt6da2","b":"def-art-dmvuyzpe64","title":"","text":"Ces deux définitions semblent opposées. L’artisan produit un objet comme un autre pour des raisons fonctionnelles, on est bien loin de la beauté, non ? Quant à l’artiste, on attend de lui qu’il aille au-delà de l’utilité.","position":{"x":-89.44750245297965,"y":-442.51118102401773}},"cmvuzhtzt3":{"id":"cmvuzhtzt3","a":"def-œuvre-dmvuypi620","b":"def-objet-dmvuz1n8z6","title":"","text":"En ce sens, une œuvre peut être un objet, même si elle ne s’y réduit pas nécessairement, comme lorsqu’on parle de « l’œuvre d’une vie ».","position":{"x":133.0776677804895,"y":-134.17403263630246}}}},"problematique":{"text":"Dans quelle mesure peut-on distinguer ce que fait l’artiste de ce que fait l’artisan, si tous deux mettent en œuvre un savoir-faire pour produire une chose ?","position":{"x":41.5,"y":419.0522227865385}},"connaissances":{"items":{"kmvuzrcxq4":{"id":"kmvuzrcxq4","title":"","text":"Platon, le beau lui-même.\nLe beau comme concept. Les choses belles nous guident vers le Beau.","position":{"x":-633.8433623456052,"y":-104.11208428096704}},"kmvuzs7yt6":{"id":"kmvuzs7yt6","title":"","text":"Kant, la beauté libre ne recherche pas l’utilité, contrairement à la beauté adhérente.","position":{"x":-544.4395309205313,"y":-95.79544879956481}},"kmvuzu92cb":{"id":"kmvuzu92cb","title":"","text":"Tanizaki, la nature nous pousse à certaines pratiques, et c’est par habitude que nous trouvons beaux les résultats de ces pratiques.","position":{"x":-273.70040941141315,"y":459.99998674519253}},"kmvuzwvq8f":{"id":"kmvuzwvq8f","title":"","text":"Hume, le jugement qui permet de désigner une chose comme belle est le produit d’une interaction entre cette chose (l’objet) et mon corps ou mon esprit. Par conséquent, ce jugement est subjectif.","position":{"x":-338.31329666854793,"y":-869.999130954693}}},"links":{"lmvuzs09x5":{"id":"lmvuzs09x5","a":"know-kmvuzrcxq4","b":"contra-cmvuzbwqf1"},"lmvuzt5ez7":{"id":"lmvuzt5ez7","a":"know-kmvuzs7yt6","b":"contra-cmvuzdu6t2"},"lmvuztisr8":{"id":"lmvuztisr8","a":"know-kmvuzs7yt6","b":"def-art-dmvuyt6da2"},"lmvuztzt99":{"id":"lmvuztzt99","a":"know-kmvuzs7yt6","b":"def-art-dmvuyzpe64"},"lmvuzu2k2a":{"id":"lmvuzu2k2a","a":"know-kmvuzrcxq4","b":"def-art-dmvuyzpe64"},"lmvuzv8dtc":{"id":"lmvuzv8dtc","a":"know-kmvuzu92cb","b":"def-œuvre-dmvuypi620"},"lmvuzvmqxd":{"id":"lmvuzvmqxd","a":"know-kmvuzs7yt6","b":"def-œuvre-dmvuys9db1"},"lmvuzwpb3e":{"id":"lmvuzwpb3e","a":"know-kmvuzrcxq4","b":"def-objet-dmvuz1n8z6"},"lmvuzyjh2g":{"id":"lmvuzyjh2g","a":"know-kmvuzwvq8f","b":"def-art-dmvuyzpe64"}}},"these":{"text":"C’est la liberté qui distingue l’artiste de l’artisan et qui, par la même occasion, distingue l’œuvre d’art du simple objet.","position":{"x":386.1210002789935,"y":628.2107038845444}},"plan":{"parts":{"oui":{"idea":"Une œuvre est toujours un objet, même lorsqu’elle est immatérielle, car il s’agit toujours de quelque chose qui possède une existence indépendante de la mienne. En ce sens, l’œuvre est objective.","limit":"Mais une création n’est jamais un objet neutre. Elle contient toujours un peu de son créateur, de son intériorité et de sa volonté. Bien que l’œuvre continue d’exister après la disparition de son créateur, elle en demeure la trace.","answer":"","knowledge":["kmvuzrcxq4","kmvuzs7yt6"],"position":{"x":101.7952136646129,"y":846.3465448256924}},"non":{"idea":"Bien qu’une œuvre puisse être une chose matérielle, nous ne percevons jamais cette chose en elle-même. Nous percevons par nos organes des sens, or ceux-ci varient d’une personne à l’autre. Parler d’objet, c’est donc parler d’une chose que nous ne pouvons pas connaître telle qu’elle est. Ainsi, « pour nous », une œuvre d’art n’est jamais un simple objet.","limit":"Mais si tel est le cas, cet argument vaut pour toute chose. La chaise de l’artisan nous apparaît elle aussi à travers nos sens, sans que nous la connaissions en elle-même. Il ne permet donc pas de distinguer l’œuvre d’art de l’œuvre en général.","answer":"","knowledge":["kmvuzwvq8f","kmvuzu92cb"],"position":{"x":401.7952136646129,"y":846.3465448256924}},"depassement":{"idea":"Les deux premières parties partageaient un même présupposé. Elles cherchaient ce qui fait l’œuvre dans la chose une fois produite, qu’il s’agisse de l’objet lui-même ou de la façon dont il s’impose à nos sens. Or c’est dans l’acte, celui qui produit l’œuvre comme celui qui la contemple, qu’il faut chercher la différence. L’artisan produit en vue d’une fin extérieure, car son objet doit servir. Kant parle alors de beauté adhérente, une beauté soumise au concept de l’usage. L’artiste, lui, crée librement, sans autre fin que l’œuvre elle-même, et son œuvre relève de la beauté libre, qui ne recherche aucune utilité. Cette liberté se retrouve aussi chez le spectateur. Devant une œuvre d’art, je ne me contente pas de recevoir des sensations, et je ne me demande pas à quoi elle sert. Je la contemple de manière désintéressée et je laisse mon esprit libre de lui prêter mes propres interprétations. L’œuvre d’art devient ainsi la rencontre de deux libertés, celle qui la crée et celle qui la contemple.","limit":"","answer":"Une œuvre d’art est bien un objet, puisqu’elle existe hors de nous et qu’elle est le produit d’un savoir-faire, mais elle n’est jamais uniquement un objet. Ce qui l’en distingue, ce n’est pas sa matière ni la façon dont nous la percevons, mais la liberté qui la fait naître et celle qu’elle suscite chez celui qui la contemple.","knowledge":["kmvuzs7yt6"],"position":{"x":701.7952136646129,"y":846.3465448256924}}}}},"validated":["definition","reformulation","contradictions","problematique","connaissances","these","plan"],"active":null,"layout":{"def-œuvre-dmvuypi620":{"x":-246.34998321533203,"y":157.03330993652344},"def-œuvre-dmvuys9db1":{"x":65.56937275168832,"y":162.6196516692749},"def-art-dmvuyt6da2":{"x":-160.53698741577517,"y":-348.08577379334577},"def-art-dmvuyx4yh3":{"x":122.65001678466797,"y":-334.96669006347656},"def-art-dmvuyzpe64":{"x":-18.35801749018411,"y":-581.4365882546897},"def-objet-dmvuz1n8z6":{"x":539.9019673340553,"y":-433.5201576230659},"reformulation":{"x":394.8413497935797,"y":143.0522227865385},"contra-cmvuzbwqf1":{"x":250.64229437878993,"y":-520.7868648837155},"contra-cmvuzdu6t2":{"x":-369.3456659603075,"y":-607.1657215521225},"contra-cmvuzhtzt3":{"x":488.51548231611116,"y":-90.94510924683496},"problematique":{"x":386.12100027899356,"y":328.2107038845444},"know-kmvuzrcxq4":{"x":123.54240546923148,"y":-842.4093562303817},"know-kmvuzs7yt6":{"x":-522.8105978486279,"y":-193.84661205886002},"know-kmvuzu92cb":{"x":-393.3805057426117,"y":370.60039671465864},"know-kmvuzwvq8f":{"x":-352.73837780958536,"y":-909.2207547436981},"these":{"x":381.7952136646129,"y":550.3465448256924},"plan-oui":{"x":816.434271587013,"y":22.170710834426586},"plan-non":{"x":819.4981384603469,"y":413.8427709580105},"plan-depassement":{"x":821.7151818050564,"y":807.3725551800482}},"author":{"firstName":"Yann","lastName":"Guizaoui"}}</script>
+<script>
+(function(){
+  var body=document.body,p=document.getElementById("poster"),bar=document.getElementById("bar");
+  var btns=bar?bar.querySelectorAll("[data-mode]"):[];
+  var KEY="poster-mode";
+  function fit(){
+    if(!body.classList.contains("mode-poster"))return;
+    var top=(bar?bar.offsetHeight:0)+4,vw=innerWidth,vh=innerHeight-top,best=null;
+    p.style.transform="none";
+    for(var w=900;w<=2800;w+=100){
+      p.style.width=w+"px";
+      var h=p.scrollHeight,s=Math.min(vw/w,vh/h)*0.97; /* marge de sécurité : rien n'est rogné */
+      if(!best||s>best.s)best={w:w,h:h,s:s};
+    }
+    p.style.width=best.w+"px";
+    p.style.left=Math.max(0,(vw-best.w*best.s)/2)+"px";
+    p.style.top=top+Math.max(0,(vh-best.h*best.s)/2)+"px";
+    p.style.transform="scale("+best.s+")";
+  }
+  function setMode(m,save){
+    body.classList.toggle("mode-poster",m==="poster");
+    body.classList.toggle("mode-lecture",m==="lecture");
+    for(var i=0;i<btns.length;i++)btns[i].setAttribute("aria-pressed",String(btns[i].getAttribute("data-mode")===m));
+    if(m==="lecture"){p.style.width="";p.style.left="";p.style.top="";p.style.transform="";}
+    if(save){try{sessionStorage.setItem(KEY,m)}catch(e){}}
+    fit();
+  }
+  var saved=null;try{saved=sessionStorage.getItem(KEY)}catch(e){}
+  setMode(saved||(innerWidth<760?"lecture":"poster"),false);
+  for(var i=0;i<btns.length;i++)btns[i].addEventListener("click",function(){setMode(this.getAttribute("data-mode"),true)});
+  var pr=document.getElementById("print");if(pr)pr.addEventListener("click",function(){window.print()});
+  addEventListener("resize",fit);
+  addEventListener("beforeprint",function(){p.style.transform="";p.style.width=""});
+  addEventListener("afterprint",fit);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
+  /* Sommaire de la lecture : la section visible est mise en avant */
+  var links=document.querySelectorAll(".toc a");
+  if("IntersectionObserver" in window&&links.length){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;for(var j=0;j<links.length;j++)links[j].setAttribute("aria-current",String(links[j].getAttribute("href")==="#"+e.target.id));});},{rootMargin:"-40% 0px -55% 0px"});
+    for(var k=0;k<links.length;k++){var t=document.getElementById(links[k].getAttribute("href").slice(1));if(t)io.observe(t);}
+  }
+})();
+</script>
+</body>
+</html>

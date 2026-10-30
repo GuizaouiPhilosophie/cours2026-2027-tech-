@@ -11,77 +11,265 @@
   /* Couleurs partagées par les étapes et lib/ui.css */
   --contradiction: #c0392b;
   --knowledge: #2f6db5;
+  /* Lisibilité : gris plus foncé que celui du site (#8a7566, contraste insuffisant sur le beige) */
+  --text-muted: #6b5747;
+  --rail-w: 316px;
 
   position: fixed;
-  inset: 0;
+  left: 0;
+  right: 0;
+  /* Zone visible au-dessus du clavier (src/lib/useVisibleViewport.js) ; repli : tout l'écran */
+  top: var(--vv-top, 0px);
+  height: var(--vv-height, 100dvh);
   display: flex;
   background: var(--bg);
   color: var(--text);
   overflow: hidden;
 }
 
+/* Clavier ouvert sur téléphone : on libère la place (pilule du parcours, consigne, barre du bas) */
+@media (max-width: 899.98px) {
+  .has-keyboard .dissertation-editor:not(.is-intro) .dissertation-topbar,
+  .has-keyboard .dissertation-editor:not(.is-intro) .dissertation-bottombar,
+  .has-keyboard .dissertation-editor .dissertation-hintbar,
+  .has-keyboard .dissertation-editor .dissertation-example-nav { display: none; }
+}
+
 /* ---------- Écran d'entrée ---------- */
 
+.dissertation-editor.is-intro {
+  display: block;
+  overflow-y: auto;
+}
+
+.dissertation-intro-page {
+  min-height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+  padding: 4.5rem 1.25rem 2rem;
+  font-family: var(--sans);
+}
+
+.dissertation-back {
+  position: absolute;
+  top: 1.2rem;
+  left: 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 44px;
+  color: var(--accent-dark);
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+.dissertation-back:hover { text-decoration: underline; }
+.dissertation-back svg { display: block; }
+
 .dissertation-intro {
-  margin: auto;
-  width: min(560px, 90vw);
+  width: min(700px, 100%);
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 1rem;
+  gap: 1.4rem;
   text-align: center;
 }
-
-.dissertation-intro h1 {
-  font-family: var(--serif);
-  font-size: 1.8rem;
-  margin: 0;
+.dissertation-intro-head { display: flex; flex-direction: column; align-items: center; gap: 0.7rem; }
+.dissertation-intro-head .eyebrow {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-dark);
 }
+.dissertation-intro h1 { margin: 0; font-family: var(--serif); font-size: clamp(2.1rem, 6vw, 3.2rem); line-height: 1.1; }
+.dissertation-intro-head p { margin: 0; font-size: 1.05rem; line-height: 1.5; color: var(--text-muted); }
 
 .dissertation-intro textarea {
   resize: none;
   border: none;
-  border-radius: 16px;
-  padding: 1rem 1.2rem;
+  border-radius: 20px;
+  padding: 1.1rem 1.4rem;
   font: inherit;
   font-family: var(--serif);
-  font-size: 1.1rem;
+  font-size: clamp(1.15rem, 3vw, 1.45rem);
+  line-height: 1.45;
   color: var(--text);
   background: var(--bg);
   box-shadow: var(--neo-in);
   outline: none;
 }
+.dissertation-intro textarea:focus-visible { box-shadow: var(--neo-in), 0 0 0 2px var(--accent); }
 
-.dissertation-back {
-  color: var(--accent-dark);
-  font-size: 0.85rem;
-  text-decoration: none;
+.dissertation-intro-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem; }
+
+.dissertation-intro-steps,
+.dissertation-intro-examples {
+  width: min(900px, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
-.dissertation-back:hover { text-decoration: underline; }
+.dissertation-intro-steps h2,
+.dissertation-intro-examples h2 { margin: 0; font-size: 0.95rem; font-weight: 600; color: var(--text); }
+
+.dissertation-intro-steps ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+/* trait derrière les pastilles */
+.dissertation-intro-steps ol::before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  left: 6%;
+  right: 6%;
+  height: 2px;
+  background: var(--border);
+}
+.dissertation-intro-steps li {
+  position: relative;
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+.dissertation-intro-dot {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-dark);
+  background: var(--bg);
+  box-shadow: 3px 3px 7px var(--neo-dark), -3px -3px 7px var(--neo-light);
+}
+.dissertation-intro-step { font-size: 0.88rem; line-height: 1.3; text-align: center; color: var(--text); padding: 0 0.2rem; }
+
+.dissertation-intro-examples-head { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; text-align: center; }
+.dissertation-intro-examples-head p { margin: 0; font-size: 0.9rem; color: var(--text-muted); }
+.dissertation-intro-examples ul {
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.25rem;
+}
+
+.dissertation-example-card {
+  width: 260px;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.85rem;
+  border: none;
+  border-radius: 18px;
+  text-align: left;
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+  cursor: pointer;
+  transition: box-shadow 0.25s ease;
+}
+.dissertation-example-card:active { box-shadow: var(--neo-in); }
+.dissertation-example-card:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 3px; }
+@media (hover: hover) {
+  .dissertation-example-card:hover { box-shadow: var(--neo-in); }
+}
+.dissertation-example-thumb {
+  position: relative;
+  flex: 0 0 56px;
+  height: 56px;
+  border-radius: 12px;
+  box-shadow: inset 3px 3px 6px var(--neo-dark), inset -3px -3px 6px var(--neo-light);
+}
+.dissertation-example-thumb i { position: absolute; height: 7px; border-radius: 3px; background: #d9cbbb; }
+.dissertation-example-thumb i:nth-child(1) { left: 17px; top: 24px; width: 22px; background: #b9a690; }
+.dissertation-example-thumb i:nth-child(2) { left: 6px; top: 9px; width: 16px; }
+.dissertation-example-thumb i:nth-child(3) { left: 34px; top: 9px; width: 16px; }
+.dissertation-example-thumb i:nth-child(4) { left: 14px; top: 40px; width: 28px; }
+.dissertation-example-text { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
+.dissertation-example-title { font-family: var(--serif); font-size: 1rem; line-height: 1.3; overflow-wrap: anywhere; }
+.dissertation-example-open { font-size: 0.82rem; color: var(--text-muted); }
+
+.dissertation-intro-foot { margin: auto 0 0; font-size: 0.85rem; color: var(--text-muted); text-align: center; }
 
 /* ---------- Boutons ---------- */
 
-.dissertation-validate {
-  align-self: center;
+.dissertation-validate,
+.dissertation-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
   border: none;
   border-radius: 999px;
-  padding: 0.65rem 1.5rem;
+  padding: 0 1.4rem;
   font-family: var(--sans);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: var(--accent-dark);
   background: var(--bg);
   box-shadow: var(--neo-out-sm);
   cursor: pointer;
   transition: box-shadow 0.25s ease;
 }
-.dissertation-validate:active:not(:disabled) { box-shadow: var(--neo-in); }
+.dissertation-validate { align-self: center; }
+.dissertation-validate svg,
+.dissertation-pill svg { display: block; flex: none; }
+/* Action principale : pilule foncée (une seule par écran) */
+.dissertation-validate.is-primary { color: #fff; background: var(--accent-dark); }
+.dissertation-validate.is-block { flex: 1 1 auto; min-height: 52px; font-size: 1rem; }
+.dissertation-pill.is-wide { width: 100%; }
+.dissertation-validate:active:not(:disabled),
+.dissertation-pill:active { box-shadow: var(--neo-in); }
+.dissertation-validate.is-primary:active:not(:disabled) { box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.3); }
 .dissertation-validate:disabled { opacity: 0.45; cursor: default; }
+.dissertation-validate:focus-visible,
+.dissertation-pill:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 3px; }
 
 /* Survol uniquement avec une vraie souris : au tactile, :hover resterait « collé » après le toucher. */
 @media (hover: hover) {
-  .dissertation-validate:hover:not(:disabled) { box-shadow: var(--neo-in); }
+  .dissertation-validate:hover:not(:disabled),
+  .dissertation-pill:hover { box-shadow: var(--neo-in); }
+  .dissertation-validate.is-primary:hover:not(:disabled) { box-shadow: var(--neo-out-sm), inset 0 0 0 100px rgba(255, 255, 255, 0.08); }
 }
+
+.dissertation-link-btn,
+.dissertation-danger-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 36px;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 0.92rem;
+  color: var(--accent-dark);
+  cursor: pointer;
+}
+.dissertation-danger-link { color: var(--warn); font-weight: 500; }
+.dissertation-link-btn:hover,
+.dissertation-danger-link:hover { text-decoration: underline; }
+.dissertation-danger-link svg { display: block; }
 
 /* Pas de surbrillance de toucher ni d'anneau de focus après un clic/toucher (le focus clavier reste visible). */
 .dissertation-editor button {
@@ -91,306 +279,10 @@
   outline: none;
 }
 
-/* ---------- Canevas ---------- */
-
-.dissertation-canvas {
-  flex: 1;
-  min-width: 0;
-  height: 100%;
-}
-
-.dissertation-canvas .react-flow {
-  --xy-background-color: var(--bg);
-  background: var(--bg);
-}
-
-.dissertation-canvas .react-flow__controls {
-  box-shadow: var(--neo-out-sm);
-  border-radius: 12px;
-  overflow: hidden;
-}
-.dissertation-canvas .react-flow__controls-button {
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
-  fill: var(--accent-dark);
-}
-
-.dissertation-subject-node {
-  max-width: min(560px, 80vw);
-  padding: 0.5rem 0.5rem;
-  border-radius: 10px;
-  text-align: center;
-  background: var(--bg);
-  box-shadow: var(--neo-out);
-  font-family: var(--serif);
-}
-.dissertation-subject-node p { margin: 0.3rem 0 0; font-size: 1.5rem; line-height: 1.45; }
-
-/* ---------- Menu du bas (hamburger + frise horizontale) ---------- */
-
-.dissertation-dock {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 10;
-  display: flex;
-  flex-direction: column; /* hamburger au-dessus, tiroir dessous ; le dock étant ancré en bas, l'ensemble monte à l'ouverture */
-  align-items: stretch;
-  pointer-events: none; /* ne bloque pas le canevas autour des éléments */
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-.dissertation-dock > * { pointer-events: auto; }
-
-.dissertation-burger {
-  --burger-size: 2.75rem;
-  --burger-icon: 18px;
-
-  align-self: flex-start;
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  margin: 0 0 0.75rem 0.75rem;
-  box-sizing: border-box;
-  height: var(--burger-size);
-  padding: 0 1rem 0 0.9rem;
-  border: none;
-  border-radius: 999px;
-  font-family: var(--sans);
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--accent-dark);
-  background: var(--bg);
-  box-shadow: var(--neo-out-sm);
-  cursor: pointer;
-  transition:
-    padding 0.35s ease,
-    gap 0.35s ease,
-    box-shadow 0.25s ease;
-}
-.dissertation-burger:active,
-.dissertation-burger.is-open { box-shadow: var(--neo-in); }
-@media (hover: hover) {
-  .dissertation-burger:hover { box-shadow: var(--neo-in); }
-}
-
-/* Ouvert : padding symétrique = cercle parfait (largeur = hauteur) */
-.dissertation-burger.is-open {
-  gap: 0;
-  padding: 0 calc((var(--burger-size) - var(--burger-icon)) / 2);
-}
-
-.dissertation-burger-icon {
-  flex: 0 0 var(--burger-icon);
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  width: var(--burger-icon);
-}
-.dissertation-burger-icon span {
-  display: block;
-  height: 2px;
-  border-radius: 2px;
-  background: currentColor;
-  transition: transform 0.35s ease, opacity 0.2s ease;
-}
-.dissertation-burger.is-open .dissertation-burger-icon span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-.dissertation-burger.is-open .dissertation-burger-icon span:nth-child(2) { opacity: 0; }
-.dissertation-burger.is-open .dissertation-burger-icon span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-
-/* Libellé : sa largeur maximale se replie vers 0 */
-.dissertation-burger-label {
-  display: block;
-  max-width: min(14rem, 55vw);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  opacity: 1;
-  transition: max-width 0.35s ease, opacity 0.2s ease;
-}
-.dissertation-burger.is-open .dissertation-burger-label {
-  max-width: 0;
-  opacity: 0;
-}
-.dissertation-burger-label-inner { display: inline; }
-
-/* Tiroir : s'ouvre du haut vers le bas (hauteur animée) */
-.dissertation-drawer {
-  display: grid;
-  grid-template-rows: 0fr;
-  visibility: hidden;
-  transition: grid-template-rows 0.35s ease, visibility 0s linear 0.35s;
-}
-.dissertation-drawer.is-open {
-  grid-template-rows: 1fr;
-  visibility: visible;
-  transition: grid-template-rows 0.35s ease, visibility 0s;
-}
-
-.dissertation-panel {
-  min-height: 0;
-  overflow: hidden;
-  background: var(--bg);
-  box-shadow: 0 -6px 14px rgba(201, 197, 190, 0.45);
-  border-radius: 20px 20px 0 0;
-}
-.dissertation-panel-scroll {
-  max-height: 60vh;
-  overflow-y: auto;
-  padding: 1.1rem 1.25rem 1.25rem;
-}
-
-.dissertation-panel-title {
-  margin: 0 0 1rem;
-  font-family: var(--sans);
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-/* Frise horizontale, de gauche à droite */
-.dissertation-steps {
-  list-style: none;
-  margin: 0;
-  padding: 0.4rem 0.4rem 0.8rem;
-  display: flex;
-  align-items: flex-start;
-  overflow-x: auto;
-}
-
-.dissertation-step {
-  position: relative;
-  flex: 1 0 140px;
-  min-width: 140px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.6rem;
-  text-align: center;
-}
-
-/* Trait + flèche vers l'étape suivante */
-.dissertation-step:not(:last-child)::before {
-  content: "";
-  position: absolute;
-  top: 19px;
-  left: calc(50% + 28px);
-  right: calc(-50% + 34px);
-  height: 2px;
-  background: var(--border);
-}
-.dissertation-step:not(:last-child)::after {
-  content: "";
-  position: absolute;
-  top: 13px;
-  right: calc(-50% + 28px);
-  border: 6px solid transparent;
-  border-left: 8px solid var(--border);
-  border-right: 0;
-}
-
-.dissertation-step-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.6rem;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  border: none;
-  background: none;
-  font: inherit;
-  color: inherit;
-  text-align: inherit;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-.dissertation-step-btn:disabled { cursor: default; }
-.dissertation-step-btn:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 4px; border-radius: 12px; }
-@media (hover: hover) {
-  .dissertation-step-btn:not(:disabled):hover .dissertation-step-badge { box-shadow: var(--neo-in); }
-}
-
-.dissertation-step-badge {
-  flex: 0 0 40px;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  font-weight: 700;
-  color: var(--text-muted);
-  background: var(--bg);
-  box-shadow: var(--neo-out-sm);
-}
-.dissertation-step.is-validated .dissertation-step-badge {
-  color: var(--ok);
-  box-shadow: var(--neo-in);
-}
-.dissertation-step.is-current .dissertation-step-badge { color: var(--accent-dark); }
-.dissertation-step.is-warning .dissertation-step-badge { color: var(--warn); }
-.dissertation-step-warn {
-  display: block;
-  margin-top: 0.15rem;
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: var(--warn);
-}
-
-.dissertation-step-title { font-size: 0.9rem; line-height: 1.3; padding: 0 0.4rem; }
-.dissertation-step.is-locked .dissertation-step-title { color: var(--text-muted); }
-.dissertation-step.is-current .dissertation-step-title { font-weight: 700; }
-
-/* Détail de l'étape courante, sous la frise */
-.dissertation-step-detail {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.8rem;
-  margin-top: 0.4rem;
-  text-align: center;
-}
-.dissertation-step-detail p { margin: 0; font-size: 0.82rem; color: var(--text-muted); line-height: 1.45; }
-
-.dissertation-tools { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
-.dissertation-tools-empty { font-style: italic; }
-
-.dissertation-tool {
-  border: none;
-  border-radius: 999px;
-  padding: 0.35rem 0.8rem;
-  font-size: 0.8rem;
-  color: var(--accent-dark);
-  background: var(--bg);
-  box-shadow: var(--neo-out-sm);
-  cursor: pointer;
-}
-
-.dissertation-step-note { font-style: italic; }
-
-.dissertation-step-error {
-  margin: 0 0 0.6rem;
-  font-size: 0.8rem;
-  line-height: 1.4;
-  color: var(--warn);
-}
-
-.dissertation-step-actions {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  margin-top: 0.8rem;
-}
-.dissertation-io { display: flex; gap: 0.5rem; }
-
 .dissertation-io-btn {
   flex: 0 0 auto;
-  width: 2.6rem;
-  height: 2.6rem;
+  width: 44px;
+  height: 44px;
   display: grid;
   place-items: center;
   padding: 0;
@@ -404,6 +296,8 @@
   -webkit-tap-highlight-color: transparent;
   transition: box-shadow 0.25s ease;
 }
+.dissertation-io-btn.is-lg { width: 52px; height: 52px; }
+.dissertation-io-btn.is-danger { color: var(--warn); }
 .dissertation-io-btn svg { display: block; }
 .dissertation-io-btn:active { box-shadow: var(--neo-in); }
 .dissertation-io-btn:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 2px; }
@@ -411,52 +305,448 @@
   .dissertation-io-btn:hover { box-shadow: var(--neo-in); }
 }
 
-.dissertation-notice { margin: 0.6rem 0 0; text-align: center; font-size: 0.8rem; line-height: 1.4; }
+.dissertation-notice { margin: 0; font-size: 0.9rem; line-height: 1.4; }
 .dissertation-notice.is-ok { color: var(--ok); }
 .dissertation-notice.is-error { color: var(--warn); }
 
-.dissertation-intro-actions { display: flex; align-items: center; justify-content: center; gap: 0.6rem; }
+/* ---------- Canevas ---------- */
 
-.dissertation-panel-done { margin: 0.5rem 0 0; text-align: center; font-size: 0.85rem; color: var(--ok); font-weight: 600; }
+.dissertation-canvas {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  transition: margin-left 0.35s ease;
+}
+.dissertation-editor.has-rail .dissertation-canvas { margin-left: var(--rail-w); }
 
-/* ---------- Recommandation plein écran (écran du sujet) ---------- */
+.dissertation-canvas .react-flow {
+  --xy-background-color: var(--bg);
+  background: var(--bg);
+}
 
-.dissertation-fs-hint {
-  margin: 0;
+.dissertation-canvas .react-flow__controls {
+  box-shadow: var(--neo-out-sm);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.dissertation-canvas .react-flow__controls-button {
+  width: 36px;
+  height: 36px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  fill: var(--accent-dark);
+}
+
+.dissertation-subject-node {
+  max-width: min(560px, 80vw);
+  padding: 0.6rem 0.8rem;
+  border-radius: 14px;
+  text-align: center;
+  background: var(--bg);
+  box-shadow: var(--neo-out);
+  font-family: var(--serif);
+}
+.dissertation-subject-node p { margin: 0.3rem 0 0; font-size: 1.5rem; line-height: 1.45; }
+
+/* Mode exemple : ce qui n'appartient pas à l'étape choisie est estompé */
+.dissertation-canvas .react-flow__node.is-dimmed,
+.dissertation-canvas .react-flow__edge.is-dimmed { opacity: 0.32; transition: opacity 0.3s ease; }
+
+/* ---------- Parcours : grand écran, colonne à gauche ---------- */
+
+.dissertation-rail {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 20;
+  width: var(--rail-w);
+  max-width: 90vw;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.82rem;
-  color: var(--text-muted);
+  gap: 0.8rem;
+  padding: 0.9rem 1.3rem 1rem;
+  overflow-y: auto;
+  font-family: var(--sans);
+  background: var(--bg);
+  border-radius: 0 20px 20px 0;
+  box-shadow: 8px 0 16px rgba(201, 197, 190, 0.55);
+  transform: translateX(-105%);
+  visibility: hidden;
+  transition: transform 0.35s ease, visibility 0s linear 0.35s;
 }
-.dissertation-fs-hint-btn {
+.dissertation-rail.is-open {
+  transform: none;
+  visibility: visible;
+  transition: transform 0.35s ease, visibility 0s;
+}
+
+.dissertation-rail-head { display: flex; align-items: center; gap: 0.75rem; }
+.dissertation-rail-title { font-size: 1rem; font-weight: 600; color: var(--text); }
+.dissertation-rail-subject {
+  margin: 0;
+  padding: 0.75rem 0.9rem;
+  border-radius: 14px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--text);
+  box-shadow: inset 3px 3px 7px var(--neo-dark), inset -3px -3px 7px var(--neo-light);
+  overflow-wrap: anywhere;
+}
+.dissertation-rail-help { margin: 0; font-size: 0.9rem; line-height: 1.45; color: var(--text-muted); }
+.dissertation-rail-foot { margin-top: auto; display: flex; flex-direction: column; gap: 0.6rem; padding-top: 0.25rem; }
+
+/* Liste verticale des étapes, reliées par un trait */
+.dissertation-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.dissertation-step { position: relative; padding-bottom: 0.45rem; }
+.dissertation-step:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: 46px;
+  bottom: 2px;
+  left: 20px;
+  width: 2px;
+  background: var(--border);
+}
+.dissertation-step-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+.dissertation-step-btn:disabled { cursor: default; }
+.dissertation-step-btn:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 4px; border-radius: 12px; }
+.dissertation-step-btn > svg { flex: none; margin-left: auto; color: var(--text-muted); }
+@media (hover: hover) {
+  .dissertation-step-btn:not(:disabled):hover .dissertation-step-badge { box-shadow: var(--neo-in); }
+}
+
+.dissertation-step-badge {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+}
+.dissertation-step-badge svg { display: block; }
+.dissertation-step-badge.is-done { color: #fff; background: var(--ok); }
+.dissertation-step-badge.is-current { color: var(--accent-dark); box-shadow: var(--neo-in); }
+.dissertation-step-badge.is-warn { color: #fff; background: var(--warn); }
+.dissertation-step.is-locked .dissertation-step-badge,
+.dissertation-step.is-locked .dissertation-step-title { color: var(--text-muted); }
+
+.dissertation-step-title { font-size: 1rem; line-height: 1.3; }
+.dissertation-step.is-current .dissertation-step-title { font-weight: 700; }
+.dissertation-step-warn { display: block; margin-top: 0.15rem; font-size: 0.8rem; font-weight: 600; color: var(--warn); }
+
+/* Détail de l'étape en cours, sous son titre */
+.dissertation-step-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin: 0.45rem 0 0.35rem 56px;
+}
+.dissertation-step-desc { margin: 0; font-size: 0.95rem; line-height: 1.5; color: var(--text); }
+.dissertation-step-note { margin: 0; font-size: 0.85rem; font-style: italic; color: var(--text-muted); }
+.dissertation-step-next { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
+.dissertation-step-error { margin: 0; font-size: 0.9rem; line-height: 1.45; color: var(--warn); font-weight: 500; }
+
+.dissertation-readiness { display: flex; align-items: flex-start; gap: 0.5rem; margin: 0; font-size: 0.9rem; line-height: 1.45; }
+.dissertation-readiness.is-ok { color: var(--ok); font-weight: 600; }
+.dissertation-readiness.is-ok svg { flex: none; margin-top: 0.1rem; }
+.dissertation-readiness.is-todo { color: var(--text); }
+.dissertation-readiness-dot {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  margin-top: 0.35rem;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+}
+
+.dissertation-panel-done { margin: 0; font-size: 0.95rem; line-height: 1.45; color: var(--ok); font-weight: 600; }
+
+.dissertation-files { display: flex; flex-direction: column; gap: 0.7rem; }
+.dissertation-rail .dissertation-danger-link { min-height: 30px; }
+.dissertation-files-row { display: flex; align-items: center; gap: 0.75rem; }
+.dissertation-files.is-compact .dissertation-pill { flex: 1 1 0; padding: 0 0.8rem; }
+
+/* Pilule « ≡ 3/7 · Étape » : rouvre le parcours (grand écran) / ouvre la feuille (petit écran) */
+.dissertation-burger {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-sizing: border-box;
+  min-height: 48px;
+  max-width: 100%;
+  padding: 0.35rem 1.1rem 0.35rem 1rem;
   border: none;
   border-radius: 999px;
-  padding: 0.4rem 1rem;
   font-family: var(--sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+  cursor: pointer;
+  text-align: left;
+}
+.dissertation-burger:active,
+.dissertation-burger[aria-expanded="true"] { box-shadow: var(--neo-in); }
+.dissertation-burger:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 3px; }
+@media (hover: hover) {
+  .dissertation-burger:hover { box-shadow: var(--neo-in); }
+}
+.dissertation-burger.is-floating { position: absolute; top: 0.75rem; left: 0.75rem; z-index: 20; }
+.dissertation-burger-icon { flex: 0 0 18px; display: flex; flex-direction: column; gap: 4px; }
+.dissertation-burger-icon span { display: block; height: 2px; border-radius: 2px; background: var(--accent-dark); }
+.dissertation-burger-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+.dissertation-burger-label { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dissertation-progress { display: flex; gap: 3px; }
+.dissertation-progress span { flex: 1 1 0; height: 4px; border-radius: 2px; background: var(--border); }
+.dissertation-progress span.is-done { background: var(--ok); }
+.dissertation-progress span.is-current { background: var(--accent-dark); }
+
+/* ---------- Parcours : petit écran ---------- */
+
+.dissertation-topbar {
+  position: absolute;
+  top: calc(0.75rem + env(safe-area-inset-top, 0px));
+  left: 0.75rem;
+  right: 4.25rem; /* laisse la place au bouton plein écran */
+  z-index: 20;
+  display: flex;
+}
+.dissertation-topbar .dissertation-burger { flex: 1 1 auto; }
+
+.dissertation-bottombar {
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: calc(0.9rem + env(safe-area-inset-bottom, 0px));
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.dissertation-bottombar-row { display: flex; align-items: center; gap: 0.75rem; }
+
+.dissertation-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.85rem 1rem;
+  border-radius: 18px;
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm), 0 0 0 2px var(--warn);
+}
+.dissertation-alert p { margin: 0; font-size: 0.95rem; line-height: 1.45; color: var(--text); }
+.dissertation-alert-icon {
+  flex: 0 0 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
   font-size: 0.8rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--warn);
+}
+.dissertation-notice.is-floating {
+  align-self: center;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+}
+
+.dissertation-sheet-layer { position: absolute; inset: 0; z-index: 30; }
+.dissertation-sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  border: none;
+  background: rgba(58, 42, 29, 0.28);
+  cursor: pointer;
+}
+.dissertation-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 88%;
+  box-sizing: border-box;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.1rem 1.2rem calc(1.4rem + env(safe-area-inset-bottom, 0px));
+  font-family: var(--sans);
+  background: var(--bg);
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 -6px 16px rgba(201, 197, 190, 0.6);
+  animation: dissertation-sheet-in 0.3s ease;
+}
+@keyframes dissertation-sheet-in {
+  from { transform: translateY(30%); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+.dissertation-sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.dissertation-sheet .dissertation-close { width: 44px; height: 44px; }
+
+/* Frise des étapes : tient dans la largeur, sans libellés coupés */
+.dissertation-frise { list-style: none; margin: 0; padding: 0.3rem 0; display: flex; align-items: center; }
+.dissertation-frise-item { position: relative; flex: 1 1 0; display: flex; justify-content: center; }
+.dissertation-frise-item:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: calc(50% + 20px);
+  right: calc(-50% + 20px);
+  height: 2px;
+  background: var(--border);
+}
+.dissertation-frise-btn { padding: 0; border: none; background: none; cursor: pointer; border-radius: 50%; }
+.dissertation-frise-btn:disabled { cursor: default; }
+.dissertation-frise-btn .dissertation-step-badge { width: 38px; height: 38px; flex-basis: 38px; font-size: 0.9rem; }
+.dissertation-frise-btn:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 3px; }
+
+.dissertation-sheet-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 1rem;
+  border-radius: 18px;
+  box-shadow: inset 4px 4px 9px var(--neo-dark), inset -4px -4px 9px var(--neo-light);
+}
+.dissertation-sheet-card h2 { margin: 0; font-family: var(--serif); font-size: 1.35rem; line-height: 1.2; }
+.dissertation-sheet-count { font-size: 0.85rem; color: var(--text-muted); }
+
+.dissertation-steps.is-example .dissertation-step { padding-bottom: 0.4rem; }
+.dissertation-steps.is-example .dissertation-step:not(:last-child)::before { display: none; }
+
+/* Outils propres à une étape (ex. bouton « Glossaire » de la bulle de définition) */
+.dissertation-tool {
+  min-height: 36px;
+  border: none;
+  border-radius: 999px;
+  padding: 0.35rem 0.95rem;
+  font-family: var(--sans);
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--accent-dark);
   background: var(--bg);
   box-shadow: var(--neo-out-sm);
   cursor: pointer;
-  transition: box-shadow 0.25s ease;
 }
-.dissertation-fs-hint-btn:active { box-shadow: var(--neo-in); }
-@media (hover: hover) {
-  .dissertation-fs-hint-btn:hover { box-shadow: var(--neo-in); }
+.dissertation-tool:focus-visible { outline: 2px solid var(--accent-dark); outline-offset: 2px; }
+.dissertation-tools-empty { margin: 0; font-size: 0.9rem; font-style: italic; color: var(--text-muted); }
+
+/* ---------- Mode exemple ---------- */
+
+.dissertation-example-banner {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  right: 4.25rem;
+  z-index: 18;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.45rem 0.45rem 0.45rem 0.45rem;
+  border-radius: 999px;
+  font-family: var(--sans);
+  background: var(--bg);
+  box-shadow: var(--neo-out-sm);
+}
+.dissertation-example-tag {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  height: 34px;
+  padding: 0 0.85rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+}
+.dissertation-example-tag svg { display: block; }
+.dissertation-example-banner-text { flex: 1 1 auto; min-width: 0; font-size: 0.95rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dissertation-example-banner .dissertation-pill { flex: none; min-height: 38px; padding: 0 1rem; }
+.dissertation-example-nav {
+  position: absolute;
+  left: 50%;
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: 18;
+  display: flex;
+  gap: 0.9rem;
+  max-width: calc(100% - 1.5rem);
+}
+.dissertation-example-nav > * { white-space: nowrap; }
+
+/* Petit écran : la pilule du parcours passe sous le bandeau d'exemple */
+.dissertation-editor.is-example .dissertation-topbar { top: calc(4.4rem + env(safe-area-inset-top, 0px)); }
+
+/* ---------- Aperçu du poster (par-dessus la carte) ---------- */
+
+.dissertation-poster-preview {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: var(--vv-top, 0px);
+  height: var(--vv-height, 100dvh);
+  z-index: 70;
+  background: var(--bg);
+  animation: dissertation-sheet-in 0.25s ease;
+}
+.dissertation-poster-preview iframe { display: block; width: 100%; height: 100%; border: 0; }
+/* En haut à gauche : la barre du poster (Poster / Lecture / Imprimer) occupe la droite */
+.dissertation-poster-close {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  min-height: 40px;
+  padding: 0 1rem 0 0.7rem;
+}
+@media (max-width: 600px) {
+  .dissertation-poster-close { width: 44px; min-height: 44px; padding: 0; }
+  .dissertation-poster-close .dissertation-pill-label { display: none; }
+}
+@media (max-width: 899.98px) {
+  .dissertation-example-banner .dissertation-pill-label { display: none; }
 }
 
 /* ---------- Bouton plein écran (entrer / quitter) ---------- */
 
 .dissertation-fullscreen {
   position: absolute;
-  top: 0.75rem;
-  left: 0.75rem;
-  z-index: 20;
-  width: 2.5rem;
-  height: 2.5rem;
+  top: calc(0.75rem + env(safe-area-inset-top, 0px));
+  right: 0.75rem;
+  z-index: 21;
+  width: 48px;
+  height: 48px;
   border: none;
   box-sizing: border-box;
   border-radius: 50%;
@@ -472,128 +762,56 @@
 }
 .dissertation-fullscreen:active { box-shadow: var(--neo-in); }
 /* svg en bloc : évite le décalage de ligne de base qui le faisait paraître de travers dans le cercle */
-.dissertation-fullscreen svg {
-  display: block;
-  flex: none;
-  margin: 0;
+.dissertation-fullscreen svg { display: block; flex: none; margin: 0; }
+
+/* ---------- Téléphone : contrôles de zoom remplacés par le pincement + « Recentrer » ---------- */
+
+@media (max-width: 899.98px) {
+  .dissertation-canvas .react-flow__controls { display: none; }
+  .dissertation-intro-step { font-size: 0; } /* frise de l'écran d'entrée : pastilles seules */
+  .dissertation-intro-steps li { gap: 0; }
+  .dissertation-intro-page { padding-top: 4.5rem; gap: 2rem; }
+  .dissertation-intro-actions { flex-direction: column; align-items: stretch; }
+  .dissertation-intro-actions > * { min-height: 52px; }
+  .dissertation-example-card { width: 100%; }
+  .dissertation-intro-examples ul { flex-direction: column; flex-wrap: nowrap; width: 100%; box-sizing: border-box; }
+  .dissertation-example-nav { left: 0.75rem; right: 0.75rem; transform: none; max-width: none; }
+  .dissertation-example-nav > * { flex: 1 1 0; min-width: 0; padding: 0 0.8rem; overflow: hidden; text-overflow: ellipsis; }
+  .dissertation-example-banner { border-radius: 26px; }
+  .dissertation-example-banner-text { font-size: 0.85rem; }
+  .dissertation-example-banner .dissertation-pill { padding: 0 0.8rem; font-size: 0.85rem; }
+}
+@media (max-width: 519.98px) {
+  .dissertation-example-banner-text { display: none; }
+  .dissertation-example-banner { justify-content: space-between; }
+}
+@media (max-width: 899.98px) and (min-width: 520px) {
+  .dissertation-intro-step { font-size: 0.8rem; }
+  .dissertation-intro-steps li { gap: 0.5rem; }
 }
 
-/* ---------- PC / grand écran : hamburger en haut à gauche, tiroir depuis le bord gauche ---------- */
+/* ---------- Grand écran ---------- */
 
-@media (min-width: 768px) {
-  .dissertation-dock {
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: auto;
-    width: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    flex-direction: column;
-  }
-
-  .dissertation-fullscreen {
-    top: 0.75rem;
-    right: 0.75rem;
-    bottom: auto;
-    left: auto;
-  }
-
-  .dissertation-burger {
-    position: absolute;
-    top: 0.75rem;
-    left: 0.75rem;
-    margin: 0;
-    z-index: 2; /* reste visible au-dessus du tiroir ouvert */
-  }
-
-  .dissertation-drawer {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 300px;
-    max-width: 90vw;
-    display: block;
-    transform: translateX(-100%);
-    transition: transform 0.35s ease, visibility 0s linear 0.35s;
-  }
-  .dissertation-drawer.is-open {
-    transform: none;
-    transition: transform 0.35s ease, visibility 0s;
-  }
-
-  .dissertation-panel {
-    height: 100%;
-    border-radius: 0 20px 20px 0;
-    box-shadow: 6px 0 14px rgba(201, 197, 190, 0.45);
-  }
-  .dissertation-panel-scroll {
-    height: 100%;
-    max-height: none;
-    padding: 4.5rem 1.25rem 1.5rem; /* laisse la place au hamburger */
-  }
-
-  .dissertation-steps {
-    flex-direction: column;
-    align-items: stretch;
-    overflow-x: visible;
-    padding: 0.2rem 0 0;
-  }
-
-  .dissertation-step {
-    flex: 0 0 auto;
-    min-width: 0;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 1rem;
-    padding-bottom: 1.6rem;
-    text-align: left;
-  }
-
-  /* Trait + flèche verticaux vers l'étape suivante */
-  .dissertation-step:not(:last-child)::before {
-    top: 46px;
-    bottom: 6px;
-    left: 19px;
-    right: auto;
-    width: 2px;
-    height: auto;
-  }
-  .dissertation-step:not(:last-child)::after {
-    top: auto;
-    bottom: 0;
-    left: 14px;
-    right: auto;
-    border: 6px solid transparent;
-    border-top: 8px solid var(--border);
-    border-bottom: 0;
-  }
-
-  .dissertation-step-btn {
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .dissertation-step-title { padding: 0.5rem 0 0; }
-
-  .dissertation-step-detail { align-items: flex-start; text-align: left; margin-top: 0.2rem; }
-  .dissertation-step-actions { flex-direction: column; align-items: flex-start; }
-  .dissertation-notice { text-align: left; }
-  .dissertation-tools { justify-content: flex-start; }
-  .dissertation-panel-done { text-align: left; }
+@media (min-width: 900px) {
+  .dissertation-editor.has-rail .dissertation-example-banner { left: calc(var(--rail-w) + 1rem); }
+  .dissertation-editor.has-rail .dissertation-example-nav { left: calc(50% + var(--rail-w) / 2); }
+  .dissertation-example-banner { left: 50%; right: auto; transform: translateX(-50%); width: min(760px, calc(100% - 9rem)); }
+  .dissertation-editor.has-rail .dissertation-example-banner { transform: none; width: min(760px, calc(100% - var(--rail-w) - 6rem)); }
 }
 
 /* ---------- Fenêtre d'export (prénom, nom) ---------- */
 
 .dissertation-modal-backdrop {
   position: fixed;
-  inset: 0;
+  left: 0;
+  right: 0;
+  top: var(--vv-top, 0px);
+  height: var(--vv-height, 100dvh);
   z-index: 60;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow-y: auto;
   padding: 1rem;
   background: rgba(40, 30, 20, 0.35);
   -webkit-backdrop-filter: blur(5px);
@@ -602,6 +820,7 @@
 
 .dissertation-modal {
   width: min(360px, 100%);
+  margin: auto; /* centrée, mais défile si le clavier ne laisse pas assez de place */
   display: flex;
   flex-direction: column;
   gap: 0.9rem;

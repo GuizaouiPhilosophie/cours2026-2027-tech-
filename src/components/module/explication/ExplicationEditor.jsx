@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import tools from "./toolRegistry";
+import PlanPanel from "./PlanPanel";
+import { subscribeArmed, disarm, markTapSource, isTouchDevice } from "./lib/tapPlace";
+import { useVisibleViewport } from "../../../lib/useVisibleViewport";
+import { useFullscreen } from "../../../lib/useFullscreen";
 import { startGrab, snapBetweenWords } from "./lib/grab";
 import { buildStandaloneDocument, extractRawHtml, selfCloseVoidTags } from "./lib/standalone";
 import "./explication.css";
@@ -50,31 +55,21 @@ function clearAutosave(key) {
   }
 }
 
-function useRealViewportHeight() {
-  useEffect(() => {
-    const vv = window.visualViewport;
-    const setHeight = () => {
-      const h = vv ? vv.height : window.innerHeight;
-      document.documentElement.style.setProperty("--app-height", `${h}px`);
-    };
-    setHeight();
-    const target = vv || window;
-    target.addEventListener("resize", setHeight);
-    target.addEventListener("scroll", setHeight);
-    return () => {
-      target.removeEventListener("resize", setHeight);
-      target.removeEventListener("scroll", setHeight);
-    };
-  }, []);
-}
-
 // `autosaveId`, optionnel : clé stable à préférer si l'appelant en a une
 // sous la main (id de la leçon en base, par ex.) — à défaut on retombe
 // sur le titre. Un titre qui change en cours d'édition change alors la
 // clé de sauvegarde (nouveau brouillon "vide" pour ce titre) : passer
 // `autosaveId` quand une valeur stable existe évite ce piège.
-export default function ExplicationEditor({ title, html, autosaveId }) {
-  useRealViewportHeight();
+/** Texte de la pilule affichée quand un crochet est « armé » (placement en deux touchers, mobile). */
+function armedHint(a) {
+  if (!a) return null;
+  if (a.el) return "Touchez la nouvelle place du crochet";
+  return a.key === "close" ? "Touchez la fin du mouvement" : "Touchez le début du mouvement";
+}
+
+export default function ExplicationEditor({ title, meta = {}, html, autosaveId }) {
+  useVisibleViewport(); // clavier mobile : l'éditeur se cale sur la zone visible
+  const fullscreen = useFullscreen();
   const containerRef = useRef(null);
   const initializedRef = useRef(false);
   const fileInputRef = useRef(null);
@@ -93,6 +88,10 @@ export default function ExplicationEditor({ title, html, autosaveId }) {
   // s'il y avait un brouillon plus récent que `html`).
   const [restoredDraftAt, setRestoredDraftAt] = useState(null);
   const saveTimeoutRef = useRef(null);
+  // Statut affiché dans l'en-tête : « Enregistré » après chaque sauvegarde automatique.
+  const [savedAt, setSavedAt] = useState(null);
+  const [armed, setArmed] = useState(null);
+  useEffect(() => subscribeArmed((a) => setArmed(a ? { key: a.key, el: a.el ?? null } : null)), []);
 
   const flushSave = useCallback(() => {
     if (saveTimeoutRef.current) {
@@ -106,6 +105,7 @@ export default function ExplicationEditor({ title, html, autosaveId }) {
       rawHtml: container.innerHTML,
       savedAt: Date.now(),
     });
+    setSavedAt(Date.now());
   }, []);
 
   const scheduleSave = useCallback(() => {
@@ -317,14 +317,90 @@ export default function ExplicationEditor({ title, html, autosaveId }) {
   // Recalculé à chaque rendu (comme les OverlayLayer ci-dessus), donc à
   // jour dès que `version` bouge.
   const container = containerRef.current;
-  const badges = tools
-    .map((tool) => (typeof tool.getBadge === "function" && container ? { tool, badge: tool.getBadge(container) } : null))
-    .filter((x) => x && x.badge);
+  // Onglets du panneau : un par outil (même vide, pour savoir qu'il existe), plus « Plan ».
+  const PLURAL = { mouvement: "Mouvements", concept: "Concepts", exemple: "Exemples" };
+  const tabs = [
+    ...tools
+      .filter((tool) => tool.PanelContent)
+      .map((tool) => {
+        const badge = container && typeof tool.getBadge === "function" ? tool.getBadge(container) : null;
+        return { id: tool.id, label: PLURAL[tool.id] ?? badge?.label ?? tool.label, count: badge?.count ?? 0 };
+      }),
+    { id: "plan", label: "Plan", count: null },
+  ];
   const activeTool = tools.find((t) => t.id === activePanelTool);
+  const toggleTab = (id) => {
+    if (panelOpen && activePanelTool === id) setPanelOpen(false);
+    else {
+      setActivePanelTool(id);
+      setPanelOpen(true);
+    }
+  };
+  const { auteur, oeuvre, date, pages } = meta;
+  const kicker = ["Explication de texte", auteur].filter(Boolean).join(" · ");
+  const touch = isTouchDevice();
+
+  const fileActions = (
+    <div className="explication-file-actions">
+      {savedAt && (
+        <span className="explication-saved" role="status">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M5 12.5l4.5 4.5L19 7.5" />
+          </svg>
+          <span className="explication-saved-label">Enregistré</span>
+        </span>
+      )}
+      <button
+        type="button"
+        className="explication-pill"
+        onClick={handleExportFile}
+        title="Exporter en fichier .html (consultable seul, rechargeable ici)"
+        aria-label="Exporter"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M12 15V3" />
+          <path d="M7 10l5 5 5-5" />
+          <path d="M5 21h14" />
+        </svg>
+        <span className="explication-pill-label">Exporter</span>
+      </button>
+      <button
+        type="button"
+        className="explication-disc"
+        onClick={() => fileInputRef.current?.click()}
+        aria-label="Importer un fichier exporté depuis cet éditeur"
+        title="Importer un fichier .html exporté depuis cet éditeur"
+      >
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M12 3v12" />
+          <path d="M7 8l5-5 5 5" />
+          <path d="M5 21h14" />
+        </svg>
+      </button>
+      <input ref={fileInputRef} type="file" accept=".html,text/html" style={{ display: "none" }} onChange={handleImportFile} />
+      {fullscreen.supported && (
+        <button
+          type="button"
+          className="explication-disc"
+          onClick={fullscreen.toggle}
+          aria-label={fullscreen.isFullscreen ? "Quitter le plein écran" : "Passer en plein écran"}
+          title={fullscreen.isFullscreen ? "Quitter le plein écran" : "Plein écran"}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            {fullscreen.isFullscreen ? (
+              <path d="M9 4v5H4M15 4v5h5M20 15h-5v5M4 15h5v5" />
+            ) : (
+              <path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" />
+            )}
+          </svg>
+        </button>
+      )}
+    </div>
+  );
 
   return (
     <div className="explication-editor">
-      <aside className="explication-toolbar">
+      <aside className="explication-toolbar" aria-label="Outils d’annotation">
         <div className="explication-toolbar-tools">
           {tools.map((tool) => (
             <div key={tool.id} className="explication-tool-slot" title={tool.description || tool.label}>
@@ -336,65 +412,50 @@ export default function ExplicationEditor({ title, html, autosaveId }) {
             </div>
           ))}
         </div>
+        <p className="explication-toolbar-hint">
+          {touch ? "Touchez un outil, puis le texte" : "Glissez un outil sur le texte"}
+        </p>
 
-        {/*
-          Export / import : rangés dans la toolbar plutôt que dans l'en-tête
-          du canvas, pour rester à portée dans la même barre que les outils.
-          Poussés en bas via .explication-toolbar-actions (margin-top: auto)
-          sur ordi -> juste au-dessus de la poubelle ; sur mobile, la barre
-          devient une ligne et ce même bloc passe à l'extrémité droite (voir
-          la media query dans explication.css).
-        */}
+        {/* Poubelle : on y dépose un objet du texte ou une card pour le supprimer (aussi possible
+            avec le bouton de chaque card). Sur mobile, elle termine la barre d'outils du bas. */}
         <div className="explication-trash" title="Glisser ici pour supprimer">
-          🗑
-        </div>
-        <div className="explication-toolbar-actions">
-          <button
-            type="button"
-            className="explication-tool-btn"
-            onClick={handleExportFile}
-            title="Exporter en fichier .html (consultable seul, rechargeable ici)"
-          >
-            <span className="explication-tool-icon">⇩</span>
-            <span className="explication-tool-label">Exporter</span>
-          </button>
-          <button
-            type="button"
-            className="explication-tool-btn"
-            onClick={() => fileInputRef.current?.click()}
-            title="Importer un fichier .html exporté depuis cet éditeur"
-          >
-            <span className="explication-tool-icon">⇧</span>
-            <span className="explication-tool-label">Importer</span>
-          </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".html,text/html"
-            style={{ display: "none" }}
-            onChange={handleImportFile}
-          />
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M3 6h18" />
+            <path d="M8 6V4h8v2" />
+            <path d="M19 6l-1 14H6L5 6" />
+            <path d="M10 11v6M14 11v6" />
+          </svg>
+          <span className="explication-trash-label">Déposer pour supprimer</span>
         </div>
       </aside>
 
       <div className="explication-content-col">
-        <main className="explication-canvas-wrap">
-          <header className="explication-canvas-header">
-            <h1>{title}</h1>
-          </header>
+        <header className="explication-header">
+          <Link to="/" className="explication-disc explication-back" aria-label="Retour au cours" title="Retour au cours">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </Link>
+          <div className="explication-titles">
+            <span className="explication-kicker">{kicker}</span>
+            <h1>{oeuvre ? `${oeuvre}${date ? ` (${date})` : ""}` : title}</h1>
+            {pages && <p className="explication-subtitle" title={pages}>{pages}</p>}
+          </div>
+          {fileActions}
+        </header>
 
+        <main className="explication-canvas-wrap">
           {restoredDraftAt && (
             <div className="explication-draft-banner" role="status">
               <span>
-                Sauvegarde locale du{" "}
-                {new Date(restoredDraftAt).toLocaleString("fr-FR")}.
+                Votre travail du {new Date(restoredDraftAt).toLocaleString("fr-FR")} a été repris.
               </span>
               <div className="explication-draft-banner-actions">
                 <button type="button" onClick={() => setRestoredDraftAt(null)}>
-                  Ignorer
+                  Continuer
                 </button>
                 <button type="button" onClick={handleDiscardDraft}>
-                  Revenir à la version d'origine
+                  Revenir au texte d’origine
                 </button>
               </div>
             </div>
@@ -405,12 +466,8 @@ export default function ExplicationEditor({ title, html, autosaveId }) {
 
             {previewRect && (() => {
               // Chaque outil peut définir son propre aperçu de dépôt
-              // (`PreviewMarker`, ex. le pointillé rouge de Concept, déjà
-              // utilisé pour le redéplacement d'un concept posé) : on
-              // l'utilise s'il existe, pour que le premier dépôt depuis la
-              // barre d'outils ait le même rendu qu'un redéplacement.
-              // Sans PreviewMarker (ex. Mouvement), on garde l'encart
-              // générique d'origine.
+              // (`PreviewMarker`, ex. le pointillé rouge de Concept) : on
+              // l'utilise s'il existe, sinon l'encart générique.
               const previewTool = tools.find((t) => t.id === previewRect.toolId);
               if (previewTool?.PreviewMarker) {
                 return <previewTool.PreviewMarker rect={previewRect} />;
@@ -440,51 +497,65 @@ export default function ExplicationEditor({ title, html, autosaveId }) {
           </div>
         </main>
 
-        {(badges.length > 0 || panelOpen) && (
-          <div className="explication-panel-bar">
-            <div className="explication-panel-tags">
-              {badges.map(({ tool, badge }) => (
-                <button
-                  key={tool.id}
-                  type="button"
-                  className={`explication-panel-tag${panelOpen && activePanelTool === tool.id ? " is-active" : ""}`}
-                  onClick={() => {
-                    if (panelOpen && activePanelTool === tool.id) {
-                      setPanelOpen(false);
-                    } else {
-                      setActivePanelTool(tool.id);
-                      setPanelOpen(true);
-                    }
-                  }}
-                >
-                  <span>{badge.label}</span>
-                  <span className="explication-panel-tag-count">{badge.count}</span>
-                </button>
-              ))}
-              {panelOpen && (
-                <button
-                  type="button"
-                  className="explication-panel-close"
-                  onClick={() => setPanelOpen(false)}
-                  title="Fermer le menu"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-
-            {panelOpen && activeTool?.PanelContent && (
-              <div className="explication-panel-body">
-                <activeTool.PanelContent
-                  containerRef={containerRef}
-                  version={version}
-                  helpers={helpers}
-                  bounceTarget={bounceTarget}
-                />
-              </div>
-            )}
+        {armed && (
+          <div className="explication-armed" role="status" ref={(el) => markTapSource(el)}>
+            <span className="explication-armed-icon" aria-hidden="true">
+              [
+            </span>
+            <span>{armedHint(armed)}</span>
+            <button type="button" onClick={() => disarm()}>
+              Annuler
+            </button>
           </div>
         )}
+
+        <section className={`explication-panel-bar${panelOpen ? " is-open" : ""}`} aria-label="Annotations">
+          <div className="explication-panel-tags" role="tablist">
+            {tabs.map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                role="tab"
+                aria-selected={panelOpen && activePanelTool === t.id}
+                className={`explication-panel-tag${panelOpen && activePanelTool === t.id ? " is-active" : ""}`}
+                onClick={() => toggleTab(t.id)}
+              >
+                <span>{t.label}</span>
+                {t.count !== null && <span className="explication-panel-tag-count">{t.count}</span>}
+              </button>
+            ))}
+            {panelOpen && (
+              <button
+                type="button"
+                className="explication-panel-close"
+                onClick={() => setPanelOpen(false)}
+                aria-label="Réduire le panneau"
+                title="Réduire le panneau"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </button>
+            )}
+          </div>
+
+          {panelOpen && (
+            <div className="explication-panel-body" role="tabpanel">
+              {activePanelTool === "plan" ? (
+                <PlanPanel containerRef={containerRef} version={version} />
+              ) : (
+                activeTool?.PanelContent && (
+                  <activeTool.PanelContent
+                    containerRef={containerRef}
+                    version={version}
+                    helpers={helpers}
+                    bounceTarget={bounceTarget}
+                  />
+                )
+              )}
+            </div>
+          )}
+        </section>
       </div>
 
       {exportOpen && (

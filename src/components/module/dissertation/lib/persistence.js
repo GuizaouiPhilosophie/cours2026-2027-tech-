@@ -104,7 +104,11 @@ export const embedJson = (value) => JSON.stringify(value).replace(/</g, "\\u003c
 
 /** Lit la sauvegarde contenue dans un fichier exporté (.html) ou un JSON. Lève une erreur lisible sinon. */
 export async function readSnapshotFile(file) {
-  const text = await file.text();
+  return parseSnapshotText(await file.text());
+}
+
+/** Même lecture, à partir du texte d'un fichier (ex. un exemple chargé depuis public/exemple/). */
+export function parseSnapshotText(text) {
   const trimmed = text.trim();
   if (trimmed.startsWith("{")) return JSON.parse(trimmed);
   const doc = new DOMParser().parseFromString(text, "text/html");

@@ -12,7 +12,7 @@
 import { snapOnWord, snapOnWordTolerantStrict, makeId } from "../lib/grab";
 import { createGroupOverlay, formatGroupTitle } from "../lib/groupOverlay";
 import { usePanelList } from "../lib/panelList";
-import ExplicationCard from "../ExplicationCard";
+import ExplicationCard, { locateInText } from "../ExplicationCard";
 import "./concept.css";
 
 const isTouchDevice = () => typeof window !== "undefined" && window.matchMedia?.("(pointer: coarse)").matches;
@@ -114,7 +114,7 @@ function getBadge(container) {
 function PanelContent({ containerRef, version, helpers, bounceTarget }) {
   const container = containerRef.current;
   const items = container ? Group.listGroups(container) : [];
-  const { order, byId, bouncingId, startCardDrag, setCardRef } = usePanelList({
+  const { order, byId, bouncingId, startCardDrag, setCardRef, remove } = usePanelList({
     items,
     toolId: "concept",
     version,
@@ -124,7 +124,7 @@ function PanelContent({ containerRef, version, helpers, bounceTarget }) {
     },
   });
 
-  if (order.length === 0) return <p className="explication-panel-empty">Aucun concept pour l’instant.</p>;
+  if (order.length === 0) return <p className="explication-panel-empty">Aucun concept pour l’instant : entourez un mot clé du texte avec l’outil Concept.</p>;
 
   return (
     <div className="explication-panel-list">
@@ -137,9 +137,12 @@ function PanelContent({ containerRef, version, helpers, bounceTarget }) {
             cardRef={setCardRef(id)}
             className="explication-card--concept"
             accentColor="#c1694c"
-            width="9rem"
+            width="13rem"
             bouncing={bouncingId === id}
             onGripPointerDown={startCardDrag(id)}
+            onLocate={() => locateInText(it.segs[0])}
+            onDelete={() => remove(id)}
+            deleteLabel="Supprimer ce concept"
             title={{ value: formatGroupTitle(it.segs), editable: false }}
             description={{
               value: getDefinition(it.segs[0]),
