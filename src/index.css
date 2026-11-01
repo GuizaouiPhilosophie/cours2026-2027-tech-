@@ -421,6 +421,84 @@ main.container {
   height: auto;
 }
 
+/* ---------- Vidéo YouTube ---------- */
+
+.corpus-video {
+  clear: both;
+  width: var(--corpus-video-width, 100%);
+  max-width: 100%;
+  margin: 2.5rem auto;
+}
+
+.corpus-video-frame {
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+}
+
+.corpus-video-frame iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Instagram : lecteur vertical, cadre Instagram compris (nom du compte,
+   bouton « Voir sur Instagram »). Hauteur ajustable via height:. */
+.corpus-video--insta {
+  width: 100%;
+  max-width: var(--corpus-video-width, 400px);
+}
+
+.corpus-video--insta .corpus-video-frame {
+  aspect-ratio: auto;
+  height: var(--corpus-video-height, 720px);
+}
+
+/* left/right : la vidéo flotte, le texte qui suit s'écrit à côté (comme
+   .corpus-image--left/right). Largeur par défaut 45 %, ajustable via width:. */
+.corpus-video--left,
+.corpus-video--right {
+  width: var(--corpus-video-width, 45%);
+  max-width: var(--corpus-video-width, 45%);
+  margin-top: 0.3rem;
+  margin-bottom: 1.5rem;
+}
+
+.corpus-video--left {
+  float: left;
+  margin-right: 2rem;
+}
+
+.corpus-video--right {
+  float: right;
+  margin-left: 2rem;
+}
+
+.corpus-video figcaption {
+  margin-top: 0.6rem;
+  text-align: center;
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+/* Petit écran : plus de flottement, la vidéo reprend toute la largeur. */
+@media (max-width: 640px) {
+  .corpus-video--left,
+  .corpus-video--right {
+    float: none;
+    width: 100%;
+    max-width: 100%;
+    margin: 2.5rem auto;
+  }
+
+  .corpus-video--insta {
+    max-width: 400px;
+  }
+}
+
 /* ---------- Image de corpus ---------- */
 
 .corpus-image {

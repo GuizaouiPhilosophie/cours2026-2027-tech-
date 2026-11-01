@@ -3,6 +3,7 @@ import CorpusRef from "./CorpusRef";
 import CorpusImage from "./CorpusImage";
 import CorpusDivider from "./CorpusDivider";
 import CorpusPdf from "./CorpusPdf";
+import CorpusVideo from "./CorpusVideo";
 import ContentBlock from "./ContentBlock";
 import SeanceButton, { buttonTarget, isTitleButton } from "./SeanceButton";
 import { renderMarkdown } from "../../lib/markdown";
@@ -22,6 +23,13 @@ import { formatCitation } from "../../lib/bib";
  *   [[pdf:mon-id]]                           -> PDF (CorpusPdf), lecteur intégré
  *   [[pdf:mon-id|Une légende]]               -> PDF avec légende
  *   [[pdf:mon-id|height:800px]]              -> PDF avec hauteur de lecteur personnalisée
+ *   [[video:nwfQTeDEckU]]                    -> vidéo YouTube (CorpusVideo), id = partie après "v="
+ *   [[video:nwfQTeDEckU|Une légende]]        -> vidéo avec légende
+ *   [[video:nwfQTeDEckU|start:2:00|end:2:35]] -> extrait de 2:00 à 2:35
+ *   [[video:nwfQTeDEckU|width:70%]]          -> vidéo redimensionnée
+ *   [[video:C8fwXsKsNOO|site:insta]]         -> reel Instagram public, id = code après "/reel/"
+ *   [[video:C8fwXsKsNOO|site:insta|height:800px]] -> idem, hauteur du lecteur
+ *   [[video:nwfQTeDEckU|align:left|width:40%]] -> vidéo flottante à gauche (ou right), comme les images
  *   [[bouton:dissertation]]                  -> bouton « S'exercer » vers /dissertation, dans le texte
  *   [[bouton:dissertation|Mon libellé]]      -> libellé personnalisé
  *   [[bouton:dissertation|align:center]]     -> left (défaut), center ou right
@@ -41,7 +49,7 @@ import { formatCitation } from "../../lib/bib";
  * Les [[corpus:id]] sont en plus ajoutés à la bibliographie en bas de la
  * séance ; les [[image:id]] n'y apparaissent pas.
  */
-const TOKEN_RE = /\[\[(corpus|image|divider|pdf|bouton):([a-z0-9_-]+)((?:\|[^\]|]+)*)\]\]/gi;
+const TOKEN_RE = /\[\[(corpus|image|divider|pdf|bouton|video):([a-z0-9_-]+)((?:\|[^\]|]+)*)\]\]/gi;
 
 /**
  * Blocs génériques ::: type [titre optionnel] ... :::
@@ -188,6 +196,21 @@ function renderParts(parts, keyPrefix = "") {
           id={part.id}
           caption={part.caption}
           height={part.params.height}
+        />
+      );
+    }
+    if (part.type === "video") {
+      return (
+        <CorpusVideo
+          key={key}
+          id={part.id}
+          caption={part.caption}
+          site={part.params.site}
+          start={part.params.start}
+          end={part.params.end}
+          width={part.params.width}
+          height={part.params.height}
+          align={part.params.align}
         />
       );
     }
