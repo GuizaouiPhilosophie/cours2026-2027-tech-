@@ -467,12 +467,10 @@ main.container {
 
 .corpus-video--left {
   float: left;
-  margin-right: 2rem;
 }
 
 .corpus-video--right {
   float: right;
-  margin-left: 2rem;
 }
 
 .corpus-video figcaption {
